@@ -9,6 +9,8 @@ The code below uses == for comparing floating point values.  You need to fix tha
 #include <string>
 #include <iostream>
 
+#define EPSILON 0.001f
+
 using namespace std;
 
 VoxelBuffer* subject0;
@@ -20,15 +22,14 @@ int runTotalTests(void);
 int runPlaneTests(void);
 int runLineTests(void);
 
+bool compareEpsilon(float a, float b){
+	float c = a - b;
+	return (c > - EPSILON && c < EPSILON);
+}
+
+
 int main(int argc, char** argv) {
 	cout << "***** Constructing Test Buffers *****" << endl;
-	subject0 = VoxelBuffer::factory("test0.txt");
-	vec3 temp;
-	temp.x = 0.5f;
-	temp.y = 0.5f;
-	temp.z = 0.5f;
-	cout<< subject0->densityRead(temp);
-	cout << "********  Buffer 0 Finished  ********" << endl;
 	subject1 = VoxelBuffer::factory("test1.txt");
 	cout << "********  Buffer 1 Finished  ********" << endl;
 	subject2 = VoxelBuffer::factory("test2.txt");
@@ -66,7 +67,7 @@ int runPlaneTests() {
 	}
 
 	float expected = 702.0f;
-	bool result = total == expected;
+	bool result = compareEpsilon(total,expected);
 	cout << "Plane density test1 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -79,7 +80,7 @@ int runPlaneTests() {
 	}
 
 	expected = 1812.0f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Plane density test2 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -92,7 +93,7 @@ int runPlaneTests() {
 	}
 
 	expected = 0.0f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Plane density test3 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -105,7 +106,7 @@ int runPlaneTests() {
 	}
 
 	expected = 1057.187f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Plane density test4 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -118,7 +119,7 @@ int runPlaneTests() {
 	}
 
 	expected = 1401.439f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Plane density test5 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -131,7 +132,7 @@ int runPlaneTests() {
 	}
 
 	expected = 1475.349f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Plane density test6 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -144,7 +145,7 @@ int runPlaneTests() {
 	}
 
 	expected = 328.300f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Plane density test7 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -157,7 +158,7 @@ int runPlaneTests() {
 	}
 
 	expected = 1464.0f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Plane density test8 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -170,7 +171,7 @@ int runPlaneTests() {
 	}
 
 	expected = 48.651f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Plane density test9 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -189,7 +190,7 @@ int runLineTests() {
 	}
 
 	float expected = 33.0f;
-	bool result = total == expected;
+	bool result = compareEpsilon(total,expected);
 	cout << "Line density test1 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 	
@@ -202,7 +203,7 @@ int runLineTests() {
 	}
 
 	expected = 33.0f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Line density test2 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -214,7 +215,7 @@ int runLineTests() {
 	}
 
 	expected = 40.5f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Line density test3 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -226,7 +227,7 @@ int runLineTests() {
 	}
 
 	expected = 0.0f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Line density test4 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -238,7 +239,7 @@ int runLineTests() {
 	}
 
 	expected = 3.015f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Line density test5 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -250,7 +251,7 @@ int runLineTests() {
 	}
 
 	expected = 15.148f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Line density test6 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -262,7 +263,7 @@ int runLineTests() {
 	}
 
 	expected = 36.0f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Line density test7 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -274,7 +275,7 @@ int runLineTests() {
 	}
 
 	expected = 21.0f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Line density test8 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -286,7 +287,7 @@ int runLineTests() {
 	}
 
 	expected = 34.5f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Line density test9 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -307,7 +308,7 @@ int runTotalTests() {
 	}
 
 	float expected = 84828.000f;
-	bool result = total == expected;
+	bool result = compareEpsilon(total,expected);
 	cout << "Total density test1 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -321,7 +322,7 @@ int runTotalTests() {
 	}
 
 	expected = 60316.843f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Total density test2 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 
@@ -335,7 +336,7 @@ int runTotalTests() {
 	}
 
 	expected = 56855.187f;
-	result = total == expected;
+	result = compareEpsilon(total,expected);
 	cout << "Total density test3 " << (result ? "passed" : "failed") << endl;
 	correct += result;
 	
