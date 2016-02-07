@@ -1,0 +1,6 @@
+FILE higherres.bmp
+RESO 500 500
+EYEP 0 0 200
+VDIR 0 0 -1
+UVEC 0 1 0
+FOVY 60

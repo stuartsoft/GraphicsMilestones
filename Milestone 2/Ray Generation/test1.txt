@@ -1,0 +1,6 @@
+FILE lowres.bmp
+RESO 20 20
+EYEP 0 0 200
+VDIR 0 0 -1
+UVEC 0 1 0
+FOVY 60
