@@ -6,50 +6,75 @@
 using namespace std;
 
 //constructor
-VoxelBuffer::VoxelBuffer(float delta, const ivec3& dimensions){
+VoxelBuffer::VoxelBuffer(float delta, float fovy, float step, string bmp, unsigned int w, unsigned int h, const vec3& eyePos, const vec3& vdir, const vec3& uvec, const ivec3& XYZC, const vec3& BRGB, const vec3& MRGB, const vec3& LPOS, const vec3& LCOL){
 	//voxelMatrix = new vox[dimensions.x * dimensions.y * dimensions.z];
-	int totalVoxels = dimensions.x * dimensions.y * dimensions.z;
+	int totalVoxels = XYZC.x * XYZC.y * XYZC.z;
 	voxelMatrix = (vox*) malloc(sizeof(vox)* totalVoxels);
 	this->delta = delta;
-	this->dimensions = dimensions;
+	this->fovy = fovy;
+	this->bmpfilename = bmp;
+	this->wid = w;
+	this->height = h;
+	this->eyePos = eyePos;
+	this->vdir = vdir;
+	this->uvec = uvec;
+	this->XYZC = XYZC;
+	this->BRGB = BRGB;
+	this->MRGB = MRGB;
+	this->LPOS = LPOS;
+	this->LCOL = LCOL;
 }
 
 VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 
 	ifstream file(filename);
 	string line;
-	getline(file,line);
+	
+	string mbmp;
+	unsigned int mwid, mheight;
+	vec3 meyePos;
+	vec3 mvdir;
+	vec3 muvec;
+	ivec3 mXYZC;
+	vec3 mBRGB;
+	vec3 mMRGB;
+	vec3 mLPOS;
+	vec3 mLCOL;
+	float mstep;
+	float mdelta;
+	float mfovy;
+
+	mdelta = readFLOAT(file, line);
+	mstep = readFLOAT(file, line);
+	mXYZC = readIVEC3(file, line);
+	mBRGB = readVEC3(file, line);
+	mMRGB = readVEC3(file, line);
+
+	mbmp = readSTRING(file, line);
+
+	//RESO
+	getline(file, line);
 	stringstream ss(line);
 	string tok = "";
 	ss >> tok;
-
-	float delt;
 	ss >> tok;
-	delt = stof(tok);
-
-	getline(file, line);
-	int x,y,z;
-	ss = stringstream(line);
+	mwid = stoi(tok);
 	ss >> tok;
-	ss >> tok;
-	x = stoi(tok);
-	ss >> tok;
-	y = stoi(tok);
-	ss >> tok;
-	z = stoi(tok);
+	mheight = stoi(tok);
 
-	int totalVoxels = x*y*z;
-	//cout <<"total voxels"<<totalVoxels<<endl;
+	meyePos = readVEC3(file,line);
+	mvdir = readVEC3(file, line);
+	muvec = readVEC3(file, line);
 
-	ivec3 dimensions = ivec3();
-	dimensions.x = x;
-	dimensions.y = y;
-	dimensions.z = z;
-	VoxelBuffer *resultVoxelBuffer = new VoxelBuffer(delt, dimensions);
+	mfovy = readFLOAT(file, line);
+	mLPOS = readVEC3(file, line);
+	mLCOL = readVEC3(file, line);
 
-	for (int i = 0;i<z;i++){
-		for (int j = 0;j<y;j++){
-			for (int k = 0;k<x;k++){
+	VoxelBuffer *resultVoxelBuffer = new VoxelBuffer(mdelta, mfovy, mstep, mbmp, mwid, mheight, meyePos,mvdir, muvec, mXYZC, mBRGB, mMRGB, mLPOS, mLCOL);
+
+	for (int i = 0;i<mXYZC.z;i++){
+		for (int j = 0;j<mXYZC.y;j++){
+			for (int k = 0;k<mXYZC.x;k++){
 				getline(file, line);
 				float val = stof(line);
 				ivec3 index;
@@ -70,22 +95,22 @@ VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 
 float VoxelBuffer::densityRead(const vec3& coords) const{
 	ivec3 index = posToVoxIndex(coords);
-	return voxelMatrix[index.z*dimensions.y*dimensions.x + index.y*dimensions.x + index.x].density;
+	return voxelMatrix[index.z*XYZC.y*XYZC.x + index.y*XYZC.x + index.x].density;
 }
 
 float VoxelBuffer::lightRead(const vec3& coords) const{
 	ivec3 index = posToVoxIndex(coords);
-	return voxelMatrix[index.z*dimensions.y*dimensions.x + index.y*dimensions.x + index.x].light;
+	return voxelMatrix[index.z*XYZC.y*XYZC.x + index.y*XYZC.x + index.x].light;
 }
 
 void VoxelBuffer::densityWrite(const vec3& coords, float value){
 	ivec3 index = posToVoxIndex(coords);
-	voxelMatrix[index.z*dimensions.y*dimensions.x + index.y*dimensions.x + index.x].density = value;
+	voxelMatrix[index.z*XYZC.y*XYZC.x + index.y*XYZC.x + index.x].density = value;
 }
 
 void VoxelBuffer::lightWrite(const vec3& coords, float value){
 	ivec3 index = posToVoxIndex(coords);
-	voxelMatrix[index.z*dimensions.y*dimensions.x + index.y*dimensions.x + index.x].light = value;
+	voxelMatrix[index.z*XYZC.y*XYZC.x + index.y*XYZC.x + index.x].light = value;
 }
 
 vec3 VoxelBuffer::getVoxelCenter(const vec3& coords) const{
@@ -113,4 +138,70 @@ ivec3 VoxelBuffer::posToVoxIndex(const vec3& coords) const {
 	tempivec3.z = floor(coords.z/delta);
 
 	return tempivec3;
+}
+
+
+ivec3 VoxelBuffer::readIVEC3(ifstream &f, string l){
+	getline(f, l);
+	int x,y,z;
+	stringstream ss(l);
+	string tok = "";
+	ss >> tok;
+	ss >> tok;
+	x = stoi(tok);
+	ss >> tok;
+	y = stoi(tok);
+	ss >> tok;
+	z = stoi(tok);
+	ivec3 temp;
+	temp.x = x;
+	temp.y = y;
+	temp.z = z;
+	return temp;
+}
+
+vec3 VoxelBuffer::readVEC3(ifstream &f, string l){
+	getline(f, l);
+	float x,y,z;
+	stringstream ss(l);
+	string tok = "";
+	ss >> tok;
+	ss >> tok;
+	x = stof(tok);
+	ss >> tok;
+	y = stof(tok);
+	ss >> tok;
+	z = stof(tok);
+	vec3 temp;
+	temp.x = x;
+	temp.y = y;
+	temp.z = z;
+	return temp;
+}
+
+int VoxelBuffer::readINT(ifstream &f, string l){
+	getline(f, l);
+	stringstream ss(l);
+	string tok = "";
+	ss >> tok;
+	ss >> tok;
+	return stoi(tok);
+}
+
+float VoxelBuffer::readFLOAT(ifstream &f, string l){
+	getline(f, l);
+	stringstream ss(l);
+	string tok = "";
+	ss >> tok;
+	ss >> tok;
+	return stof(tok);
+}
+
+string VoxelBuffer::readSTRING(ifstream &f, string l){
+	getline(f, l);
+	stringstream ss(l);
+	string tok = "";
+	ss >> tok;
+	ss >> tok;
+	return tok;
 }
