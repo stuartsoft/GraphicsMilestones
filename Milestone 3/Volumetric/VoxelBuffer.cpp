@@ -23,6 +23,7 @@ VoxelBuffer::VoxelBuffer(float delta, float fovy, float step, string bmp, unsign
 	this->MRGB = MRGB;
 	this->LPOS = LPOS;
 	this->LCOL = LCOL;
+	this->step = step;
 	this->totalVoxels = totalVoxels;
 }
 
@@ -83,6 +84,7 @@ VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 				index.y = j;
 				index.z = i;
 				resultVoxelBuffer->densityWrite(resultVoxelBuffer->getVoxelCenter(index),val);
+					
 				resultVoxelBuffer->lightWrite(resultVoxelBuffer->getVoxelCenter(index),-1);
 				//cout << index.x<<", "<< index.y<<", "<<index.z<<endl;
 				//cout <<val << endl;
@@ -138,7 +140,8 @@ ivec3 VoxelBuffer::posToVoxIndex(const vec3& coords) const {
 	tempivec3.y = floor(coords.y/delta);
 	tempivec3.z = floor(coords.z/delta);
 
-	if (tempivec3.z*XYZC.y*XYZC.x + tempivec3.y*XYZC.x + tempivec3.x  > totalVoxels){
+	int index = (tempivec3.z*XYZC.y*XYZC.x + tempivec3.y*XYZC.x + tempivec3.x);
+	if (index > totalVoxels-1){
 		tempivec3.x = -1;
 		tempivec3.y = -1;
 		tempivec3.z = -1;

@@ -91,6 +91,7 @@ void runRayTrace(VoxelBuffer* vb){
 	H = U * tanFovy;
 
 	for(unsigned int x = 0; x < vb->wid; x++) {
+		cout<<"row "<<x<<endl;
 		for(unsigned int y = 0; y < vb->height; y++) {
 			vec3 D;
 			float xpercent = (2.0f*x/(vb->wid-1)-1);
@@ -101,23 +102,51 @@ void runRayTrace(VoxelBuffer* vb){
 
 			float tau = 1.0f;
 			vec3 xi = vb->eyePos;
+			xi.z = 99;
 			vec3 c;
 			c.x = 0;
 			c.y = 0;
 			c.z = 0;
-			while(true){
-				xi += R * vb->step;
+			while(true){//first layer ray marching
+
+				
+				vec3 marchdiff = (R * vb->step);
+				xi =  xi + marchdiff;
+
 				ivec3 voxIndex = vb->posToVoxIndex(xi);
-				if (voxIndex.x == -1 && voxIndex.y == -1 && voxIndex.z == -1)
+				if (voxIndex.x < 0 || voxIndex.y < 0 || voxIndex.z <0)
 					break;//we're now outside the voxel buffer
 				vec3 voxCenter = vb->getVoxelCenter(voxIndex);
-				float deltaTau = exp(-kappa * vb->step * vb->densityRead(voxCenter));
+				float deltaTau;
+				
+				deltaTau = exp(-kappa * vb->step * vb->densityRead(voxCenter));
+				
 				tau *= deltaTau;
+
+				vec3 N = voxCenter - vb->LPOS;//voxel to light vector
+				float distToLight = sqrt(N.x * N.x + N.y*N.y + N.z*N.z);
+				N = normalize(N);
+				float densitySum = 0;
+				for (float marchDist = 0.0f;marchDist <=distToLight;marchDist+=vb->step){//nested ray march from voxel to light
+					vec3 coord = voxCenter + (N*marchDist);
+					ivec3 voxIndex2 = vb->posToVoxIndex(coord);
+					if (voxIndex2.x < 0 || voxIndex2.y <0 || voxIndex2.z < 0 )
+						break;
+					
+					densitySum += vb->densityRead(coord);
+					//cout <<coord.x << ", "<<coord.y<<", "<<coord.y<<endl;
+				}
+				float Q = exp(-kappa*densitySum);
+				//if (Q != 1.0f)
+					//cout<<Q<<endl;
+				vb->lightWrite(voxCenter,Q);
+				vec3 change = ((vb->LCOL)*(tau*Q)) * ((1 - deltaTau)/kappa);
+				c = c + change ;
 			}
 
-			output(x, y)->Red = vb->BRGB.x;
-			output(x, y)->Green = vb->BRGB.y;
-			output(x, y)->Blue = vb->BRGB.z;
+			output(x, y)->Red = min(c.x*255.0f, 255.0f);
+			output(x, y)->Green = min(c.y*255.0f, 255.0f);
+			output(x, y)->Blue = min(c.z*255.0f, 255.0f);
 		}
 	}
 

@@ -10,21 +10,7 @@ struct vec3 {
 	float x;
 	float y;
 	float z;
-	vec3 operator +=(const vec3 &v1){
-		vec3 r;
-		r.x = x + v1.x;
-		r.y = y + v1.y;
-		r.z = z + v1.z;
-		return r;
-	}
 
-	vec3 operator -=(const vec3 &v1){
-		vec3 r;
-		r.x = x - v1.x;
-		r.y = y - v1.y;
-		r.z = z - v1.z;
-		return r;
-	}
 
 };
 
