@@ -59,13 +59,9 @@ vec3 normalize(const vec3& temp){
 }
 
 int main(int argc, char** argv) {
-	VoxelBuffer *subject1 = VoxelBuffer::factory("test1.txt");
+	cout<<"Get comfortable. This is going to take a while."<<endl;
+	VoxelBuffer *subject1 = VoxelBuffer::factory("test3.txt");
 	runRayTrace(subject1);
-	//return 0;
-	VoxelBuffer *subject2 = VoxelBuffer::factory("test2.txt");
-	runRayTrace(subject2);
-	VoxelBuffer *subject3 = VoxelBuffer::factory("test3.txt");
-	runRayTrace(subject3);
 
 	return 0;
 }
@@ -106,22 +102,29 @@ void runRayTrace(VoxelBuffer* vb){
 			vec3 R = D - vb->eyePos;
 			R = normalize(R);
 
+			vec3 marchdiff = (R * vb->step);
+
 			float tau = 1.0f;
 			vec3 xi = vb->eyePos;
-			xi.z = vb->XYZC.z-1;
+			while (xi.z > vb->XYZC.z ){
+				xi = xi + marchdiff;
+			}
+			//xi.z = vb->XYZC.z-1; 
 			vec3 c;
 			c.x = 0;
 			c.y = 0;
 			c.z = 0;
 			while(true){//first layer ray marching
 
-				
-				vec3 marchdiff = (R * vb->step);
 				xi =  xi + marchdiff;
+				if (xi.x > vb->XYZC.x || xi.x < 0 || xi.y > vb->XYZC.y || xi.y < 0 || xi.z > vb->XYZC.z || xi.z < 0)
+					break;
 
 				ivec3 voxIndex = vb->posToVoxIndex(xi);
-				if (voxIndex.x < 0 || voxIndex.y < 0 || voxIndex.z <0)
-					break;//we're now outside the voxel buffer
+				if (voxIndex.x < 0 || voxIndex.y < 0 || voxIndex.z <0){
+					break;
+				}
+					
 				vec3 voxCenter = vb->getVoxelCenter(voxIndex);
 				float deltaTau;
 				
