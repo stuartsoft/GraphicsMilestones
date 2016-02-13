@@ -1,3 +1,10 @@
+/* 
+Stuart Bowman 2016
+
+This is the Voxel Buffer class. It contains the actual voxel matrix, environment data, 
+an input file parser, and helper functions.
+*/
+
 #include "VoxelBuffer.h"
 #include <fstream>
 #include <string>
