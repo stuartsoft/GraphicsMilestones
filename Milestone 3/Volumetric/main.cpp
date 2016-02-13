@@ -27,17 +27,17 @@ vec3 normalize(const vec3& temp);
 //driver
 int main(int argc, char** argv) {
 	cout<<"Get comfortable. This is going to take a while."<<endl;
-	cout<<"Loading test1"<<endl;
+	cout<<"Parsing test1"<<endl;
 	VoxelBuffer *subject1 = VoxelBuffer::factory("test1.txt");
 	cout<<"Rendering test1"<<endl;
 	runRayTrace(subject1);
 
-	cout<<"Loading test2"<<endl;
+	cout<<"Parsing test2"<<endl;
 	VoxelBuffer *subject2 = VoxelBuffer::factory("test2.txt");
 	cout<<"Rendering test2"<<endl;
 
 	runRayTrace(subject2);
-	cout<<"Loading test3"<<endl;
+	cout<<"Parsing test3"<<endl;
 
 	VoxelBuffer *subject3 = VoxelBuffer::factory("test3.txt");
 	cout<<"Rendering test3"<<endl;
@@ -137,6 +137,7 @@ void runRayTrace(VoxelBuffer* vb){
 
 			c = c + vb->BRGB * tau;//tie the color in with the background color
 
+			//assign color values from calculated color. Multiply by 255 and cap at 255
 			output(x, y)->Red = min(c.x*255.0f, 255.0f);
 			output(x, y)->Green = min(c.y*255.0f, 255.0f);
 			output(x, y)->Blue = min(c.z*255.0f, 255.0f);
