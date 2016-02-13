@@ -61,6 +61,11 @@ vec3 normalize(const vec3& temp){
 int main(int argc, char** argv) {
 	VoxelBuffer *subject1 = VoxelBuffer::factory("test1.txt");
 	runRayTrace(subject1);
+	//return 0;
+	VoxelBuffer *subject2 = VoxelBuffer::factory("test2.txt");
+	runRayTrace(subject2);
+	VoxelBuffer *subject3 = VoxelBuffer::factory("test3.txt");
+	runRayTrace(subject3);
 
 	return 0;
 }
@@ -85,12 +90,13 @@ void runRayTrace(VoxelBuffer* vb){
 
 	vec3 V, H;
 	float tanFovy = tan(vb->fovy * (3.1415f / 180.0));
-	V = up * tanFovy;
 	//V = up * phiRes
 	//H = u * aspect * phiRes
-	H = U * tanFovy;
+	V = up * tanFovy;
+	H = U *(vb->wid/(float)vb->height)* tanFovy;
 
 	for(unsigned int x = 0; x < vb->wid; x++) {
+		
 		cout<<"row "<<x<<endl;
 		for(unsigned int y = 0; y < vb->height; y++) {
 			vec3 D;
@@ -102,7 +108,7 @@ void runRayTrace(VoxelBuffer* vb){
 
 			float tau = 1.0f;
 			vec3 xi = vb->eyePos;
-			xi.z = 99;
+			xi.z = vb->XYZC.z-1;
 			vec3 c;
 			c.x = 0;
 			c.y = 0;
@@ -123,7 +129,7 @@ void runRayTrace(VoxelBuffer* vb){
 				
 				tau *= deltaTau;
 
-				vec3 N = voxCenter - vb->LPOS;//voxel to light vector
+				vec3 N = vb->LPOS - voxCenter;//voxel to light vector
 				float distToLight = sqrt(N.x * N.x + N.y*N.y + N.z*N.z);
 				N = normalize(N);
 				float densitySum = 0;
@@ -140,9 +146,11 @@ void runRayTrace(VoxelBuffer* vb){
 				//if (Q != 1.0f)
 					//cout<<Q<<endl;
 				vb->lightWrite(voxCenter,Q);
-				vec3 change = ((vb->LCOL)*(tau*Q)) * ((1 - deltaTau)/kappa);
+				vec3 change = (((vb->LCOL)*vb->MRGB)*(tau*Q)) * ((1 - deltaTau)/kappa);
 				c = c + change ;
 			}
+
+			c = c + vb->BRGB * tau;//tie the color in with the background color
 
 			output(x, y)->Red = min(c.x*255.0f, 255.0f);
 			output(x, y)->Green = min(c.y*255.0f, 255.0f);
