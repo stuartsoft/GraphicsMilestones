@@ -49,7 +49,7 @@ vec3 operator /(const vec3 &v1, const float &a){
 	return r;
 }
 
-vec3 normalize(vec3 temp){
+vec3 normalize(const vec3& temp){
 	float len = sqrt(temp.x * temp.x + temp.y*temp.y + temp.z*temp.z);
 	vec3 r;
 	r.x = temp.x/len;
@@ -72,7 +72,7 @@ void runRayTrace(VoxelBuffer* vb){
 	vec3 N = vb->vdir;
 	N = normalize(N);
 	vec3 up = vb->uvec;
-	up = normalize(N);
+	up = normalize(up);
 	vec3 U;
 
 	vec3 m = vb->eyePos + N;
@@ -99,10 +99,25 @@ void runRayTrace(VoxelBuffer* vb){
 			vec3 R = D - vb->eyePos;
 			R = normalize(R);
 
+			float tau = 1.0f;
+			vec3 xi = vb->eyePos;
+			vec3 c;
+			c.x = 0;
+			c.y = 0;
+			c.z = 0;
+			while(true){
+				xi += R * vb->step;
+				ivec3 voxIndex = vb->posToVoxIndex(xi);
+				if (voxIndex.x == -1 && voxIndex.y == -1 && voxIndex.z == -1)
+					break;//we're now outside the voxel buffer
+				vec3 voxCenter = vb->getVoxelCenter(voxIndex);
+				float deltaTau = exp(-kappa * vb->step * vb->densityRead(voxCenter));
+				tau *= deltaTau;
+			}
 
-			output(x, y)->Red = abs(R.x)*255;
-			output(x, y)->Green = abs(R.y)*255;
-			output(x, y)->Blue = abs(R.z)*255;
+			output(x, y)->Red = vb->BRGB.x;
+			output(x, y)->Green = vb->BRGB.y;
+			output(x, y)->Blue = vb->BRGB.z;
 		}
 	}
 

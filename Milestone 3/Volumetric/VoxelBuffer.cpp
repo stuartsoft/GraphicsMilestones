@@ -23,6 +23,7 @@ VoxelBuffer::VoxelBuffer(float delta, float fovy, float step, string bmp, unsign
 	this->MRGB = MRGB;
 	this->LPOS = LPOS;
 	this->LCOL = LCOL;
+	this->totalVoxels = totalVoxels;
 }
 
 VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
@@ -136,6 +137,12 @@ ivec3 VoxelBuffer::posToVoxIndex(const vec3& coords) const {
 	tempivec3.x = floor(coords.x/delta);
 	tempivec3.y = floor(coords.y/delta);
 	tempivec3.z = floor(coords.z/delta);
+
+	if (tempivec3.z*XYZC.y*XYZC.x + tempivec3.y*XYZC.x + tempivec3.x  > totalVoxels){
+		tempivec3.x = -1;
+		tempivec3.y = -1;
+		tempivec3.z = -1;
+	}
 
 	return tempivec3;
 }

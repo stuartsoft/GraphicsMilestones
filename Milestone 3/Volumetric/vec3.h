@@ -29,6 +29,8 @@ struct vec3 {
 };
 
 
+
+
 struct ivec3 {
 	int x;
 	int y;
