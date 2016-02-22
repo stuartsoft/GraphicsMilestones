@@ -114,8 +114,7 @@ void VoxelBuffer::generateVoxelBuffer(int num){
 					spacepoint.z = z;
 
 					if (dist(spacepoint, center) <= rad){
-						ivec3 index = posToVoxIndex(spacepoint);
-
+						densityWrite(spacepoint,0.75f);
 					}
 
 				}
