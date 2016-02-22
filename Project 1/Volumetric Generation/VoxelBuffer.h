@@ -62,8 +62,8 @@ public:
 	static VoxelBuffer* factory(const std::string& filename);
 	ivec3 posToVoxIndex(const vec3& coords) const;
 
-	void VoxelBuffer::generateVoxelBuffer(int num);
-	float VoxelBuffer::dist(vec3 a, vec3 b);
+	void generateVoxelBuffer(int num);
+	float dist(vec3 a, vec3 b);
 
 	static ivec3 readIVEC3(ifstream &f, string l);
 	static vec3 readVEC3(ifstream &f, string l);

@@ -10,6 +10,8 @@ an input file parser, and helper functions.
 #include <string>
 #include <iostream>
 #include <sstream>
+#include "perlin.h"
+#include <time.h>
 using namespace std;
 
 //constructor
@@ -84,9 +86,9 @@ VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 	
 	readSTRING(file, line);
 	resultVoxelBuffer->numItems = readINT(file,line);
-	readSTRING(file,line);
 
 	for (int i = 0;i<resultVoxelBuffer->numItems;i++){
+		readSTRING(file,line);
 		string type = readSTRING(file,line);
 		vec3 c = readVEC3(file,line);
 		float radius = readFLOAT(file, line);
@@ -96,7 +98,6 @@ VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 		resultVoxelBuffer->radiuses.push_back(radius);
 	}
 
-
 	return resultVoxelBuffer;
 }
 
@@ -104,22 +105,82 @@ void VoxelBuffer::generateVoxelBuffer(int num){
 	if (typeStr.at(num) == "sphere"){
 		float rad = radiuses.at(num);
 		vec3 center = centerPoints.at(num);
-
-		for (float x = center.x - rad;x<center.x + rad;x++){
-			for (float y = center.y - rad;y<center.y + rad;y++){
-				for (float z = center.z - rad;z<center.z + rad;z++){
+		for (float x = center.x - rad;x<center.x + rad;x+= step){
+			for (float y = center.y - rad;y<center.y + rad;y+= step){
+				for (float z = center.z - rad;z<center.z + rad;z+= step){
 					vec3 spacepoint;
 					spacepoint.x = x;
 					spacepoint.y = y;
 					spacepoint.z = z;
 
 					if (dist(spacepoint, center) <= rad){
-						densityWrite(spacepoint,0.75f);
+						densityWrite(spacepoint,densityRead(spacepoint) + 0.75f);
 					}
+				}
+			}
+		}
+	}
+	else if (typeStr.at(num) == "cloud"){
+		srand (time(NULL));
+		//Perlin perlin(6,0.35f, 10.0f, rand() % INT_MAX);
+		//Perlin perlin(5,0.31f, 3.0f, 15);//awesome!
+		Perlin perlin(5, 0.10f, 6.0f, rand() % INT_MAX);//super awesome!
+
+		float rad = radiuses.at(num);
+		vec3 center = centerPoints.at(num);
+		vec3 zero;
+		zero.x = 0;
+		zero.y = 0;
+		zero.z = 0;
+
+		for (int x = 0; x<XYZC.x; x++){
+			for (int y = 0;y<XYZC.y; y++){
+				for (int z = 0; z < XYZC.z; z++){
+					vec3 index;
+					index.x = x;
+					index.y = y;
+					index.z = z;
+					vec3 spacepoint = getVoxelCenter(index);
+					float roh = perlin.Get(spacepoint.x - center.x, spacepoint.y - center.y, spacepoint.z - center.z)
+						+ (1 - (dist(spacepoint,center) - rad));
+					if (roh > 0)
+						densityWrite(spacepoint,densityRead(spacepoint) + roh);
 
 				}
 			}
 		}
+	}
+	else if (typeStr.at(num) == "pyroclastic"){
+		srand (time(NULL));
+		Perlin perlin(5, 0.6f, 3.5f, rand() % INT_MAX);//super awesome!
+
+		float rad = radiuses.at(num);
+		vec3 center = centerPoints.at(num);
+		vec3 zero;
+		zero.x = 0;
+		zero.y = 0;
+		zero.z = 0;
+
+		for (int x = 0; x<XYZC.x; x++){
+			for (int y = 0;y<XYZC.y; y++){
+				for (int z = 0; z < XYZC.z; z++){
+					vec3 index;
+					index.x = x;
+					index.y = y;
+					index.z = z;
+					vec3 spacepoint = getVoxelCenter(index);
+					vec3 p;
+					p.x = spacepoint.x;
+					p.y = spacepoint.y;
+					p.z = spacepoint.z;
+					float roh = rad - (dist(p, center))/rad + abs(perlin.Get(spacepoint.x - center.x, spacepoint.y - center.y, spacepoint.z - center.z));
+					if (roh > 0)
+						densityWrite(spacepoint,densityRead(spacepoint) + roh);
+
+				}
+			}
+		}
+	
 	}
 }
 
