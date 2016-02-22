@@ -29,6 +29,7 @@ int main(int argc, char** argv) {
 	cout<<"Get comfortable. This is going to take a while."<<endl;
 	cout<<"Parsing test1"<<endl;
 	VoxelBuffer *subject1 = VoxelBuffer::factory("test1.txt");
+	subject1->generateVoxelBuffer(0);
 	//cout<<"Rendering test1"<<endl;
 	//runRayTrace(subject1);
 

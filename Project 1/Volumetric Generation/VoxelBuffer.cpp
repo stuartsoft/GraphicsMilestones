@@ -52,7 +52,6 @@ VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 	float mstep;
 	float mdelta;
 	float mfovy;
-	int numItems;
 
 	mdelta = readFLOAT(file, line);
 	mstep = readFLOAT(file, line);
@@ -84,10 +83,10 @@ VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 
 	
 	readSTRING(file, line);
-	numItems = readINT(file,line);
+	resultVoxelBuffer->numItems = readINT(file,line);
 	readSTRING(file,line);
 
-	for (int i = 0;i<numItems;i++){
+	for (int i = 0;i<resultVoxelBuffer->numItems;i++){
 		string type = readSTRING(file,line);
 		vec3 c = readVEC3(file,line);
 		float radius = readFLOAT(file, line);
@@ -97,7 +96,36 @@ VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 		resultVoxelBuffer->radiuses.push_back(radius);
 	}
 
+
 	return resultVoxelBuffer;
+}
+
+void VoxelBuffer::generateVoxelBuffer(int num){
+	if (typeStr.at(num) == "sphere"){
+		float rad = radiuses.at(num);
+		vec3 center = centerPoints.at(num);
+
+		for (float x = center.x - rad;x<center.x + rad;x++){
+			for (float y = center.y - rad;y<center.y + rad;y++){
+				for (float z = center.z - rad;z<center.z + rad;z++){
+					vec3 spacepoint;
+					spacepoint.x = x;
+					spacepoint.y = y;
+					spacepoint.z = z;
+
+					if (dist(spacepoint, center) <= rad){
+						ivec3 index = posToVoxIndex(spacepoint);
+
+					}
+
+				}
+			}
+		}
+	}
+}
+
+float VoxelBuffer::dist(vec3 a, vec3 b){
+	return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z));
 }
 
 float VoxelBuffer::densityRead(const vec3& coords) const{

@@ -45,6 +45,8 @@ public:
 	float step;
 	int totalVoxels;
 
+	int numItems;
+
 	vector<string> typeStr;
 	vector<vec3> centerPoints;
 	vector<float> radiuses;
@@ -59,6 +61,9 @@ public:
 	vec3 getVoxelCenter(const ivec3& coords) const;
 	static VoxelBuffer* factory(const std::string& filename);
 	ivec3 posToVoxIndex(const vec3& coords) const;
+
+	void VoxelBuffer::generateVoxelBuffer(int num);
+	float VoxelBuffer::dist(vec3 a, vec3 b);
 
 	static ivec3 readIVEC3(ifstream &f, string l);
 	static vec3 readVEC3(ifstream &f, string l);
