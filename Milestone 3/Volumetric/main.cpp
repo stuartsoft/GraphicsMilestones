@@ -127,7 +127,7 @@ void runRayTrace(VoxelBuffer* vb){
 					if (voxIndex2.x < 0 || voxIndex2.y <0 || voxIndex2.z < 0 )
 						break;//we are outside of the voxel buffer. Stop this march!
 					
-					densitySum += vb->densityRead(coord);
+					densitySum += vb->densityRead(coord) * vb->step;
 				}
 				float Q = exp(-kappa*densitySum);//Q is the light value calculated from the light ray march above
 				vb->lightWrite(voxCenter,Q);
