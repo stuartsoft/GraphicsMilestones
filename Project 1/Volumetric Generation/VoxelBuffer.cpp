@@ -124,7 +124,7 @@ void VoxelBuffer::generateVoxelBuffer(int num){
 		srand (time(NULL));
 		//Perlin perlin(6,0.35f, 10.0f, rand() % INT_MAX);
 		//Perlin perlin(5,0.31f, 3.0f, 15);//awesome!
-		Perlin perlin(5, 0.10f, 6.0f, rand() % INT_MAX);//super awesome!
+		Perlin perlin(8, 0.05f, 3.0f, rand() % INT_MAX);//super awesome!
 
 		float rad = radiuses.at(num);
 		vec3 center = centerPoints.at(num);
@@ -142,7 +142,7 @@ void VoxelBuffer::generateVoxelBuffer(int num){
 					index.z = z;
 					vec3 spacepoint = getVoxelCenter(index);
 					float roh = perlin.Get(spacepoint.x - center.x, spacepoint.y - center.y, spacepoint.z - center.z)
-						+ (1 - (dist(spacepoint,center) - rad));
+						+ (1 - (dist(spacepoint,center)/rad));
 					if (roh > 0)
 						densityWrite(spacepoint,densityRead(spacepoint) + roh);
 
@@ -168,14 +168,10 @@ void VoxelBuffer::generateVoxelBuffer(int num){
 					index.x = x;
 					index.y = y;
 					index.z = z;
-					vec3 spacepoint = getVoxelCenter(index);
-					vec3 p;
-					p.x = spacepoint.x;
-					p.y = spacepoint.y;
-					p.z = spacepoint.z;
-					float roh = rad - (dist(p, center))/rad + abs(perlin.Get(spacepoint.x - center.x, spacepoint.y - center.y, spacepoint.z - center.z));
+					vec3 p = getVoxelCenter(index);
+					float roh = rad - (dist(p, center))/rad + abs(perlin.Get(p.x - center.x, p.y - center.y, p.z - center.z));
 					if (roh > 0)
-						densityWrite(spacepoint,densityRead(spacepoint) + roh);
+						densityWrite(p,densityRead(p) + roh);
 
 				}
 			}
