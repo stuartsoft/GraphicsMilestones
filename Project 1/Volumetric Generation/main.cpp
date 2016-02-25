@@ -28,8 +28,10 @@ void generateAndRender(string filename);
 
 //driver
 int main(int argc, char** argv) {
-	cout<<"Get comfortable. This is going to take a while."<<endl;
+	cout<<"Get comfortable. This is going to take a while. JK"<<endl;
+	generateAndRender("test1.txt");
 	generateAndRender("test2.txt");
+	generateAndRender("test3.txt");
 
 	return 0;
 }
@@ -72,10 +74,15 @@ void runRayTrace(VoxelBuffer* vb){
 	V = up * tanFovy;
 	H = U *(vb->wid/(float)vb->height)* tanFovy;
 
+	vec3 farX = vb->getVoxelCenter(vec3(vb->XYZC.x-1,0,0));
+	vec3 farY = vb->getVoxelCenter(vec3(0, vb->XYZC.y-1,0));
+	vec3 farZ = vb->getVoxelCenter(vec3(0,0,vb->XYZC.z-1));
+
 	for(unsigned int x = 0; x < vb->wid; x++) {
 		
 		//cout<<"row "<<x<<endl;
 		for(unsigned int y = 0; y < vb->height; y++) {
+
 			vec3 D;
 			float xpercent = (2.0f*x/(vb->wid-1)-1);
 			float ypercent = (2.0f*y/(vb->height-1)-1);
@@ -87,7 +94,7 @@ void runRayTrace(VoxelBuffer* vb){
 
 			float tau = 1.0f;
 			vec3 xi = vb->eyePos;
-			while (xi.z > vb->XYZC.z ){
+			while (xi.z > farZ.z ){
 				xi = xi + marchdiff;//quickly march from the eye until we have reached the start of the voxel buffer
 			}
 			//xi.z = vb->XYZC.z-1; 
@@ -98,14 +105,11 @@ void runRayTrace(VoxelBuffer* vb){
 			while(true){//first layer ray marching. Marching into the voxel buffer from the camera
 
 				xi =  xi + marchdiff;
-				if (xi.x > vb->XYZC.x || xi.x < 0 || xi.y > vb->XYZC.y || xi.y < 0 || xi.z > vb->XYZC.z || xi.z < 0)
-					break;//we are outside of the voxel buffer. Stop this march!
-
+				
 				ivec3 voxIndex = vb->posToVoxIndex(xi);
-				if (voxIndex.x < 0 || voxIndex.y < 0 || voxIndex.z <0){
-					break;//we are outside of the voxel buffer. Stop this march!
-				}
-					
+				if (voxIndex.x < 0 || voxIndex.y < 0 || voxIndex.z < 0)
+					break;
+
 				vec3 voxCenter = vb->getVoxelCenter(voxIndex);
 				float deltaTau;
 				
@@ -117,19 +121,23 @@ void runRayTrace(VoxelBuffer* vb){
 				float distToLight = sqrt(N.x * N.x + N.y*N.y + N.z*N.z);
 				N = normalize(N);
 				float densitySum = 0;
-				for (float marchDist = 0.0f;marchDist <=distToLight;marchDist+=vb->step){
-					//nested ray march from voxel to light
-					//this is the lighting ray march, calculating the lighting for the voxel
-
-					vec3 coord = voxCenter + (N*marchDist);
-					ivec3 voxIndex2 = vb->posToVoxIndex(coord);
-					if (voxIndex2.x < 0 || voxIndex2.y <0 || voxIndex2.z < 0 )
-						break;//we are outside of the voxel buffer. Stop this march!
+				float Q;
+				if(vb->lightRead(voxCenter) == -1){
+					for (float marchDist = 0.0f;marchDist <=distToLight;marchDist+=vb->step){
+						//nested ray march from voxel to light
+						//this is the lighting ray march, calculating the lighting for the voxel
+						vec3 coord = voxCenter + (N*marchDist);
+						ivec3 voxIndex2 = vb->posToVoxIndex(coord);
+						if (voxIndex2.x < 0 || voxIndex2.y <0 || voxIndex2.z < 0 )
+							break;//we are outside of the voxel buffer. Stop this march!
 					
-					densitySum += vb->densityRead(coord) * vb->step;
+						densitySum += vb->densityRead(coord) * vb->step;
+					}
+					Q = exp(-kappa*densitySum);//Q is the light value calculated from the light ray march above
+					vb->lightWrite(voxCenter,Q);
 				}
-				float Q = exp(-kappa*densitySum);//Q is the light value calculated from the light ray march above
-				vb->lightWrite(voxCenter,Q);
+				Q = vb->lightRead(voxCenter);
+
 				vec3 change = (((vb->LCOL)*vb->MRGB)*(tau*Q)) * ((1 - deltaTau)/kappa);//the overall change in color for this march
 				c = c + change ;//update the color
 			}

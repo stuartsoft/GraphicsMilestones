@@ -52,7 +52,7 @@ public:
 	vector<float> radiuses;
 
 	VoxelBuffer(float delta, float fovy, float step, string bmp, unsigned int w, unsigned int h, const vec3& eyePos, const vec3& vdir,	const vec3& uvec, const ivec3& XYZC, const vec3& BRGB, const vec3& MRGB, const vec3& LPOS, const vec3& LCOL);
-	~VoxelBuffer(void){};
+	~VoxelBuffer(void);
 	float densityRead(const vec3& coords) const;
 	float lightRead(const vec3& coords) const;
 	void densityWrite(const vec3& coords, float value);

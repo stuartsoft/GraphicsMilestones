@@ -36,6 +36,10 @@ VoxelBuffer::VoxelBuffer(float delta, float fovy, float step, string bmp, unsign
 	this->totalVoxels = totalVoxels;
 }
 
+VoxelBuffer::~VoxelBuffer(void){
+	free(this->voxelMatrix);
+}
+
 VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 
 	ifstream file(filename);
@@ -83,6 +87,19 @@ VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 
 	VoxelBuffer *resultVoxelBuffer = new VoxelBuffer(mdelta, mfovy, mstep, mbmp, mwid, mheight, meyePos,mvdir, muvec, mXYZC, mBRGB, mMRGB, mLPOS, mLCOL);
 
+	//setup the empty voxel buffer
+	for (int i = 0;i<mXYZC.z;i++){
+		for (int j = 0;j<mXYZC.y;j++){
+			for (int k = 0;k<mXYZC.x;k++){
+				ivec3 index;
+				index.x = k;
+				index.y = j;
+				index.z = i;
+				resultVoxelBuffer->densityWrite(resultVoxelBuffer->getVoxelCenter(index),0);					
+				resultVoxelBuffer->lightWrite(resultVoxelBuffer->getVoxelCenter(index),-1);
+			}
+		}
+	}
 	
 	readSTRING(file, line);
 	resultVoxelBuffer->numItems = readINT(file,line);
@@ -234,9 +251,20 @@ ivec3 VoxelBuffer::posToVoxIndex(const vec3& coords) const {
 		tempivec3.y = -1;
 		tempivec3.z = -1;
 	}
-
+	else if (coords.x > XYZC.x * delta || coords.y > XYZC.y * delta || coords.z > XYZC.z * delta){
+		tempivec3.x = -1;
+		tempivec3.y = -1;
+		tempivec3.z = -1;
+	}
+	else if (coords.x < 0 || coords.y < 0 || coords.z < 0){
+		tempivec3.x = -1;
+		tempivec3.y = -1;
+		tempivec3.z = -1;
+	}
+	
 	return tempivec3;
 }
+
 
 
 ivec3 VoxelBuffer::readIVEC3(ifstream &f, string l){
