@@ -169,7 +169,7 @@ void VoxelBuffer::generateVoxelBuffer(int num){
 	}
 	else if (typeStr.at(num) == "pyroclastic"){
 		srand (time(NULL));
-		Perlin perlin(5, 0.6f, 3.5f, rand() % INT_MAX);//super awesome!
+		Perlin perlin(8, 0.075f, 2.5f, rand() % INT_MAX);
 
 		float rad = radiuses.at(num);
 		vec3 center = centerPoints.at(num);

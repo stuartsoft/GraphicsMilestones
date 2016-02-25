@@ -28,7 +28,7 @@ void generateAndRender(string filename);
 
 //driver
 int main(int argc, char** argv) {
-	cout<<"Get comfortable. This is going to take a while. JK"<<endl;
+	cout<<"Get comfortable. This is going to take a while."<<endl;
 	generateAndRender("test1.txt");
 	generateAndRender("test2.txt");
 	generateAndRender("test3.txt");
@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 }
 
 void generateAndRender(string filename){
-	cout<<"Parsing "<<filename<<endl;
+	cout<<endl<<"Parsing "<<filename<<endl;
 	VoxelBuffer *subject1 = VoxelBuffer::factory(filename);
 	cout<<"Generating voxel buffer"<<endl;
 	for (int i = 0;i<subject1->numItems;i++){
@@ -45,6 +45,7 @@ void generateAndRender(string filename){
 	}
 	cout<<"Rendering "<<filename<<endl;
 	runRayTrace(subject1);
+	delete subject1;
 }
 
 /*Runs ray marching using ray trace from Milestone 2, and at each step of the ray march, run a nested ray march
