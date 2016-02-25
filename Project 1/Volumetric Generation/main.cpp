@@ -24,46 +24,25 @@ vec3 operator /(const vec3 &v1, const float &a);
 //normalize function
 vec3 normalize(const vec3& temp);
 
-void test1();
-void test2();
-void test3();
+void generateAndRender(string filename);
 
 //driver
 int main(int argc, char** argv) {
 	cout<<"Get comfortable. This is going to take a while."<<endl;
+	generateAndRender("test2.txt");
 
-	//test1();
-	test2();
-	//test3();
 	return 0;
 }
 
-void test1(){
-	cout<<"Parsing test1"<<endl;
-	VoxelBuffer *subject1 = VoxelBuffer::factory("test1.txt");
-	subject1->generateVoxelBuffer(0);
-	cout<<"Rendering test1"<<endl;
+void generateAndRender(string filename){
+	cout<<"Parsing "<<filename<<endl;
+	VoxelBuffer *subject1 = VoxelBuffer::factory(filename);
+	cout<<"Generating voxel buffer"<<endl;
+	for (int i = 0;i<subject1->numItems;i++){
+		subject1->generateVoxelBuffer(i);
+	}
+	cout<<"Rendering "<<filename<<endl;
 	runRayTrace(subject1);
-}
-
-void test2(){
-	cout<<"Parsing test2"<<endl;
-	VoxelBuffer *subject2 = VoxelBuffer::factory("test2.txt");
-	cout<<"Generating voxel buffer for test2"<<endl;
-	subject2->generateVoxelBuffer(0);
-	cout<<"Rendering test2"<<endl;
-	runRayTrace(subject2);
-}
-
-void test3(){
-	cout<<"Parsing test3"<<endl;
-	VoxelBuffer *subject2 = VoxelBuffer::factory("test3.txt");
-	cout<<"Generating voxel buffer for test3"<<endl;
-	subject2->generateVoxelBuffer(0);
-	subject2->generateVoxelBuffer(1);
-	subject2->generateVoxelBuffer(2);
-	cout<<"Rendering test3"<<endl;
-	runRayTrace(subject2);
 }
 
 /*Runs ray marching using ray trace from Milestone 2, and at each step of the ray march, run a nested ray march
