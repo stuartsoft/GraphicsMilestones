@@ -16,7 +16,7 @@ LCOL 1 1 1
 
 cloud
 15 15 50
-9
+7
 
 pyroclastic
 50 50 50
@@ -24,4 +24,4 @@ pyroclastic
 
 sphere
 85 85 50
-9
+7
