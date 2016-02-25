@@ -34,6 +34,10 @@ VoxelBuffer::VoxelBuffer(float delta, float fovy, float step, string bmp, unsign
 	this->totalVoxels = totalVoxels;
 }
 
+VoxelBuffer::~VoxelBuffer(void){
+	free(this->voxelMatrix);
+}
+
 VoxelBuffer* VoxelBuffer::factory(const std::string& filename){
 
 	ifstream file(filename);
@@ -158,8 +162,12 @@ ivec3 VoxelBuffer::posToVoxIndex(const vec3& coords) const {
 		tempivec3.y = -1;
 		tempivec3.z = -1;
 	}
-
-
+	else if (coords.x < 0 || coords.y < 0 || coords.z < 0){
+		tempivec3.x = -1;
+		tempivec3.y = -1;
+		tempivec3.z = -1;
+	}
+	
 	return tempivec3;
 }
 

@@ -26,11 +26,22 @@ vec3 normalize(const vec3& temp);
 
 //driver
 int main(int argc, char** argv) {
-	cout<<"Get comfortable. This is going to take a while."<<endl;
+	
 	cout<<"Parsing test1"<<endl;
 	VoxelBuffer *subject1 = VoxelBuffer::factory("test1.txt");
 	cout<<"Rendering test1"<<endl;
 	runRayTrace(subject1);
+		
+	cout<<"Parsing test2"<<endl;
+	VoxelBuffer *subject2 = VoxelBuffer::factory("test2.txt");
+	cout<<"Rendering test2"<<endl;
+	runRayTrace(subject2);
+
+	cout<<"Parsing test3"<<endl;
+	VoxelBuffer *subject3 = VoxelBuffer::factory("test3.txt");
+	cout<<"Rendering test3"<<endl;
+	runRayTrace(subject3);
+	
 
 	return 0;
 }
