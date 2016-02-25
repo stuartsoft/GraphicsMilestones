@@ -153,6 +153,12 @@ ivec3 VoxelBuffer::posToVoxIndex(const vec3& coords) const {
 		tempivec3.y = -1;
 		tempivec3.z = -1;
 	}
+	else if (coords.x > XYZC.x * delta || coords.y > XYZC.y * delta || coords.z > XYZC.z * delta){
+		tempivec3.x = -1;
+		tempivec3.y = -1;
+		tempivec3.z = -1;
+	}
+
 
 	return tempivec3;
 }

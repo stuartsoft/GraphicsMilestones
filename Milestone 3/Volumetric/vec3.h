@@ -16,12 +16,29 @@ struct vec3 {
 	float x;
 	float y;
 	float z;
+
+	vec3(){
+	}
+
+	vec3(float X, float Y , float Z){
+		x = X;
+		y = Y;
+		z = Z;
+	}
 };
 
 struct ivec3 {
 	int x;
 	int y;
 	int z;
+
+	ivec3(){}
+
+	ivec3(int X, int Y, int Z){
+		x = X;
+		y = Y;
+		z = Z;
+	}
 };
 
 struct vox{
