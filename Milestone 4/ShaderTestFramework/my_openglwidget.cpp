@@ -118,10 +118,10 @@ void My_OpenGLWidget::generateGeometry() {
 	points[1] = vec4(-0.75f, 0.75f, 0.75f, 1.0f);
 	points[2] = vec4(-0.75f, -0.75f, 0.75f, 1.0f);
 	points[3] = vec4(0.75f, -0.75f, 0.75f, 1.0f);
-	normals[0] = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-	normals[1] = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-	normals[2] = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-	normals[3] = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	normals[0] = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	normals[1] = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	normals[2] = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	normals[3] = vec4(0.0f, 0.0f, -1.0f, 0.0f);
 
 	colors[0] = vec3(1.0f, 0.0f, 0.0f);
 	colors[1] = vec3(1.0f, 0.0f, 0.0f);
