@@ -63,6 +63,7 @@ private:
 	unsigned int cLocation;
 	unsigned int modelMatrixLocation;
 	unsigned int viewMatrixLocation;
+	unsigned int camVecLocation;
 
 	float leftAngle;
 	float downAngle;

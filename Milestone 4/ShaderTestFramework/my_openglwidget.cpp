@@ -118,10 +118,10 @@ void My_OpenGLWidget::generateGeometry() {
 	points[1] = vec4(-0.75f, 0.75f, 0.75f, 1.0f);
 	points[2] = vec4(-0.75f, -0.75f, 0.75f, 1.0f);
 	points[3] = vec4(0.75f, -0.75f, 0.75f, 1.0f);
-	normals[0] = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-	normals[1] = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-	normals[2] = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-	normals[3] = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+	normals[0] = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	normals[1] = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	normals[2] = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	normals[3] = vec4(0.0f, 0.0f, -1.0f, 0.0f);
 
 	colors[0] = vec3(1.0f, 0.0f, 0.0f);
 	colors[1] = vec3(1.0f, 0.0f, 0.0f);
@@ -133,10 +133,10 @@ void My_OpenGLWidget::generateGeometry() {
 	points[5] = vec4(0.75f, -0.75f, -0.75f, 1.0f);
 	points[6] = vec4(-0.75f, -0.75f, -0.75f, 1.0f);
 	points[7] = vec4(-0.75f, 0.75f, -0.75f, 1.0f);
-	normals[4] = vec4(0.0f, 0.0f, -1.0f, 1.0f);
-	normals[5] = vec4(0.0f, 0.0f, -1.0f, 1.0f);
-	normals[6] = vec4(0.0f, 0.0f, -1.0f, 1.0f);
-	normals[7] = vec4(0.0f, 0.0f, -1.0f, 1.0f);
+	normals[4] = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	normals[5] = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	normals[6] = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	normals[7] = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 
 	colors[4] = vec3(1.0f, 0.0f, 0.0f);
 	colors[5] = vec3(1.0f, 0.0f, 0.0f);
@@ -148,10 +148,10 @@ void My_OpenGLWidget::generateGeometry() {
 	points[9] = vec4(0.75f, 0.75f, 0.75f, 1.0f);
 	points[10] = vec4(0.75f, -0.75f, 0.75f, 1.0f);
 	points[11] = vec4(0.75f, -0.75f, -0.75f, 1.0f);
-	normals[8] = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	normals[9] = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	normals[10] = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	normals[11] = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	normals[8] = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+	normals[9] = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+	normals[10] = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+	normals[11] = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
 
 	colors[8] = vec3(0.0f, 0.8f, 0.0f);
 	colors[9] = vec3(0.0f, 0.8f, 0.0f);
@@ -163,10 +163,10 @@ void My_OpenGLWidget::generateGeometry() {
 	points[13] = vec4(-0.75f, 0.75f, -0.75f, 1.0f);
 	points[14] = vec4(-0.75f, -0.75f, -0.75f, 1.0f);
 	points[15] = vec4(-0.75f, -0.75f, 0.75f, 1.0f);
-	normals[12] = vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-	normals[13] = vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-	normals[14] = vec4(-1.0f, 0.0f, 0.0f, 1.0f);
-	normals[15] = vec4(-1.0f, 0.0f, 0.0f, 1.0f);
+	normals[12] = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	normals[13] = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	normals[14] = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	normals[15] = vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
 	colors[12] = vec3(0.0f, 0.8f, 0.0f);
 	colors[13] = vec3(0.0f, 0.8f, 0.0f);
@@ -178,10 +178,10 @@ void My_OpenGLWidget::generateGeometry() {
 	points[17] = vec4(-0.75f, 0.75f, -0.75f, 1.0f);
 	points[18] = vec4(-0.75f, 0.75f, 0.75f, 1.0f);
 	points[19] = vec4(0.75f, 0.75f, 0.75f, 1.0f);
-	normals[16] = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-	normals[17] = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-	normals[18] = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-	normals[19] = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+	normals[16] = vec4(0.0f, -1.0f, 0.0f, 0.0f);
+	normals[17] = vec4(0.0f, -1.0f, 0.0f, 0.0f);
+	normals[18] = vec4(0.0f, -1.0f, 0.0f, 0.0f);
+	normals[19] = vec4(0.0f, -1.0f, 0.0f, 0.0f);
 
 	colors[16] = vec3(0.0f, 0.0f, 1.0f);
 	colors[17] = vec3(0.0f, 0.0f, 1.0f);
@@ -193,10 +193,10 @@ void My_OpenGLWidget::generateGeometry() {
 	points[21] = vec4(-0.75f, -0.75f, 0.75f, 1.0f);
 	points[22] = vec4(-0.75f, -0.75f, -0.75f, 1.0f);
 	points[23] = vec4(0.75f, -0.75f, -0.75f, 1.0f);
-	normals[20] = vec4(0.0f, -1.0f, 0.0f, 1.0f);
-	normals[21] = vec4(0.0f, -1.0f, 0.0f, 1.0f);
-	normals[22] = vec4(0.0f, -1.0f, 0.0f, 1.0f);
-	normals[23] = vec4(0.0f, -1.0f, 0.0f, 1.0f);
+	normals[20] = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	normals[21] = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	normals[22] = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	normals[23] = vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
 	colors[20] = vec3(0.0f, 0.0f, 1.0f);
 	colors[21] = vec3(0.0f, 0.0f, 1.0f);
@@ -230,6 +230,7 @@ void My_OpenGLWidget::paintGL() {
 
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &projMatrix[0][0]);
+	glUniform4f(camVecLocation,camLocation.x, camLocation.y, camLocation.z, 1.0f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glEnableVertexAttribArray(vLocation);
@@ -357,6 +358,7 @@ void My_OpenGLWidget::updateShaderProgram() {
 		cLocation = shaderProgram->attributeLocation("vs_color");
 		modelMatrixLocation = shaderProgram->uniformLocation("u_modelMatrix");
 		viewMatrixLocation = shaderProgram->uniformLocation("u_viewMatrix");
+		camVecLocation = shaderProgram->uniformLocation("u_camVecLocation");
 		success2 = shaderProgram->bind();
 	}
 	repaint();
