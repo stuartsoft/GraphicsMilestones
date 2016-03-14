@@ -20,6 +20,6 @@ void main() {
     vec3 diff_lighting = diff_k*fs_color;
     vec3 spec_lighting = spec_k*light_color*20;
 
-    vec3 final_color = amb_lighting*0.1+  diff_lighting*0.4 + spec_lighting*0.5;
+    vec3 final_color = amb_lighting*0.15+  diff_lighting*0.5 + spec_lighting*0.35;
     out_Color = vec4(final_color, 1.0);
 }
