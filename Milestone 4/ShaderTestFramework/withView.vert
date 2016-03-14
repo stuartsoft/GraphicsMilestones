@@ -23,6 +23,6 @@ void main() {
   fs_normal = u_viewMatrix * u_modelMatrix * vs_normal;
   fs_normal = normalize(fs_normal);
   v_vec = normalize(u_camVecLocation - gl_Position);
-  l_vec = normalize(light_pos - v_vec);
+  l_vec = normalize(light_pos - gl_Position);
   h_vec = normalize(l_vec + fs_normal);
 }
