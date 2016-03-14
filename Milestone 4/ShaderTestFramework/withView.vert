@@ -20,7 +20,7 @@ void main() {
   //gl_Position is built-in
   fs_color = vs_color;
   fs_shinyness = vs_shinyness;
-  light_pos = u_viewMatrix* vec4(1.0, 1.0, 1.0, 1.0);
+  light_pos = u_viewMatrix* vec4(0.0, 0.0, 2.0, 1.0);
   gl_Position = u_viewMatrix * u_modelMatrix * vs_position;
   fs_normal = u_viewMatrix * u_modelMatrix * vs_normal;
   fs_normal = normalize(fs_normal);
