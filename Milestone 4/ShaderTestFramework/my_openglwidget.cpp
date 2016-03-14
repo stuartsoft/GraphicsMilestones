@@ -82,7 +82,7 @@ void My_OpenGLWidget::initializeGL() {
 	//get the attribute locations -- IF NEW ATTRIBUTES/UNIFORMS ARE ADDED, INCLUDE THEM HERE
 	vLocation = backupShaders->attributeLocation("vs_position");
 	vNormal = backupShaders->attributeLocation("vs_normal");
-	vShiny = backupShaders->attributeLocation("vs_shiny");
+	vShiny = backupShaders->attributeLocation("vs_shinyness");
 	cLocation = backupShaders->attributeLocation("vs_color");
 
 	//active the shader program
@@ -110,7 +110,7 @@ void My_OpenGLWidget::generateGeometry() {
 	vec3* colors = new vec3[24];
 
 	for (int i = 0;i<24;i++){
-		shinyness[i] = 0.2f;
+		shinyness[i] = 7.0f;
 	}
 
 	//front face
