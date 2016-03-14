@@ -110,7 +110,7 @@ void My_OpenGLWidget::generateGeometry() {
 	vec3* colors = new vec3[24];
 
 	for (int i = 0;i<24;i++){
-		shinyness[i] = 7.0f;
+		shinyness[i] = 10.0f;
 	}
 
 	//front face
@@ -242,7 +242,7 @@ void My_OpenGLWidget::paintGL() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo3);
 	glEnableVertexAttribArray(vShiny);
-	glVertexAttribPointer(vShiny, sizeof(float),GL_FLOAT, GL_FALSE, 0,0);
+	glVertexAttribPointer(vShiny, 1,GL_FLOAT, GL_FALSE, 0,0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, cbo);
 	glEnableVertexAttribArray(cLocation);

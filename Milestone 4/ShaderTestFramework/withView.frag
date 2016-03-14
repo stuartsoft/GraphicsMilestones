@@ -14,7 +14,7 @@ void main() {
     vec3 light_color = vec3(1.0, 1.0, 1.0);
     float diff_k = clamp(dot(l_vec,-normalize(fs_normal)),0,1);
     float amb_k = 0.15;
-    float spec_k = max(pow(dot(h_vec,-normalize(fs_normal)),10),0);
+    float spec_k = max(pow(dot(h_vec,-normalize(fs_normal)),fs_shinyness),0);
 
     vec3 amb_lighting = fs_color*amb_k;
     vec3 diff_lighting = diff_k*fs_color;
