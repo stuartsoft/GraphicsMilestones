@@ -34,6 +34,7 @@ public:
 
 	void traverse(glm::mat4 mat);
 	void addChild(SceneGraph* child);
+	void printMatrix(glm::mat4 mat);
 
 private:
 	int xSize;

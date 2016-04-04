@@ -111,7 +111,22 @@ void SceneGraph::traverse(glm::mat4 mat){
 	M = glm::matrixCompMult(mat, translation);
 	M = glm::matrixCompMult(M, rotation);
 	M = glm::matrixCompMult(M, scale);
+	printMatrix(M);
+
 	for (int i = 0;i<decendents.size();i++){
 		decendents[i]->traverse(M);
 	}
+
+}
+
+void SceneGraph::printMatrix(glm::mat4 mat){
+	if (rootSG == this)
+		cout<<"root"<<endl;
+	for (int i = 0;i<4;i++){
+		for (int j = 0;j<4;j++){
+			cout << mat[j][i]<<" ";
+		}
+		cout <<endl;
+	}
+	cout << endl;
 }
