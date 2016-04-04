@@ -42,6 +42,7 @@ void SceneGraph::Parse(string fname){
 		getline(file, line);
 		string geoType = line;
 		getline(file, line);
+		ss = stringstream(line);
 		ss >> tok;
 		int xIndex = stoi(tok);
 		ss >> tok;
@@ -66,10 +67,10 @@ void SceneGraph::Parse(string fname){
 		float yIndex = 0;
 		bool check = true;
 		glm::vec3 targetPos;
-		SceneGraph* parent;
+		SceneGraph* parent = NULL;
 		while(check){
 			targetPos = glm::vec3(xIndex, yIndex, zIndex);
-			for (int j = 0;j<allSceneGraphs.size;j++){
+			for (int j = 0;j<allSceneGraphs.size();j++){
 				if (allSGPos[j].x == targetPos.x && allSGPos[j].y == targetPos.y && allSGPos[j].z == targetPos.z){
 					yIndex += 1;//move up one unit length and check again
 					parent = allSceneGraphs[j];
@@ -86,8 +87,7 @@ void SceneGraph::Parse(string fname){
 		if (parent == NULL){
 			//no parent was found, just connect this object to the root node
 			node->parentSG = this;
-			const float* valuePtr = (const float*) glm::value_ptr(parent->translation);
-			node->translation = glm::translate(node->translation, glm::vec3(valuePtr[3] - xIndex, 0, valuePtr[11] - zIndex));
+			node->translation = glm::translate(node->translation, glm::vec3(xSize/2 - xIndex, 0, zSize/2 - zIndex));
 			addChild(node);
 		}
 		else{//a parent object was found, set the new object to point to the parent
@@ -108,7 +108,7 @@ void SceneGraph::addChild(SceneGraph* child){
 }
 
 void SceneGraph::traverse(glm::mat4 mat){
-	for (int i = 0;i<decendents.size;i++){
+	for (int i = 0;i<decendents.size();i++){
 		decendents[i]->traverse(mat);
 	}
 

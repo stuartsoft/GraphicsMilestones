@@ -15,7 +15,7 @@ using namespace std;
 
 class SceneGraph {
 public:
-	SceneGraph(){};
+	SceneGraph();
 	void Parse(string fname);
 	SceneGraph* checkIfObjectExistsHere(glm::vec3 pos);
 

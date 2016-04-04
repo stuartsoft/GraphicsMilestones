@@ -2,5 +2,5 @@
 
 int main(int argc, char** argv) {
 	SceneGraph sg;
-	sg.Parse("scene1.txt");
+	sg.Parse("scene2.txt");
 }
