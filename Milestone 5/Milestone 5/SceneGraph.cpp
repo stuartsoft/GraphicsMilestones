@@ -27,7 +27,7 @@ void SceneGraph::Parse(string fname){
 
 	//initialize the root node's TRS
 	translation = glm::mat4();
-	translation = glm::translate(translation,glm::vec3(xSize/2, 0, zSize/2));//translate the root to the center
+	translation = glm::translate(translation,glm::vec3(xSize/2.0f, 0, zSize/2.0f));//translate the root to the center
 	scale = glm::mat4();
 	rotation = glm::mat4();
 	rootSG = this;
@@ -87,7 +87,7 @@ void SceneGraph::Parse(string fname){
 		if (parent == NULL){
 			//no parent was found, just connect this object to the root node
 			node->parentSG = this;
-			node->translation = glm::translate(node->translation, glm::vec3(xSize/2 - xIndex, 0, zSize/2 - zIndex));
+			node->translation = glm::translate(node->translation, glm::vec3(xIndex - (xSize/2.0f), 0, zIndex - (zSize/2.0f)));
 			addChild(node);
 		}
 		else{//a parent object was found, set the new object to point to the parent
@@ -108,11 +108,10 @@ void SceneGraph::addChild(SceneGraph* child){
 }
 
 void SceneGraph::traverse(glm::mat4 mat){
+	M = glm::matrixCompMult(mat, translation);
+	M = glm::matrixCompMult(M, rotation);
+	M = glm::matrixCompMult(M, scale);
 	for (int i = 0;i<decendents.size();i++){
-		decendents[i]->traverse(mat);
-	}
-
-	if(geometry != NULL){
-		//do something
+		decendents[i]->traverse(M);
 	}
 }

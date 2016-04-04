@@ -22,6 +22,7 @@ public:
 	glm::mat4 translation;
 	glm::mat4 rotation;
 	glm::mat4 scale;
+	glm::mat4 M;//the combined recursive values of translation rotation and scale all the way down the graph to this scene graph node
 
 	SceneGraph* rootSG;//pointer back to Scene Graph root node
 	SceneGraph* parentSG;//pointer to parent scene graph
