@@ -7,6 +7,7 @@
 
 #include "glm\glm.hpp"
 #include "glm\gtc\matrix_transform.hpp"
+#include "glm\gtc\type_ptr.hpp"
 
 #include "Geometry.h"
 
@@ -24,12 +25,14 @@ public:
 
 	SceneGraph* rootSG;//pointer back to Scene Graph root node
 	SceneGraph* parentSG;//pointer to parent scene graph
-	vector<SceneGraph> decendents; //vector of all children of this scene graph
+	vector<SceneGraph*> decendents; //vector of all children of this scene graph
+	vector<Geometry*> geometryObjectRef;//Only filled by root node, contains a list of the actual geometry objects
+										//geometry attribute on other nodes should point back to this list
 
 	Geometry* geometry;
 
 	void traverse(glm::mat4 mat);
-	void addChild(SceneGraph child);
+	void addChild(SceneGraph* child);
 
 private:
 	int xSize;
