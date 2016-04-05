@@ -5,16 +5,16 @@ Geometry::Geometry(){
 	points = new glm::vec4[8];
 
 	//front face
-	points[0] = vec4(0.5f, 1.0f, 0.5f, 1.0f);
-	points[1] = vec4(-0.5f, 1.0f, 0.5f, 1.0f);
-	points[2] = vec4(-0.5f, 0.0f, 0.5f, 1.0f);
-	points[3] = vec4(0.5f, 0.0f, 0.5f, 1.0f);
+	points[0] = vec4(-0.5f, 0.0f, 0.5f, 1.0f);
+	points[1] = vec4(0.5f, 0.0f, 0.5f, 1.0f);
+	points[2] = vec4(0.5f, 1.0f, 0.5f, 1.0f);
+	points[3] = vec4(-0.5f, 1.0f, 0.5f, 1.0f);
 
 	//back face
-	points[4] = vec4(0.5f, 1.0f, -0.5f, 1.0f);
-	points[5] = vec4(0.5f, 0.0f, -0.5f, 1.0f);
-	points[6] = vec4(-0.5f, 0.0f, -0.5f, 1.0f);
-	points[7] = vec4(-0.5f, 1.0f, -0.5f, 1.0f);
+	points[4] = vec4(-0.5f, 0.0f, -0.5f, 1.0f);
+	points[5] = vec4(-0.5f, 1.0f, -0.5f, 1.0f);
+	points[6] = vec4(0.5f, 1.0f, -0.5f, 1.0f);
+	points[7] = vec4(0.5f, 0.0f, -0.5f, 1.0f);
 
 	/*
 	//right face

@@ -87,7 +87,7 @@ void SceneGraph::Parse(string fname){
 		node->scale[0][0] = scale.x;
 		node->scale[1][1] = scale.y;
 		node->scale[2][2] = scale.z;
-		node->rotation = glm::rotate(glm::mat4(), 3.1515f*(yrotation/180), glm::vec3(0,1,0));
+		node->rotation = glm::rotate(glm::mat4(), (3.1415f/180)*yrotation, glm::vec3(0,1,0));
 
 		if (parent == NULL){
 			//no parent was found, just connect this object to the root node
