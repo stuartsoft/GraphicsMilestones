@@ -7,4 +7,5 @@ class Geometry{
 public:
 	vec4* points;
 	Geometry();
+	int numPoints;
 };

@@ -50,7 +50,7 @@ void SceneGraph::Parse(string fname){
 		getline(file, line);
 		ss = stringstream(line);
 		ss >> tok;
-		int rotation = stoi(tok);
+		float yrotation = stoi(tok);
 		glm::vec3 scale = glm::vec3(0,0,0);
 		line = "";
 		getline(file,line);
@@ -84,10 +84,17 @@ void SceneGraph::Parse(string fname){
 		SceneGraph* node = new SceneGraph();
 		node->rootSG = this;
 		node->geometry = geometryObjectRef[0];//set it to point to the cube geometry
+		node->scale[0][0] = scale.x;
+		node->scale[1][1] = scale.y;
+		node->scale[2][2] = scale.z;
+		node->rotation = glm::rotate(glm::mat4(), 3.1515f*(yrotation/180), glm::vec3(0,1,0));
+
 		if (parent == NULL){
 			//no parent was found, just connect this object to the root node
 			node->parentSG = this;
-			node->translation = glm::translate(node->translation, glm::vec3(xIndex - (xSize/2.0f), 0, zIndex - (zSize/2.0f)));
+			float halfxSize = xSize/2.0f;
+			float halfzSize = zSize/2.0f;
+			node->translation = glm::translate(node->translation, glm::vec3(xIndex - halfxSize, 0, zIndex - halfzSize));
 			addChild(node);
 		}
 		else{//a parent object was found, set the new object to point to the parent
@@ -108,15 +115,12 @@ void SceneGraph::addChild(SceneGraph* child){
 }
 
 void SceneGraph::traverse(glm::mat4 mat){
-	M = glm::matrixCompMult(mat, translation);
-	M = glm::matrixCompMult(M, rotation);
-	M = glm::matrixCompMult(M, scale);
+	M = translation * rotation * scale;
 	printMatrix(M);
 
 	for (int i = 0;i<decendents.size();i++){
 		decendents[i]->traverse(M);
 	}
-
 }
 
 void SceneGraph::printMatrix(glm::mat4 mat){
@@ -129,4 +133,49 @@ void SceneGraph::printMatrix(glm::mat4 mat){
 		cout <<endl;
 	}
 	cout << endl;
+}
+
+vector<glm::vec4> SceneGraph::getFinalGeometryPoints(){
+	vector<glm::vec4> results;
+	if (geometry != NULL){
+		for (int i = 0;i<geometry->numPoints;i++){
+			results.push_back(M * geometry->points[i]);
+		}
+	}
+	return results;
+}
+
+string SceneGraph::writeToFile(string fname){
+	ofstream f;
+	string data = "";
+	if (rootSG == this){
+		f.open(fname);
+	}
+
+	std::stringstream stream;
+	stream << std::fixed << setprecision(1);
+	
+
+	if (geometry != NULL){
+		stream << "** Cube **\n";
+		vector<glm::vec4> finalPoints = getFinalGeometryPoints();
+		for (int i = 0;i< finalPoints.size();i++){
+			stream<<"Point" <<i <<": (" <<finalPoints[i].x << ", ";
+			stream << finalPoints[i].y << ", " << finalPoints[i].z << ")\n";
+		}
+		stream << "**********\n\n";
+		data = stream.str();
+	}
+
+	for (int i = 0;i<decendents.size();i++){
+		string decendentStr = decendents[i]->writeToFile(fname);
+		data += decendentStr;
+	}
+
+	if (rootSG == this){
+		f<<data;
+		f.close();
+	}
+
+	return data;
 }

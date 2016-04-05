@@ -4,6 +4,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
 
 #include "glm\glm.hpp"
 #include "glm\gtc\matrix_transform.hpp"
@@ -17,7 +19,6 @@ class SceneGraph {
 public:
 	SceneGraph();
 	void Parse(string fname);
-	SceneGraph* checkIfObjectExistsHere(glm::vec3 pos);
 
 	glm::mat4 translation;
 	glm::mat4 rotation;
@@ -35,6 +36,8 @@ public:
 	void traverse(glm::mat4 mat);
 	void addChild(SceneGraph* child);
 	void printMatrix(glm::mat4 mat);
+	string writeToFile(string fname);
+	vector<glm::vec4> SceneGraph::getFinalGeometryPoints();
 
 private:
 	int xSize;
