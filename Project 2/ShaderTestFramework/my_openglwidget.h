@@ -25,6 +25,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLShader>
 #include "glm\glm.hpp"
+#include "SceneGraph.h"
 
 class My_OpenGLWidget :	public QOpenGLWidget, protected QOpenGLFunctions {
 Q_OBJECT
@@ -71,6 +72,8 @@ private:
 	void generateGeometry(void);
 	void createCamera(void);
 	void clearShaders(void);
+
+	//SceneGraph* sg;
 
 	QOpenGLShader* vertexShader;
 	QOpenGLShader* backupVert;
