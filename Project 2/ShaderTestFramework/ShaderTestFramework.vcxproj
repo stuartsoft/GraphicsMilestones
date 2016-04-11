@@ -94,8 +94,10 @@
     <ClCompile Include="GeneratedFiles\Release\moc_shadertestframework.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="my_openglwidget.cpp" />
+    <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="shadertestframework.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +126,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_shadertestframework.h" />
+    <ClInclude Include="Geometry.h" />
+    <ClInclude Include="SceneGraph.h" />
     <CustomBuild Include="my_openglwidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing my_openglwidget.h...</Message>

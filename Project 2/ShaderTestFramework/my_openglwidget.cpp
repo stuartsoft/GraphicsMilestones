@@ -21,6 +21,7 @@
 #include "my_openglwidget.h"
 #include <QMessageBox>
 #include "glm\gtx\transform.hpp"
+#include "SceneGraph.h"
 
 using glm::vec3;
 using glm::vec4;
@@ -44,6 +45,12 @@ My_OpenGLWidget::My_OpenGLWidget(QWidget* parent) : QOpenGLWidget(parent) {
 	viewMatrixLocation;
 	vbo = 0;
 	cbo = 0;
+
+	//SceneGraph* sg = new SceneGraph();
+	//sg->Parse("scene1.txt");
+	//sg->traverse(glm::mat4());//begin traversing
+	//sg->writeToFile("scene1_results.txt");
+
 }
 
 My_OpenGLWidget::~My_OpenGLWidget() {
