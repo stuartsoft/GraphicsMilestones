@@ -33,9 +33,7 @@ public:
 
 	void traverse(glm::mat4 mat);
 	void addChild(SceneGraph* child);
-	void printMatrix(glm::mat4 mat);
-	string writeToFile(string fname);
-	vector<glm::vec4> SceneGraph::getFinalGeometryPoints();
+	void draw(unsigned int &vLocation, unsigned int &vNormal, unsigned int &vShiny, unsigned int &cLocation, unsigned int &vbo, unsigned int &vbo2, unsigned int &vbo3, unsigned int &cbo);
 
 private:
 	int xSize;

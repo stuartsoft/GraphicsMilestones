@@ -47,6 +47,7 @@ public slots:
 	void rotateLeft(void);
 
 private:
+
 	unsigned int vbo;
 	unsigned int vbo2;//normals
 	unsigned int vbo3;//shinyness
@@ -58,11 +59,11 @@ private:
 	glm::vec4 focus;
 	glm::vec4 camLocation;
 
-	unsigned int vLocation;
-	unsigned int vNormal;
-	unsigned int vShiny;
-	unsigned int cLocation;
-	unsigned int modelMatrixLocation;
+	unsigned int vLocation;//RESET
+	unsigned int vNormal;//RESET
+	unsigned int vShiny;//RESET
+	unsigned int cLocation;//RESET
+	unsigned int modelMatrixLocation;//RESET
 	unsigned int viewMatrixLocation;
 	unsigned int camVecLocation;
 
@@ -73,7 +74,7 @@ private:
 	void createCamera(void);
 	void clearShaders(void);
 
-	//SceneGraph* sg;
+	SceneGraph* sg;
 
 	QOpenGLShader* vertexShader;
 	QOpenGLShader* backupVert;

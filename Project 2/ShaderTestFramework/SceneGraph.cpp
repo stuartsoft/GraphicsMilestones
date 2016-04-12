@@ -116,66 +116,20 @@ void SceneGraph::addChild(SceneGraph* child){
 
 void SceneGraph::traverse(glm::mat4 mat){
 	M = translation * rotation * scale;
-	printMatrix(M);
 
 	for (int i = 0;i<decendents.size();i++){
 		decendents[i]->traverse(M);
 	}
 }
 
-void SceneGraph::printMatrix(glm::mat4 mat){
-	if (rootSG == this)
-		cout<<"root"<<endl;
-	for (int i = 0;i<4;i++){
-		for (int j = 0;j<4;j++){
-			cout << mat[j][i]<<" ";
-		}
-		cout <<endl;
-	}
-	cout << endl;
-}
-
-vector<glm::vec4> SceneGraph::getFinalGeometryPoints(){
-	vector<glm::vec4> results;
-	if (geometry != NULL){
-		for (int i = 0;i<geometry->numPoints;i++){
-			results.push_back(M * geometry->points[i]);
-		}
-	}
-	return results;
-}
-
-string SceneGraph::writeToFile(string fname){
-	ofstream f;
-	string data = "";
-	if (rootSG == this){
-		f.open(fname);
-	}
-
-	std::stringstream stream;
-	stream << std::fixed << setprecision(1);
+void SceneGraph::draw(unsigned int &vLocation, unsigned int &vNormal, unsigned int &vShiny, unsigned int &cLocation, unsigned int &vbo, unsigned int &vbo2, unsigned int &vbo3, unsigned int &cbo){
 	
-
 	if (geometry != NULL){
-		stream << "** Cube **\n";
-		vector<glm::vec4> finalPoints = getFinalGeometryPoints();
-		for (int i = 0;i< finalPoints.size();i++){
-			stream<<"Point" <<i <<": (" <<finalPoints[i].x << ", ";
-			stream << finalPoints[i].y << ", " << finalPoints[i].z << ")\n";
-		}
-		stream << "**********\n\n";
-		data = stream.str();
+		//do stuff here to actually draw the final points
+		geometry->draw(M, vLocation, vNormal, vShiny, cLocation, vbo, vbo2, vbo3, cbo);
 	}
 
 	for (int i = 0;i<decendents.size();i++){
-		string decendentStr = decendents[i]->writeToFile(fname);
-		data += decendentStr;
+		decendents[i]->draw(vLocation, vNormal, vShiny, cLocation, vbo, vbo2, vbo3, cbo);
 	}
-
-	if (rootSG == this){
-		f<<data;
-		f.close();
-	}
-
-	return data;
 }
