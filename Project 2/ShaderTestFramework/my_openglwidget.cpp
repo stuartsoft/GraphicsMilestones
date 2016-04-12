@@ -108,6 +108,7 @@ void My_OpenGLWidget::generateGeometry() {
 	//if new attributes are added, make sure their data is created
 	sg = new SceneGraph();
 	sg->Parse("scene2.txt");
+	sg->translation = glm::translate(sg->translation, glm::vec3(-2.5, 0, -2.5));
 
 }
 
@@ -117,18 +118,18 @@ void My_OpenGLWidget::paintGL() {
 	/************* If new attributes/uniforms are added, make sure they are set up here *********/
 	mat4 modelMatrix = glm::rotate(glm::rotate(downAngle, vec3(1.0f, 0.0f, 0.0f)), leftAngle, vec3(0.0f, 1.0f, 0.0f));
 	mat4 projMatrix = projectionMatrix * cameraMatrix;
-
+	
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &projMatrix[0][0]);
 	glUniform4f(camVecLocation,camLocation.x, camLocation.y, camLocation.z, 1.0f);
 
-	sg->traverse(cameraMatrix * modelMatrix);//traverse the scene graph
+	sg->traverse(cameraMatrix );//traverse the scene graph
 	sg->draw(vLocation, vNormal, vShiny, cLocation, vbo, vbo2, vbo3, cbo);
 
 }
 
 void My_OpenGLWidget::createCamera() {
-	camLocation = vec4(0.0f, 0.0f, 5.0f, 1.0f);
+	camLocation = vec4(0.0f, 0.0f, 2.0f, 1.0f);
 	up = vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	focus = vec4(0.0, 0.0, 0.0, 1.0f);
 

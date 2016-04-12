@@ -94,7 +94,7 @@ void SceneGraph::Parse(string fname){
 			node->parentSG = this;
 			float halfxSize = xSize/2.0f;
 			float halfzSize = zSize/2.0f;
-			node->translation = glm::translate(node->translation, glm::vec3(xIndex - halfxSize, 0, zIndex - halfzSize));
+			node->translation = glm::translate(node->translation, glm::vec3((xIndex - halfxSize)+0.5f, 0, (zIndex - halfzSize)+0.5f));
 			addChild(node);
 		}
 		else{//a parent object was found, set the new object to point to the parent
@@ -115,7 +115,7 @@ void SceneGraph::addChild(SceneGraph* child){
 }
 
 void SceneGraph::traverse(glm::mat4 mat){
-	M = translation * rotation * scale;
+	M = mat * translation * rotation * scale;
 
 	for (int i = 0;i<decendents.size();i++){
 		decendents[i]->traverse(M);
