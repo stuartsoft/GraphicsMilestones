@@ -108,7 +108,7 @@ void My_OpenGLWidget::initializeGL() {
 void My_OpenGLWidget::generateGeometry() {
 	//if new attributes are added, make sure their data is created
 	sg = new SceneGraph();
-	sg->Parse("scene1.txt");
+	sg->Parse("scene2.txt");
 
 }
 
@@ -129,7 +129,7 @@ void My_OpenGLWidget::paintGL() {
 }
 
 void My_OpenGLWidget::createCamera() {
-	camLocation = vec4(0.0f, 0.0f, 3.0f, 1.0f);
+	camLocation = vec4(0.0f, 0.0f, 5.0f, 1.0f);
 	up = vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	focus = vec4(0.0, 0.0, 0.0, 1.0f);
 
@@ -215,6 +215,12 @@ void My_OpenGLWidget::updateShaderProgram() {
 	shaderProgram->addShader(vertexShader);
 	shaderProgram->addShader(fragmentShader);
 
+	vLocation = 0;
+	vNormal = 0;
+	vShiny = 0;
+	cLocation = 0;
+	modelMatrixLocation = 0;
+
 	bool success = shaderProgram->link();
 	bool success2;
 	if(!success) {
@@ -234,7 +240,7 @@ void My_OpenGLWidget::updateShaderProgram() {
 		cLocation = shaderProgram->attributeLocation("vs_color");
 		modelMatrixLocation = shaderProgram->uniformLocation("u_modelMatrix");
 		viewMatrixLocation = shaderProgram->uniformLocation("u_viewMatrix");
-		camVecLocation = shaderProgram->uniformLocation("u_camVecLocation");
+		camVecLocation = shaderProgram->uniformLocation("u_camVecLocation");		
 		success2 = shaderProgram->bind();
 	}
 	repaint();
