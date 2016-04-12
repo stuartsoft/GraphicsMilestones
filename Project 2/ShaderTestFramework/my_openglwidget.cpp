@@ -129,7 +129,7 @@ void My_OpenGLWidget::paintGL() {
 }
 
 void My_OpenGLWidget::createCamera() {
-	camLocation = vec4(0.0f, 1.0f, 2.5f, 1.0f);
+	camLocation = vec4(0.0f, 0.0f, 2.0f, 1.0f);
 	up = vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	focus = vec4(0.0, 0.0, 0.0, 1.0f);
 
