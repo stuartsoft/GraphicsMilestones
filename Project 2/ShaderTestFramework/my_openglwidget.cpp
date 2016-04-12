@@ -43,7 +43,6 @@ My_OpenGLWidget::My_OpenGLWidget(QWidget* parent) : QOpenGLWidget(parent) {
 	modelMatrixLocation = 0;
 	viewMatrixLocation;
 
-	
 	vbo = 0;
 	vbo2 = 0;
 	vbo3 = 0;

@@ -151,7 +151,7 @@ void Geometry::draw(glm::mat4 M, unsigned int &vLocation, unsigned int &vNormal,
 	glEnableVertexAttribArray(cLocation);
 	glVertexAttribPointer(cLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glDrawArrays(GL_QUADS, 0, 8);
+	glDrawArrays(GL_QUADS, 0, 24);
 	glFlush();
 
 }
