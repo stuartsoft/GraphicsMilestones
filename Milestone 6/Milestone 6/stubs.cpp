@@ -17,6 +17,8 @@ using namespace glm;
 double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	// TODO fill this in.
 	// See the documentation of this function in stubs.h.
+	
+	//STUART
 
 	return -1;
 }
@@ -25,12 +27,16 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 	// TODO fill this in.
 	// See the documentation of this function in stubs.h.
 
+	//NATHAN
+
 	return -1;
 }
 
 double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	// TODO fill this in.
 	// See the documentation of this function in stubs.h.
+
+	//DANIEL
 
 	return -1;
 }
