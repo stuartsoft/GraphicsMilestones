@@ -198,7 +198,7 @@ void RunRayCubeTests() {
 	RunTest(
 		"Strafing the cube",
 		Test_RayCubeIntersect(vec4(NEGFIVEOFIVE_VECTOR, 1.0f), vec4(POSXNEGZ_NORM_VECTOR, 0.0f), IDENTITY_MATRIX),
-		TEN_KAZILLION); // TODO change this to the right number
+		-1.0);
 }
 
 void RunYourTests() {
@@ -217,7 +217,7 @@ void ReportTest(std::string name, bool result) {
 		g_numSuccessful++;
 	}
 	else {
-		// It can be very useful to put a breakpoint here
+		
 	}
 
 }
