@@ -124,7 +124,7 @@ void RunRaySphereTests() {
 	RunTest(
 		"Looking back",
 		Test_RaySphereIntersect(vec4(ZNEGTEN_VECTOR, 1.0f), vec4(POSZ_VECTOR, 0.0f), BACK5_MATRIX),
-		TEN_KAZILLION); // TODO change this to the right number
+		4.0); // TODO change this to the right number
 
 	RunTest(
 		"West pole",

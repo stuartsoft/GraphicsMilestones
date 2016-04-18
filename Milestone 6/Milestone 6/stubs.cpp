@@ -60,6 +60,8 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 
 	//STUART
 
+	if (solution< 0)//if solution is negative then it's not actually a solution
+		return -1;
 	return solution;
 }
 
