@@ -23,9 +23,10 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	//perform quadratic solution for x, y, z components individually.
 	//return the smallest t value if there is a valid intersection
 
-	vec4 C = vec4(T[3][0], T[3][1], T[3][2], T[3][3]);//center of the sphere
+	vec4 C = vec4(0.0f,0.0f,0.0f,1.0f);//center of the sphere
 
-	vec4 O = P0;//origin of the ray
+	vec4 O = glm::inverse(T) * P0;//origin of the ray
+	vec4 V = glm::inverse(T) * V0;
 
 	float rad = 1.0f;//radius
 
@@ -39,7 +40,7 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	vec4 originCenterDiff = vec4(O.x - C.x, O.y - C.y, O.z - C.z, O.w - C.w);
 	//vec4 originCenterDiff = vec4(C.x - O.x, C.y - O.y, C.z - O.z, C.w - O.w);
 
-	b = 2*glm::dot(V0,originCenterDiff);
+	b = 2*glm::dot(V,originCenterDiff);
 	c = glm::dot(originCenterDiff, originCenterDiff) - rad*rad;
 	//check discriminant
 	float disc = b*b - 4*a*c;
