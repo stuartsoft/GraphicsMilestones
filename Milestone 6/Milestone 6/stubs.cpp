@@ -32,7 +32,7 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 
 	float solution;
 
-	float a = 1.0f;
+	float a = glm::dot(V,V);
 	float b = 0.0f;
 	float c = 0.0f;
 	//begin solving X comp
