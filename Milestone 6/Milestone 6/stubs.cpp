@@ -19,10 +19,48 @@ double** tCalc(const vec4& P0, const vec4& V0, const vec4& TR, const vec4& BL);
 double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	// TODO fill this in.
 	// See the documentation of this function in stubs.h.
-	
+
+	//perform quadratic solution for x, y, z components individually.
+	//return the smallest t value if there is a valid intersection
+
+	vec4 C = vec4(T[3][0], T[3][1], T[3][2], T[3][3]);//center of the sphere
+
+	vec4 O = P0;//origin of the ray
+
+	float rad = 1.0f;//radius
+
+	float solution;
+
+	float a = 1.0f;
+	float b = 0.0f;
+	float c = 0.0f;
+	//begin solving X comp
+
+	vec4 originCenterDiff = vec4(O.x - C.x, O.y - C.y, O.z - C.z, O.w - C.w);
+	//vec4 originCenterDiff = vec4(C.x - O.x, C.y - O.y, C.z - O.z, C.w - O.w);
+
+	b = 2*glm::dot(V0,originCenterDiff);
+	c = glm::dot(originCenterDiff, originCenterDiff) - rad*rad;
+	//check discriminant
+	float disc = b*b - 4*a*c;
+	if (disc < 0)// no solution
+		return -1;
+	else if (disc == 0){// one solution
+		float sol1 = -b/(2*a);
+		solution = sol1;
+	}
+	else{
+		float sol1 = (-b + sqrt(disc))/(2*a);
+		float sol2 = (-b - sqrt(disc))/(2*a);
+		if (sol1 < sol2)
+			solution = sol1;
+		else
+			solution = sol2;
+	}
+
 	//STUART
 
-	return -1;
+	return solution;
 }
 
 double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, const vec4& p2, const vec4& p3, const mat4& T) {
