@@ -109,8 +109,8 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	}
 
 	//Right side tCalc
-	pData[4];	//Top right corner
-	pData[0];	//Bottom left Corner 
+	//pData[4];	//Top right corner
+	//pData[0];	//Bottom left Corner 
 	double ** rightCalc = tCalc(P0, V0, pData[4], pData[0]);
 	xSides[0][0] = rightCalc[0][0];
 	xSides[0][1] = rightCalc[0][1];
@@ -120,8 +120,8 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	zSides[0][1] = rightCalc[2][1];
 
 	//Left side tCalc
-	pData[2];	//Top right corner 
-	pData[7];	//Bottom left corner 
+	//pData[2];	//Top right corner 
+	//pData[7];	//Bottom left corner 
 	double ** leftCalc = tCalc(P0, V0, pData[2], pData[7]);
 	xSides[1][0] = leftCalc[0][0];
 	xSides[1][1] = leftCalc[0][1];
@@ -131,8 +131,8 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	zSides[1][1] = leftCalc[2][1];
 
 	//Top side tCalc
-	pData[4];	//Top right corner 
-	pData[3];	//Bottom left corner
+	//pData[4];	//Top right corner 
+	//pData[3];	//Bottom left corner
 	double ** topCalc = tCalc(P0, V0, pData[4], pData[3]);
 	xSides[2][0] = topCalc[0][0];
 	xSides[2][1] = topCalc[0][1];
@@ -142,8 +142,8 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	zSides[2][1] = topCalc[2][1];
 
 	//Bottom side tCalc
-	pData[6];	//Top right corner 
-	pData[1];	//Bottom left corner
+	//pData[6];	//Top right corner 
+	//pData[1];	//Bottom left corner
 	double ** bottomCalc = tCalc(P0, V0, pData[6], pData[1]);
 	xSides[3][0] = bottomCalc[0][0];
 	xSides[3][1] = bottomCalc[0][1];
@@ -153,8 +153,8 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	zSides[3][1] = bottomCalc[2][1];
 
 	//Front side tCalc
-	pData[2];	//Top right corner
-	pData[1];	//Bottom left corner 
+	//pData[2];	//Top right corner
+	//pData[1];	//Bottom left corner 
 	double ** frontCalc = tCalc(P0, V0, pData[2], pData[1]);
 	xSides[4][0] = frontCalc[0][0];
 	xSides[4][1] = frontCalc[0][1];
@@ -164,8 +164,8 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	zSides[4][1] = frontCalc[2][1];
 
 	//Back side tCalc
-	pData[4];	//Top right corner 
-	pData[7];	//Bottom left corner
+	//pData[4];	//Top right corner 
+	//pData[7];	//Bottom left corner
 	double ** backCalc = tCalc(P0, V0, pData[4], pData[7]);
 	xSides[5][0] = backCalc[0][0];
 	xSides[5][1] = backCalc[0][1];
@@ -207,7 +207,7 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 
 	//If farthest < nearest, the cube misses 
 	//Otherwise, t = nearest 
-	if((xMin >= xMax && xMin != 1e26) || (yMin >= yMax && yMin!= 1e26) || (zMin >= zMax && zMin != 1e26))
+	if((xMin >= xMax && xMin != 1e26 && xMin > 0) || (yMin >= yMax && yMin!= 1e26 && yMin > 0) || (zMin >= zMax && zMin != 1e26 && zMin > 0))
 		result = -1;
 	else
 	{
@@ -221,6 +221,24 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 		else
 			result = zMin;
 	}
+
+	for(unsigned i=0; i < 3; i++)
+	{
+		delete [] rightCalc[i];
+		delete [] leftCalc[i];
+		delete [] backCalc[i];
+		delete [] frontCalc[i];
+		delete [] topCalc[i];
+		delete [] bottomCalc[i];
+	}
+
+	delete [] rightCalc;
+	delete [] leftCalc;
+	delete [] backCalc;
+	delete [] frontCalc;
+	delete [] topCalc;
+	delete [] bottomCalc;
+
 
 	return result;
 }
@@ -252,12 +270,12 @@ double** tCalc(const vec4& P0, const vec4& V0, const vec4& TR, const vec4& BL)
 	if(V0.y)
 	{
 		tResult[1][0] = (BL.y - P0.y)/(V0.y);
-		tResult[1][1] = (TR.y - P0.q)/(V0.y);
+		tResult[1][1] = (TR.y - P0.y)/(V0.y);
 	}
 	else
 	{
 		tResult[1][1] = (BL.y - P0.y)/(V0.y);
-		tResult[1][0] = (TR.y - P0.q)/(V0.y);
+		tResult[1][0] = (TR.y - P0.y)/(V0.y);
 	}
 
 

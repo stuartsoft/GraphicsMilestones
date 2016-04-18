@@ -203,10 +203,10 @@ void RunRayCubeTests() {
 
 void RunYourTests() {
 	// It can be very useful to put tests of your own here. The unit tests above do NOT test everything!
+	
 }
 
 void RunGradingTests() {
-	// Leave this function alone; we'll put stuff in it for grading.
 	
 	const vec4 SPHERE0P0(0,-1,-4,1);
 	const vec4 SPHERE0V0(0,1,0,0);
