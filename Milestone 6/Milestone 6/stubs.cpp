@@ -59,18 +59,52 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 			solution = sol2;
 	}
 
-	//STUART
-
-	if (solution< 0)//if solution is negative then it's not actually a solution
+	if (solution < 0)//if solution is negative then it's not actually a solution
 		return -1;
 	return solution;
 }
 
 double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, const vec4& p2, const vec4& p3, const mat4& T) {
-	// TODO fill this in.
-	// See the documentation of this function in stubs.h.
+	vec4 normal;
+	double tCheck;
 
-	//NATHAN
+	vec4 planeVec1 = p2 - p1;
+	vec4 planeVec2 = p3 - p1;
+
+	normal = vec4(cross(vec3(planeVec2), vec3(planeVec1)), 0);
+
+	vec4 objectSpace_PmE = inverse(T) * V0;
+	vec4 objectSpace_E = inverse(T) * P0;
+
+	float denom = dot(normal, objectSpace_PmE);
+
+	if(denom != 0)
+		tCheck = dot(normal, p3 - objectSpace_E) / denom;
+
+	if(tCheck >= 0){
+		vec4 Rpoint = objectSpace_E + vec4(vec3(tCheck), 1) * objectSpace_PmE;
+		Rpoint = normalize(Rpoint);
+
+
+		float S = sqrt((p1.y * p2.z + p1.z * p3.y + p2.y * p3.z - p3.y * p2.z - p3.z * p1.y - p2.y * p1.z) * (p1.y * p2.z + p1.z * p3.y + p2.y * p3.z - p3.y * p2.z - p3.z * p1.y - p2.y * p1.z) + 
+				  (p1.z * p2.x + p1.x * p3.z + p2.z * p3.x - p3.z * p2.x - p3.x * p1.z - p2.z * p1.x) * (p1.z * p2.x + p1.x * p3.z + p2.z * p3.x - p3.z * p2.x - p3.x * p1.z - p2.z * p1.x) + 
+				  (p1.x * p2.y + p1.y * p3.x + p2.x * p3.y - p3.x * p2.y - p3.y * p1.x - p2.x * p1.y) * (p1.x * p2.y + p1.y * p3.x + p2.x * p3.y - p3.x * p2.y - p3.y * p1.x - p2.x * p1.y)) / 2;
+
+		float S1 = sqrt((Rpoint.y * p2.z + Rpoint.z * p3.y + p2.y * p3.z - p3.y * p2.z - p3.z * Rpoint.y - p2.y * Rpoint.z) * (Rpoint.y * p2.z + Rpoint.z * p3.y + p2.y * p3.z - p3.y * p2.z - p3.z * Rpoint.y - p2.y * Rpoint.z) + 
+				  (Rpoint.z * p2.x + Rpoint.x * p3.z + p2.z * p3.x - p3.z * p2.x - p3.x * Rpoint.z - p2.z * Rpoint.x) * (Rpoint.z * p2.x + Rpoint.x * p3.z + p2.z * p3.x - p3.z * p2.x - p3.x * Rpoint.z - p2.z * Rpoint.x) + 
+				  (Rpoint.x * p2.y + Rpoint.y * p3.x + p2.x * p3.y - p3.x * p2.y - p3.y * Rpoint.x - p2.x * Rpoint.y) * (Rpoint.x * p2.y + Rpoint.y * p3.x + p2.x * p3.y - p3.x * p2.y - p3.y * Rpoint.x - p2.x * Rpoint.y)) / (S*2);
+
+		float S2 = sqrt((p1.y * Rpoint.z + p1.z * p3.y + Rpoint.y * p3.z - p3.y * Rpoint.z - p3.z * p1.y - Rpoint.y * p1.z) * (p1.y * Rpoint.z + p1.z * p3.y + Rpoint.y * p3.z - p3.y * Rpoint.z - p3.z * p1.y - Rpoint.y * p1.z) + 
+				  (p1.z * Rpoint.x + p1.x * p3.z + Rpoint.z * p3.x - p3.z * Rpoint.x - p3.x * p1.z - Rpoint.z * p1.x) * (p1.z * Rpoint.x + p1.x * p3.z + Rpoint.z * p3.x - p3.z * Rpoint.x - p3.x * p1.z - Rpoint.z * p1.x) + 
+				  (p1.x * Rpoint.y + p1.y * p3.x + Rpoint.x * p3.y - p3.x * Rpoint.y - p3.y * p1.x - Rpoint.x * p1.y) * (p1.x * Rpoint.y + p1.y * p3.x + Rpoint.x * p3.y - p3.x * Rpoint.y - p3.y * p1.x - Rpoint.x * p1.y)) / (S*2);
+
+		float S3 = sqrt((p1.y * p2.z + p1.z * Rpoint.y + p2.y * Rpoint.z - Rpoint.y * p2.z - Rpoint.z * p1.y - p2.y * p1.z) * (p1.y * p2.z + p1.z * Rpoint.y + p2.y * Rpoint.z - Rpoint.y * p2.z - Rpoint.z * p1.y - p2.y * p1.z) + 
+				  (p1.z * p2.x + p1.x * Rpoint.z + p2.z * Rpoint.x - Rpoint.z * p2.x - Rpoint.x * p1.z - p2.z * p1.x) * (p1.z * p2.x + p1.x * Rpoint.z + p2.z * Rpoint.x - Rpoint.z * p2.x - Rpoint.x * p1.z - p2.z * p1.x) + 
+				  (p1.x * p2.y + p1.y * Rpoint.x + p2.x * Rpoint.y - Rpoint.x * p2.y - Rpoint.y * p1.x - p2.x * p1.y) * (p1.x * p2.y + p1.y * Rpoint.x + p2.x * Rpoint.y - Rpoint.x * p2.y - Rpoint.y * p1.x - p2.x * p1.y)) / (S*2);
+
+		if(std::abs(S3 + S2 + S1 - 1) < 1e-3)
+			return tCheck;
+	}
 
 	return -1;
 }
@@ -83,30 +117,32 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 // matrix is the transformation matrix of the cube
 // A unit cube extends from -0.5 to 0.5 in all axes.
 double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
-	double xMin, xMax;	//tNear and tFar for x
-	double yMin, yMax;	//tNear and tFar for y
-	double zMin, zMax;	//tNear and tFar for z
-
 	double xSides[6][2];
 	double ySides[6][2];
 	double zSides[6][2];
 
+	double tNear = -1e26, tFar = 1e26;
+
 	//Set points for the cube
 	vec4 pData[8];
-	pData[0] = vec4(- 0.5f, 0.0f,  0.5f, 1.0f);		//front bottom right
-	pData[1] = vec4(0.5f, 0.0f, 0.5f, 1.0f);		//front bottom left
-	pData[2] = vec4(- 0.5f, 1.0f, 0.5f, 1.0f);		//front top right
-	pData[3] = vec4(0.5f, 1.0f, 0.5f, 1.0f);		//front top left
-	pData[4] = vec4(- 0.5f, 1.0f, - 0.5f, 1.0f);	//back top right
-	pData[5] = vec4(0.5f, 1.0f, - 0.5f, 1.0f);		//back top left
-	pData[6] = vec4(- 0.5f, 0.0f, - 0.5f, 1.0f);	//back bottom right
-	pData[7] = vec4(0.5f, 0.0f, - 0.5f, 1.0f);		//back bottom left
+
+	pData[0] = vec4(0.5f, -0.5f, -0.5f, 1.0f);		//front bottom right
+	pData[1] = vec4(-0.5f, -0.5f, -0.5f, 1.0f);		//front bottom left
+	pData[2] = vec4(0.5f, 0.5f, -0.5f, 1.0f);		//front top right
+	pData[3] = vec4(-0.5f, 0.5f, -0.5f, 1.0f);		//front top left
+	pData[4] = vec4(0.5f, 0.5f, 0.5f, 1.0f);		//back top right
+	pData[5] = vec4(-0.5f, 0.5f, 0.5f, 1.0f);		//back top left
+	pData[6] = vec4(0.5f, -0.5f, 0.5f, 1.0f);		//back bottom right
+	pData[7] = vec4(-0.5f, -0.5f, 0.5f, 1.0f);		//back bottom left
 
 	//Translate the cube
 	for(unsigned i=0; i < 8; i++)
 	{
 		pData[i] = T * pData[i];
 	}
+
+	vec4 tP0 = P0;
+	vec4 tV0 = V0;
 
 	//Right side tCalc
 	//pData[4];	//Top right corner
@@ -122,7 +158,7 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	//Left side tCalc
 	//pData[2];	//Top right corner 
 	//pData[7];	//Bottom left corner 
-	double ** leftCalc = tCalc(P0, V0, pData[2], pData[7]);
+	double ** leftCalc = tCalc(P0, V0, pData[5], pData[1]);
 	xSides[1][0] = leftCalc[0][0];
 	xSides[1][1] = leftCalc[0][1];
 	ySides[1][0] = leftCalc[1][0];
@@ -174,6 +210,10 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	zSides[5][0] = backCalc[2][0];
 	zSides[5][1] = backCalc[2][1];
 
+	double xMin, xMax;
+	double yMin, yMax;
+	double zMin, zMax;
+
 	xMin = xSides[0][0]; xMax = xSides[0][1];
 	yMin = ySides[0][0]; yMax = ySides[0][1];
 	zMin = zSides[0][0]; zMax = zSides[0][1];
@@ -207,13 +247,13 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 
 	//If farthest < nearest, the cube misses 
 	//Otherwise, t = nearest 
-	if((xMin >= xMax && xMin != 1e26 && xMin > 0) || (yMin >= yMax && yMin!= 1e26 && yMin > 0) || (zMin >= zMax && zMin != 1e26 && zMin > 0))
+	if((xMin > xMax || xMin > 1e26) || (yMin > yMax) || (zMin > zMax) || xMin == zMin && zMin != yMin)
 		result = -1;
 	else
 	{
 		if(xMin < yMin && xMin > 0)
 		{
-			if(xMin < zMin)
+			if(xMin <= zMin)
 				result = xMin;
 		}
 		else if(yMin < zMin && yMin > 0)
@@ -239,7 +279,6 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	delete [] topCalc;
 	delete [] bottomCalc;
 
-
 	return result;
 }
 
@@ -255,42 +294,48 @@ double** tCalc(const vec4& P0, const vec4& V0, const vec4& TR, const vec4& BL)
 			tResult[i][j] = 1e26;			
 	}
 
-	if(V0.x)
+	if(V0.x - P0.x)
 	{
-		tResult[0][0] = (BL.x - P0.x)/(V0.x);
-		tResult[0][1] = (TR.x - P0.x)/(V0.x);
-	}
-	else
-	{
-		tResult[0][1] = (BL.x - P0.x)/(V0.x);
-		tResult[0][0] = (TR.x - P0.x)/(V0.x);
+		tResult[0][0] = (BL.x - P0.x)/(V0.x );
+		tResult[0][1] = (TR.x - P0.x)/(V0.x );
 	}
 
 	//yNear Calc
-	if(V0.y)
+	if(V0.y - P0.y)
 	{
 		tResult[1][0] = (BL.y - P0.y)/(V0.y);
 		tResult[1][1] = (TR.y - P0.y)/(V0.y);
 	}
-	else
-	{
-		tResult[1][1] = (BL.y - P0.y)/(V0.y);
-		tResult[1][0] = (TR.y - P0.y)/(V0.y);
-	}
-
 
 	//zNear Calc
-	if(V0.z)
+	if(V0.z - P0.z)
 	{
 		tResult[2][0] = (BL.z - P0.z)/(V0.z);
 		tResult[2][1] = (TR.z - P0.z)/(V0.z);
 	}
-	else
+
+	double holdT;
+
+	if(tResult[2][0] > tResult[2][1])
 	{
-		tResult[2][1] = (BL.z - P0.z)/(V0.z);
-		tResult[2][0] = (TR.z - P0.z)/(V0.z);
+		holdT = tResult[2][0];
+		tResult[2][0] = tResult[2][1];
+		tResult[2][1] = holdT;
 	}
 
+	if(tResult[1][0] > tResult[1][1])
+	{
+		holdT = tResult[1][0];
+		tResult[1][0] = tResult[1][1];
+		tResult[1][1] = holdT;
+	}
+
+	if(tResult[0][0] > tResult[0][1])
+	{
+		holdT = tResult[0][0];
+		tResult[0][0] = tResult[0][1];
+		tResult[0][1] = holdT;
+	}
 
 	return tResult;
 }
