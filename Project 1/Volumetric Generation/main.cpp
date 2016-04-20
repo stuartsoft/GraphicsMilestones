@@ -114,6 +114,9 @@ void runRayTrace(VoxelBuffer* vb){
 				vec3 voxCenter = vb->getVoxelCenter(voxIndex);
 				float deltaTau;
 				
+				if (voxCenter.x > vb->XYZC.x || voxCenter.y > vb->XYZC.y || voxCenter.z > vb-> XYZC.z)
+					break;
+
 				deltaTau = exp(-kappa * vb->step * vb->densityRead(voxCenter));
 				
 				tau *= deltaTau;
