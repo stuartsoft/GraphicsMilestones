@@ -45,10 +45,15 @@ vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec4& reflectedRay, const d
 	if(t != std::numeric_limits<double>::max())
 	{
 		//Check shadow feelers
-		shadowFeeler();
+		vec3 point = RPoint(t);
+
+		//Get the normal of that point
+		vec3 normal;
+		
 		//Calculate lighting for the pixel (pixel color with lighting applied)
 		//The lighting is blinn-phong without specular 
-		pixelColor = calculateLight();
+		
+		pixelColor = calculateLight(shadowFeeler(point), normal);
 	}
 
 	//This will be changed to be the correct color along the way
@@ -62,9 +67,9 @@ double rayTracer::intersectTest(const vec4& ray, geometry geom)
 	double returnT = std::numeric_limits<double>::max();
 
 	if(geom.getType() == "cube")
-		returnT = Test_RayCubeIntersect(cameraPosition, ray, geom);
+		returnT = Test_RayCubeIntersect(cameraPosition, ray, geom.getPoints());
 	else if(geom.getType() == "sphere")
-		returnT = Test_RaySphereIntersect(cameraPosition, ray, geom);
+		returnT = Test_RaySphereIntersect(cameraPosition, ray, vec4(geom.getCoords(), 1.0f));
 	else if(geom.getType() == "polygon")
 		returnT = Test_RayPolyIntersect(cameraPosition, ray, geom);
 	else
@@ -136,7 +141,7 @@ void rayTracer::setData()
 	return;
 }
 
-void rayTracer::shadowFeeler()
+bool rayTracer::shadowFeeler(vec3 point)
 {
 	//For each geometry (These will be stored in the scene graph)
 	for(unsigned int i=0; i < geomStack.size(); ++i)
@@ -144,17 +149,34 @@ void rayTracer::shadowFeeler()
 		//Probably something like this for the shadow feeler (Pulled from ray trace)
 		//double tOne = intersectTest(reflectedRay, geomStack[i]);
 
+		//If hit, return true (This is an indicator that it hit something on the way to the light source
+
 		//if(tOne != -1 && tOne < t)
 		//	t = tOne;
 	}
 
-	return;
+	//If it didn't hit anything, then a false return is an indicator of that 
+	return false;
 }
 
 //Blinn-phong lighting without specular
-vec3 rayTracer::calculateLight()
+vec3 rayTracer::calculateLight(bool shadow, vec3 normal)
 {
-	vec3 colorCalc;
+	vec3 colorCalc = materialColor;
+
+	//If there is a showdow, then darken the color
+	if(shadow)
+		colorCalc /= 2;
+
+	//Blinn-phong code
 
 	return colorCalc;
+}
+
+//Use this to get the specific point of the geometry 
+vec3 rayTracer::RPoint(double t)
+{
+	vec3 point;
+	
+	return point;
 }

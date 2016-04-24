@@ -16,14 +16,14 @@ using namespace glm;
 
 double** tCalc(const vec4& P0, const vec4& V0, const vec4& TR, const vec4& BL);
 
-double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, geometry geom) {
+double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, vec4 center) {
 	// TODO fill this in.
 	// See the documentation of this function in stubs.h.
 
 	//perform quadratic solution for x, y, z components individually.
 	//return the smallest t value if there is a valid intersection
 
-	vec4 C = vec4(0.0f,0.0f,0.0f,1.0f);//center of the sphere
+	vec4 C = center;//center of the sphere
 
 	vec4 O = P0;//origin of the ray
 	vec4 V = V0;
@@ -64,7 +64,7 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, geometry geom) {
 	return solution;
 }
 
-double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, const vec4& p2, const vec4& p3, geometry geom) {
+double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, const vec4& p2, const vec4& p3, polygon geom) {
 	vec4 normal;
 	double tCheck;
 
@@ -116,7 +116,7 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 // direction of the ray.
 // matrix is the transformation matrix of the cube
 // A unit cube extends from -0.5 to 0.5 in all axes.
-double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, geometry geom) {
+double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, vec4* points) {
 	double xSides[6][2];
 	double ySides[6][2];
 	double zSides[6][2];
@@ -124,7 +124,7 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, geometry geom) {
 	double tNear = -1e26, tFar = 1e26;
 
 	//Set points for the cube
-	vec4 pData[8];
+	vec4 *pData = points;
 
 	vec4 tP0 = P0;
 	vec4 tV0 = V0;
@@ -257,6 +257,7 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, geometry geom) {
 		delete [] bottomCalc[i];
 	}
 
+	delete [] pData;
 	delete [] rightCalc;
 	delete [] leftCalc;
 	delete [] backCalc;

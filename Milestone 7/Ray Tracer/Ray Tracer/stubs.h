@@ -34,16 +34,16 @@ using namespace glm;
 // This function should return the smallest positive t-value of the intersection
 // (a point such that P0+t*V0 intersects the sphere), or -1 if there is no
 // intersection.
-double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, geometry geom);
+double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, vec4 center);
 
 // Tries to find the intersection of a ray and a triangle.
 // This is just like the above function, but it intersects the ray with a
 // triangle instead. The parameters p1, p2, and p3 specify the three
 // points of the triangle, in object space.
-double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, geometry geom);
+double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, vec3 trianglePoints);
 
 // This is just like Test_RaySphereIntersect, but with a unit cube instead of a
 // sphere. A unit cube extends from -0.5 to 0.5 in all axes.
-double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, geometry geom);
+double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, vec4* points);
 
 #endif

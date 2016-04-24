@@ -33,14 +33,19 @@ public:
 	//Set the rays for the image
 	void setData();
 
-	//Check the shadow feeler
-	void shadowFeeler();
+	//Check the shadow feeler from the point of intersection
+	bool shadowFeeler(vec3 point);
 
 	//Calculate the lighting (Lambertian lighting)
-	vec3 calculateLight();
+	vec3 calculateLight(bool shadow, vec3 normal);
+
+	//Get the specific point from where on the geometry was hit
+	vec3 RPoint(double t);
 
 private:
 	vec3 backgroundColor;
+	vec3 materialColor;
+	vec3 lightColor;
 	vector<geometry> geomStack;
 	vec4 cameraPosition;
 	vec2 imageResolution;

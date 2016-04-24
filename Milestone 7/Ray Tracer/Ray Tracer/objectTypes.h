@@ -6,9 +6,12 @@ class geometry
 {
 public:
 	std::string getType() {return type;};
+	vec3 getCoords() {return coordinates;};
+	vec4* getPoints() {return cubePoints;};
 private:
 	std::string type;
 	vec3 coordinates;
+	vec4 *cubePoints;
 };
 
 class cube: private geometry
