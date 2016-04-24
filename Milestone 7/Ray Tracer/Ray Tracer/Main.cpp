@@ -7,7 +7,7 @@ int main()
 	//Generate the scenegraph for the scene
 	SceneGraph *graphOne = new SceneGraph;
 
-	vector<geometry> transGeomList;
+	vector<Geometry> transGeomList;
 	
 	//
 	rayTracer *tracerOne = new rayTracer(transGeomList, the vector information);

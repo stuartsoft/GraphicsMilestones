@@ -1,20 +1,14 @@
-#pragma once
+//Polymorphism used to assign the geometry 
 #include "glm\glm.hpp"
-#include <vector>
-#include <QOpenGLFunctions>
+#include <string>
 
-
-//using namespace glm;
-
-class Geometry : public QOpenGLFunctions{
+class Geometry
+{
 public:
-
-	Geometry();
-	int numPoints;
-	void draw(glm::mat4 M, unsigned int &vLocation, unsigned int &vNormal, unsigned int &vShiny, unsigned int &cLocation, unsigned int &vbo, unsigned int &vbo2, unsigned int &vbo3, unsigned int &cbo);
-
-	glm::vec4* points;
-	glm::vec4* normals;
-	float * shinyness;
-	glm::vec3* colors;
+	Geometry(int type, glm::mat4 m);
+	int getType() {return type;};
+	glm::mat4 getPoints() {return M;};
+private:
+	int type;//0 = Sphere, 1 = Triangle, 2 = Cube
+	glm::mat4 M;
 };

@@ -10,7 +10,7 @@ SceneGraph::SceneGraph(){
 
 void SceneGraph::Parse(string fname){
 	//initialize the geometry object list
-	geometryObjectRef.push_back(new Geometry());//creates a cube. yay
+	//geometryObjectRef.push_back(new Geometry());//creates a cube. yay
 
 	ifstream file(fname);
 
@@ -122,14 +122,25 @@ void SceneGraph::traverse(glm::mat4 mat){
 	}
 }
 
-void SceneGraph::draw(unsigned int &vLocation, unsigned int &vNormal, unsigned int &vShiny, unsigned int &cLocation, unsigned int &vbo, unsigned int &vbo2, unsigned int &vbo3, unsigned int &cbo){
+void SceneGraph::draw(std::vector<Geometry> &geometryList){
 	
 	if (geometry != NULL){
 		//do stuff here to actually draw the final points
-		geometry->draw(M, vLocation, vNormal, vShiny, cLocation, vbo, vbo2, vbo3, cbo);
+		//geometry->draw(M, vLocation, vNormal, vShiny, cLocation, vbo, vbo2, vbo3, cbo);
+		Geometry g;
+		if (geometry->geoType == "Sphere"){
+			g = Geometry(0,M);
+		}
+		else if (geometry->geoType == "Triangle"){
+			g = Geometry(1,M);
+		}
+		else if (geometry->geoType == "Cube"){
+			g = Geometry(2,M);
+		}
+		geometryList.push_back(g);
 	}
 
 	for (int i = 0;i<decendents.size();i++){
-		decendents[i]->draw(vLocation, vNormal, vShiny, cLocation, vbo, vbo2, vbo3, cbo);
+		decendents[i]->draw(geometryList);
 	}
 }
