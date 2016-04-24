@@ -5,15 +5,29 @@ const vec3 BACKGROUND_COLOR = vec3(0,0,0);
 
 rayTracer::rayTracer()
 {
+	colorBuffer = new vec3[(int)(imageResolution.x * imageResolution.y)];
+
 	return;
 }
 
 rayTracer::~rayTracer()
 {
-	
+	delete [] colorBuffer;
 }
 
-vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec3& reflectedRay, const double& depth)
+vec3* rayTracer::runTracer()
+{
+	for(unsigned row = 0; row < imageResolution.x; ++row)
+	{
+		for(unsigned column = 0; column < imageResolution.y; ++column)
+		{
+			colorBuffer[column * (int)imageResolution.x + row] = generateRay(row, column);
+		}
+	}
+}
+
+
+vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec4& reflectedRay, const double& depth)
 {
 	//t set to "infinity"
 	double t = std::numeric_limits<double>::max();
@@ -31,9 +45,10 @@ vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec3& reflectedRay, const d
 	if(t != std::numeric_limits<double>::max())
 	{
 		//Check shadow feelers
+		shadowFeeler();
 		//Calculate lighting for the pixel (pixel color with lighting applied)
 		//The lighting is blinn-phong without specular 
-		//pixelColor = calculated pixel color with lighting
+		pixelColor = calculateLight();
 	}
 
 	//This will be changed to be the correct color along the way
@@ -42,16 +57,16 @@ vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec3& reflectedRay, const d
 
 // Do the correct intersection test based on 
 // the geometry type and return the t value
-double rayTracer::intersectTest(const vec3& ray, geometry geom)
+double rayTracer::intersectTest(const vec4& ray, geometry geom)
 {
 	double returnT = std::numeric_limits<double>::max();
 
-	if(geom.getType() == "cube");
-		//returnT = Test_RayCubeIntersect();
-	else if(geom.getType() == "sphere");
-		//returnT = Test_RaySphereIntersect();
-	else if(geom.getType() == "polygon");
-		//returnT = Test_RayPolyIntersect();
+	if(geom.getType() == "cube")
+		returnT = Test_RayCubeIntersect(cameraPosition, ray, geom);
+	else if(geom.getType() == "sphere")
+		returnT = Test_RaySphereIntersect(cameraPosition, ray, geom);
+	else if(geom.getType() == "polygon")
+		returnT = Test_RayPolyIntersect(cameraPosition, ray, geom);
 	else
 	{
 		//Misspelled the shape type
@@ -66,7 +81,7 @@ double rayTracer::intersectTest(const vec3& ray, geometry geom)
 //Generate each ray from the eye
 vec3 rayTracer::generateRay(int x, int y)
 {
-	vec3 ray;
+	vec4 ray;
 	vec3 colorTotal;
 
 	ray.x = mVec.x + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.x + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.x;
@@ -76,6 +91,7 @@ vec3 rayTracer::generateRay(int x, int y)
 	ray.x -= cameraPosition.x;
 	ray.y -= cameraPosition.y;
 	ray.z -= cameraPosition.z;
+	ray.w = 1;
 
 	ray = normalize(ray);
 
@@ -86,7 +102,7 @@ vec3 rayTracer::generateRay(int x, int y)
 
 void rayTracer::setData()
 {
-	nVec = viewDirection - cameraPosition;
+	nVec = viewDirection - vec3(cameraPosition);
 
 	normalize(nVec);
 
@@ -122,7 +138,23 @@ void rayTracer::setData()
 
 void rayTracer::shadowFeeler()
 {
+	//For each geometry (These will be stored in the scene graph)
+	for(unsigned int i=0; i < geomStack.size(); ++i)
+	{
+		//Probably something like this for the shadow feeler (Pulled from ray trace)
+		//double tOne = intersectTest(reflectedRay, geomStack[i]);
 
+		//if(tOne != -1 && tOne < t)
+		//	t = tOne;
+	}
 
 	return;
+}
+
+//Blinn-phong lighting without specular
+vec3 rayTracer::calculateLight()
+{
+	vec3 colorCalc;
+
+	return colorCalc;
 }

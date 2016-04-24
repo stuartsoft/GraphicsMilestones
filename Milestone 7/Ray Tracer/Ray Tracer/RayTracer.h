@@ -18,11 +18,14 @@ public:
 	//Destructor for ray tracer 
 	~rayTracer();
 
+	//Runs the whole operation of the ray tracer
+	vec3* runTracer();
+
 	//Function that goes through for each pixel and ray traces it 
-	vec3 rayTrace(glm::vec3 pixelColor, const vec3& ray, const double& depth);
+	vec3 rayTrace(glm::vec3 pixelColor, const vec4& ray, const double& depth);
 
 	//Run the intersection tests from milestone 6 (Geometry holds a sting telling you what type of geometry it is
-	double intersectTest(const vec3& ray, geometry geom);
+	double intersectTest(const vec4& ray, geometry geom);
 
 	//Generate the ray for each position
 	vec3 generateRay(int x, int y);
@@ -33,10 +36,13 @@ public:
 	//Check the shadow feeler
 	void shadowFeeler();
 
+	//Calculate the lighting (Lambertian lighting)
+	vec3 calculateLight();
+
 private:
 	vec3 backgroundColor;
 	vector<geometry> geomStack;
-	vec3 cameraPosition;
+	vec4 cameraPosition;
 	vec2 imageResolution;
 	vec3 nVec;
 	vec3 viewDirection;
@@ -44,5 +50,6 @@ private:
 	vec3 upVector;
 	vec3 mVec;
 	vec3 hVec;
+	vec3 *colorBuffer;
 	float angle;
 };

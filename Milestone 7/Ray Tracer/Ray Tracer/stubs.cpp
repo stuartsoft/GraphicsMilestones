@@ -16,7 +16,7 @@ using namespace glm;
 
 double** tCalc(const vec4& P0, const vec4& V0, const vec4& TR, const vec4& BL);
 
-double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
+double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, geometry geom) {
 	// TODO fill this in.
 	// See the documentation of this function in stubs.h.
 
@@ -25,8 +25,8 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 
 	vec4 C = vec4(0.0f,0.0f,0.0f,1.0f);//center of the sphere
 
-	vec4 O = glm::inverse(T) * P0;//origin of the ray
-	vec4 V = glm::inverse(T) * V0;
+	vec4 O = P0;//origin of the ray
+	vec4 V = V0;
 
 	float rad = 1.0f;//radius
 
@@ -64,7 +64,7 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	return solution;
 }
 
-double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, const vec4& p2, const vec4& p3, const mat4& T) {
+double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, const vec4& p2, const vec4& p3, geometry geom) {
 	vec4 normal;
 	double tCheck;
 
@@ -73,8 +73,8 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 
 	normal = vec4(cross(vec3(planeVec2), vec3(planeVec1)), 0);
 
-	vec4 objectSpace_PmE = inverse(T) * V0;
-	vec4 objectSpace_E = inverse(T) * P0;
+	vec4 objectSpace_PmE = V0;
+	vec4 objectSpace_E = P0;
 
 	float denom = dot(normal, objectSpace_PmE);
 
@@ -116,7 +116,7 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 // direction of the ray.
 // matrix is the transformation matrix of the cube
 // A unit cube extends from -0.5 to 0.5 in all axes.
-double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
+double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, geometry geom) {
 	double xSides[6][2];
 	double ySides[6][2];
 	double zSides[6][2];
@@ -125,21 +125,6 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 
 	//Set points for the cube
 	vec4 pData[8];
-
-	pData[0] = vec4(0.5f, -0.5f, -0.5f, 1.0f);		//front bottom right
-	pData[1] = vec4(-0.5f, -0.5f, -0.5f, 1.0f);		//front bottom left
-	pData[2] = vec4(0.5f, 0.5f, -0.5f, 1.0f);		//front top right
-	pData[3] = vec4(-0.5f, 0.5f, -0.5f, 1.0f);		//front top left
-	pData[4] = vec4(0.5f, 0.5f, 0.5f, 1.0f);		//back top right
-	pData[5] = vec4(-0.5f, 0.5f, 0.5f, 1.0f);		//back top left
-	pData[6] = vec4(0.5f, -0.5f, 0.5f, 1.0f);		//back bottom right
-	pData[7] = vec4(-0.5f, -0.5f, 0.5f, 1.0f);		//back bottom left
-
-	//Translate the cube
-	for(unsigned i=0; i < 8; i++)
-	{
-		pData[i] = T * pData[i];
-	}
 
 	vec4 tP0 = P0;
 	vec4 tV0 = V0;
