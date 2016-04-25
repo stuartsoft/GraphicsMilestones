@@ -1,12 +1,10 @@
 #include "RayTracer.h"
 
-const vec3 BACKGROUND_COLOR = vec3(0,0,0);
+const vec3 BACKGROUND_COLOR = vec3(255, 255, 255);
 #define PI 3.14159
 
 rayTracer::rayTracer(vector<Geometry> geomList, string outputName)
 {
-	
-
 	//Make a copy of the geometry list 
 	geomStack = geomList;
 	
@@ -15,12 +13,13 @@ rayTracer::rayTracer(vector<Geometry> geomList, string outputName)
 
 	//Hard coded variables
 	backgroundColor = BACKGROUND_COLOR;
-	materialColor = vec3(187,0,0);
-	lightColor = vec3(255, 255, 255);
-	lightPosition = vec4(5, 0, -5, 0);
-	viewDirection = vec4(0, 0, 0, 1);
-	cameraPosition = vec4(5, -5, 5, 0);
-	imageResolution = vec2(640, 480);
+	materialColor = vec3(90,91,98);
+	lightColor = vec3(0, 0, 0);
+	lightPosition = vec4(5, 5, 5, 0);
+	viewDirection = vec4(0, 0, -1, 1);
+	cameraPosition = vec4(0, 0, 3, 0);
+	imageResolution = vec2(640, 420);
+	angle = radians(30.0f);
 
 	colorBuffer.resize((int)(imageResolution.x * imageResolution.y));
 
@@ -99,7 +98,7 @@ double rayTracer::intersectTest(const vec4& ray, Geometry geom)
 		returnT = Test_RayCubeIntersect(cameraPosition, ray, geom.getPoints());
 	else if(geom.getType() == "Sphere")
 		returnT = Test_RaySphereIntersect(cameraPosition, ray, geom.getPoints());
-	else if(geom.getType() == "Polygon");
+	else if(geom.getType() == "Triangle");
 		//returnT = Test_RayPolyIntersect(cameraPosition, ray, geom.getPoints());
 	else
 	{
@@ -116,15 +115,11 @@ double rayTracer::intersectTest(const vec4& ray, Geometry geom)
 vec3 rayTracer::generateRay(int x, int y)
 {
 	vec4 ray;
-	vec3 colorTotal;
+	vec3 colorTotal = backgroundColor;
 
-	ray.x = mVec.x + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.x + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.x;
-	ray.y = mVec.y + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.y + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.y;
-	ray.z = mVec.z + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.z + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.z;
-
-	ray.x -= cameraPosition.x;
-	ray.y -= cameraPosition.y;
-	ray.z -= cameraPosition.z;
+	ray.x = (mVec.x + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.x + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.x) - cameraPosition.x;
+	ray.y = (mVec.y + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.y + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.y) - cameraPosition.y;
+	ray.z = (mVec.z + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.z + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.z) - cameraPosition.z;
 	ray.w = 1;
 
 	ray = normalize(ray);
@@ -194,10 +189,10 @@ bool rayTracer::shadowFeeler(vec4 point)
 //Blinn-phong lighting without specular
 vec3 rayTracer::calculateLight(bool shadow, vec4 normal, Geometry geomPoint, vec4 Rpoint)
 {
-	float ka = 0.1F, kd = 0.5F;
+	float ka = 0.8F, kd = 0.5F;
 	vec3 ambient, diffuse;
 	vec3 colorCalc = materialColor;
-	vec3 defaultObjectColor = vec3(255,0,0);
+	vec3 defaultObjectColor = vec3(materialColor);
 
 	//Blinn-phong code
 	//If there is a shadow, then don't calculate the diffuse lighting
@@ -248,7 +243,7 @@ vec4 rayTracer::getPointNormal(vec4 point, Geometry geomPoint)
 {
 	vec4 normal;
 
-	if(geomPoint.getType() == "triangle")
+	if(geomPoint.getType() == "Triangle")
 	{
 		//bott left point
 		vec3 point1 = vec3(-0.5, 0, 0);
@@ -259,13 +254,13 @@ vec4 rayTracer::getPointNormal(vec4 point, Geometry geomPoint)
 
 		normal = geomPoint.getPoints() * vec4(cross(point2 - point1, point3 - point1), 1);
 	}
-	else if(geomPoint.getType() == "sphere")
+	else if(geomPoint.getType() == "Sphere")
 	{
 		normal = point;
 		normal.w = 1;
 		normal = geomPoint.getPoints() * normal;
 	}
-	else if(geomPoint.getType() == "cube")
+	else if(geomPoint.getType() == "Cube")
 	{
 		//front face
 		vec4 norm1 = vec4(0,0,1,1);
@@ -293,6 +288,14 @@ vec4 rayTracer::getPointNormal(vec4 point, Geometry geomPoint)
 		if(abs(point.z + 0.5f) < 0.001)
 			normal = geomPoint.getPoints() * norm2;
 	}
+	else 
+	{
+		//Misspelled the shape type
+		cout << "ERROR: Incorrect geometry type\n";
+		system("PAUSE");
+		exit(0);
+	}
+
 
 	return normal;
 }
