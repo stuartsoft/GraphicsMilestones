@@ -64,6 +64,7 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, vec4 center) {
 	return solution;
 }
 
+/*
 double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, const vec4& p2, const vec4& p3, polygon geom) {
 	vec4 normal;
 	double tCheck;
@@ -108,6 +109,7 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 
 	return -1;
 }
+*/
 
 // This function should return the smallest positive t-value of the intersection
 // (a point such that P0+t*V0 intersects the cube), or -1 if there is no

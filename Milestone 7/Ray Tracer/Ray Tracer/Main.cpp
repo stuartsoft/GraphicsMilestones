@@ -9,9 +9,11 @@ int main()
 
 	vector<Geometry> transGeomList;
 	
+	graphOne->Parse("scene1.txt");
+
 	//
-	rayTracer *tracerOne = new rayTracer(transGeomList, the vector information);
-	tracerOne->setData();
+	//rayTracer *tracerOne = new rayTracer(transGeomList, the vector information);
+	//tracerOne->setData();
 
 	return 0;
 }

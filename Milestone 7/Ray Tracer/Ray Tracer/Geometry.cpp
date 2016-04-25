@@ -1,6 +1,6 @@
 #include "Geometry.h"
 
-Geometry::Geometry(int t, glm::mat4 m){
+Geometry::Geometry(std::string t, glm::mat4 m){
 	type = t;
 	M = m;
 }

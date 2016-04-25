@@ -27,10 +27,10 @@
     <ClCompile Include="SceneGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry.cpp">
+    <ClCompile Include="GeometryNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="objectTypes.cpp">
+    <ClCompile Include="Geometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,13 +41,13 @@
     <ClInclude Include="RayTracer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SceneGraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="objectTypes.h">
+    <ClInclude Include="GeometryNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

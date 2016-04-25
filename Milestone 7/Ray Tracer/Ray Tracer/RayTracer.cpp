@@ -62,10 +62,10 @@ vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec4& reflectedRay, const d
 
 // Do the correct intersection test based on 
 // the geometry type and return the t value
-double rayTracer::intersectTest(const vec4& ray, geometry geom)
+double rayTracer::intersectTest(const vec4& ray, Geometry geom)
 {
 	double returnT = std::numeric_limits<double>::max();
-
+	/*
 	if(geom.getType() == "cube")
 		returnT = Test_RayCubeIntersect(cameraPosition, ray, geom.getPoints());
 	else if(geom.getType() == "sphere")
@@ -79,7 +79,7 @@ double rayTracer::intersectTest(const vec4& ray, geometry geom)
 		system("PAUSE");
 		exit(0);
 	}
-
+	*/
 	return returnT;
 };
 

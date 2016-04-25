@@ -5,10 +5,14 @@
 class Geometry
 {
 public:
-	Geometry(int type, glm::mat4 m);
-	int getType() {return type;};
+	Geometry(std::string t, glm::mat4 m);
+	std::string getType() {return type;};
 	glm::mat4 getPoints() {return M;};
+
+	glm::vec3 getCoords() {return coordinates;};
 private:
-	int type;//0 = Sphere, 1 = Triangle, 2 = Cube
+	std::string type;	
 	glm::mat4 M;
+	glm::vec3 coordinates;
+
 };

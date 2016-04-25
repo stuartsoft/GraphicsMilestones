@@ -14,7 +14,7 @@
 #define STUBS_H
 
 
-#include "objectTypes.h"
+#include "Geometry.h"
 
 using namespace glm;
 

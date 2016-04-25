@@ -127,16 +127,8 @@ void SceneGraph::draw(std::vector<Geometry> &geometryList){
 	if (geometry != NULL){
 		//do stuff here to actually draw the final points
 		//geometry->draw(M, vLocation, vNormal, vShiny, cLocation, vbo, vbo2, vbo3, cbo);
-		Geometry g;
-		if (geometry->geoType == "Sphere"){
-			g = Geometry(0,M);
-		}
-		else if (geometry->geoType == "Triangle"){
-			g = Geometry(1,M);
-		}
-		else if (geometry->geoType == "Cube"){
-			g = Geometry(2,M);
-		}
+		
+		Geometry g = Geometry(geometry->geoType, M);
 		geometryList.push_back(g);
 	}
 

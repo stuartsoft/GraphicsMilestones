@@ -1,5 +1,5 @@
 #include "stubs.h"
-#include "objectTypes.h"
+#include "Geometry.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -8,6 +8,10 @@
 using std::vector;
 using std::cout;
 using std::cin;
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
 
 class rayTracer
 {
@@ -25,7 +29,7 @@ public:
 	vec3 rayTrace(glm::vec3 pixelColor, const vec4& ray, const double& depth);
 
 	//Run the intersection tests from milestone 6 (Geometry holds a sting telling you what type of geometry it is
-	double intersectTest(const vec4& ray, geometry geom);
+	double intersectTest(const vec4& ray, Geometry geom);
 
 	//Generate the ray for each position
 	vec3 generateRay(int x, int y);
@@ -46,7 +50,7 @@ private:
 	vec3 backgroundColor;
 	vec3 materialColor;
 	vec3 lightColor;
-	vector<geometry> geomStack;
+	vector<Geometry> geomStack;
 	vec4 cameraPosition;
 	vec2 imageResolution;
 	vec3 nVec;
