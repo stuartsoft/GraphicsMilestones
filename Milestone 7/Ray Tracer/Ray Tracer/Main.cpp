@@ -1,5 +1,4 @@
-#include "RayTracer.h"
-
+#include "SceneGraph.h"
 //Define the variables for the program up here
 
 int main()
@@ -9,6 +8,8 @@ int main()
 	graphOne->Parse("scene1.txt");
 
 	vector<Geometry> transGeomList;
+	graphOne->traverse(glm::mat4());
+	graphOne->draw(transGeomList);
 	
 	//
 	//rayTracer *tracerOne = new rayTracer(transGeomList, the vector information);

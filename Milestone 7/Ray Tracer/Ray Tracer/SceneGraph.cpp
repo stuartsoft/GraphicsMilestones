@@ -10,7 +10,9 @@ SceneGraph::SceneGraph(){
 
 void SceneGraph::Parse(string fname){
 	//initialize the geometry object list
-	//geometryObjectRef.push_back(new Geometry());//creates a cube. yay
+	geometryObjectRef.push_back(new GeometryNode("Sphere"));
+	geometryObjectRef.push_back(new GeometryNode("Triangle"));
+	geometryObjectRef.push_back(new GeometryNode("Cube"));
 
 	ifstream file(fname);
 
