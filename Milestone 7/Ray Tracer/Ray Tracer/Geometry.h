@@ -12,6 +12,8 @@ public:
 		type = t;
 		M = m;
 	};
+
+	Geometry() {};
 	std::string getType() {return type;};
 	glm::mat4 getPoints() {return M;};
 

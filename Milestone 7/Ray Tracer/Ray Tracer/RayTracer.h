@@ -3,20 +3,17 @@
 #include <fstream>
 #include <vector>
 #include "SceneGraph.h"
+#include "EasyBMP.h"
 
 using std::vector;
 using std::cout;
 using std::cin;
-using glm::vec2;
-using glm::vec3;
-using glm::vec4;
-using glm::mat4;
 
 class rayTracer
 {
 public:
 	//Default constructor for the ray tracer 
-	rayTracer();
+	rayTracer(vector<Geometry>);
 
 	//Destructor for ray tracer 
 	~rayTracer();
@@ -43,21 +40,30 @@ public:
 	vec3 calculateLight(bool shadow, vec3 normal);
 
 	//Get the specific point from where on the geometry was hit
-	vec3 RPoint(double t);
+	vec3 RPoint(Geometry geomPoint, double t);
+
+	//Return the normal from the point of intersection
+	vec3 getPointNormal(vec3 point, Geometry geomPoint);
+
+	//Write out the image to file
+	void writeToFile();
 
 private:
 	vec3 backgroundColor;
 	vec3 materialColor;
 	vec3 lightColor;
+	vec3 lightPosition;
+	vec3 viewDirection;
 	vector<Geometry> geomStack;
 	vec4 cameraPosition;
 	vec2 imageResolution;
 	vec3 nVec;
-	vec3 viewDirection;
 	vec3 vVec;
 	vec3 upVector;
 	vec3 mVec;
 	vec3 hVec;
 	vec3 *colorBuffer;
 	float angle;
+
+	string outputFileName;
 };

@@ -16,17 +16,17 @@ using namespace glm;
 
 double** tCalc(const vec4& P0, const vec4& V0, const vec4& TR, const vec4& BL);
 
-double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, vec4 center) {
+double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, mat4 T) {
 	// TODO fill this in.
 	// See the documentation of this function in stubs.h.
 
 	//perform quadratic solution for x, y, z components individually.
 	//return the smallest t value if there is a valid intersection
 
-	vec4 C = center;//center of the sphere
+	vec4 C = vec4(0.0f,0.0f,0.0f,1.0f);//center of the sphere
 
-	vec4 O = P0;//origin of the ray
-	vec4 V = V0;
+	vec4 O = glm::inverse(T) * P0;//origin of the ray
+	vec4 V = glm::inverse(T) * V0;
 
 	float rad = 1.0f;//radius
 
@@ -64,8 +64,7 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, vec4 center) {
 	return solution;
 }
 
-/*
-double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, const vec4& p2, const vec4& p3, polygon geom) {
+double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, const vec4& p2, const vec4& p3, mat4 T) {
 	vec4 normal;
 	double tCheck;
 
@@ -74,8 +73,8 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 
 	normal = vec4(cross(vec3(planeVec2), vec3(planeVec1)), 0);
 
-	vec4 objectSpace_PmE = V0;
-	vec4 objectSpace_E = P0;
+	vec4 objectSpace_PmE = inverse(T) * V0;
+	vec4 objectSpace_E = inverse(T) * P0;
 
 	float denom = dot(normal, objectSpace_PmE);
 
@@ -83,7 +82,7 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 		tCheck = dot(normal, p3 - objectSpace_E) / denom;
 
 	if(tCheck >= 0){
-		vec4 Rpoint = objectSpace_E + vec4(vec3(tCheck), 1) * objectSpace_PmE;
+		vec4 Rpoint = objectSpace_E + vec4(vec3((float)tCheck), 1) * objectSpace_PmE;
 		Rpoint = normalize(Rpoint);
 
 
@@ -109,7 +108,6 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 
 	return -1;
 }
-*/
 
 // This function should return the smallest positive t-value of the intersection
 // (a point such that P0+t*V0 intersects the cube), or -1 if there is no
@@ -118,7 +116,7 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 // direction of the ray.
 // matrix is the transformation matrix of the cube
 // A unit cube extends from -0.5 to 0.5 in all axes.
-double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, vec4* points) {
+double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, mat4 T) {
 	double xSides[6][2];
 	double ySides[6][2];
 	double zSides[6][2];
@@ -126,7 +124,22 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, vec4* points) {
 	double tNear = -1e26, tFar = 1e26;
 
 	//Set points for the cube
-	vec4 *pData = points;
+	vec4 pData[8];
+
+	pData[0] = vec4(0.5f, -0.5f, -0.5f, 1.0f);		//front bottom right
+	pData[1] = vec4(-0.5f, -0.5f, -0.5f, 1.0f);		//front bottom left
+	pData[2] = vec4(0.5f, 0.5f, -0.5f, 1.0f);		//front top right
+	pData[3] = vec4(-0.5f, 0.5f, -0.5f, 1.0f);		//front top left
+	pData[4] = vec4(0.5f, 0.5f, 0.5f, 1.0f);		//back top right
+	pData[5] = vec4(-0.5f, 0.5f, 0.5f, 1.0f);		//back top left
+	pData[6] = vec4(0.5f, -0.5f, 0.5f, 1.0f);		//back bottom right
+	pData[7] = vec4(-0.5f, -0.5f, 0.5f, 1.0f);		//back bottom left
+
+	//Translate the cube
+	for(unsigned i=0; i < 8; i++)
+	{
+		pData[i] = T * pData[i];
+	}
 
 	vec4 tP0 = P0;
 	vec4 tV0 = V0;
@@ -259,7 +272,6 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, vec4* points) {
 		delete [] bottomCalc[i];
 	}
 
-	delete [] pData;
 	delete [] rightCalc;
 	delete [] leftCalc;
 	delete [] backCalc;
