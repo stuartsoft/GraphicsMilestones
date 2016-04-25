@@ -13,7 +13,7 @@ rayTracer::rayTracer(vector<Geometry> geomList, string outputName)
 
 	//Hard coded variables
 	backgroundColor = BACKGROUND_COLOR;
-	materialColor = vec3(90,91,98);
+	materialColor = vec3(67,220,98);
 	lightColor = vec3(0, 0, 0);
 	lightPosition = vec4(5, 5, 5, 0);
 	viewDirection = vec4(0, 0, -1, 1);
@@ -31,19 +31,33 @@ rayTracer::~rayTracer()
 	
 }
 
-vector<vec3> rayTracer::runTracer()
+void rayTracer::runTracer()
 {
-	for(unsigned row = 0; row < imageResolution.x; ++row)
+	vec3 currentPixel;	
+
+	BMP output1;
+
+	output1.SetBitDepth(24);
+	output1.SetSize(imageResolution.x, imageResolution.y);
+
+	setData();
+
+	for(int row = 0; row < (int)imageResolution.x; row++)
 	{
-		for(unsigned column = 0; column < imageResolution.y; ++column)
+		for(int column = 0; column < (int)imageResolution.y; column++)
 		{
-			colorBuffer[column * (int)imageResolution.x + row] = generateRay(row, column);
+			//colorBuffer[column * (int)imageResolution.x + row] = generateRay(row, column);
+
+			currentPixel = generateRay(row, column);
+			output1(row,column)->Red = (ebmpBYTE)currentPixel.x * 255;
+			output1(row,column)->Green = (ebmpBYTE)currentPixel.y * 255;
+			output1(row,column)->Blue = (ebmpBYTE)currentPixel.z * 255;
 		}
 	}
 
-	writeToFile();
+	output1.WriteToFile(outputFileName.c_str());
 
-	return colorBuffer;
+	return;
 }
 
 
@@ -69,7 +83,7 @@ vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec4& reflectedRay, const d
 		}
 	}
 
-	if(t != std::numeric_limits<double>::max())
+	if(t != std::numeric_limits<double>::max() && t != -1)
 	{
 		//Get the specific point on the object that was intersected with
 		vec4 point = RPoint(geomPoint, t, reflectedRay);
@@ -120,7 +134,6 @@ vec3 rayTracer::generateRay(int x, int y)
 	ray.x = (mVec.x + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.x + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.x) - cameraPosition.x;
 	ray.y = (mVec.y + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.y + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.y) - cameraPosition.y;
 	ray.z = (mVec.z + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.z + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.z) - cameraPosition.z;
-	ray.w = 1;
 
 	ray = normalize(ray);
 
@@ -133,7 +146,7 @@ void rayTracer::setData()
 {
 	nVec = vec3(viewDirection) - vec3(cameraPosition);
 
-	normalize(nVec);
+	nVec = normalize(nVec);
 
 	float ratioX = 1.0f, ratioY = 1.0f;
 
@@ -178,7 +191,7 @@ bool rayTracer::shadowFeeler(vec4 point)
 		double tOne = intersectTest(reflectedRay, geomStack[i]);
 
 		//If it hits, return true for shadow feeler 
-		if(tOne != -1 || tOne != 0)
+		if(tOne != -1 && tOne != 0)
 			return true;
 	}
 
@@ -189,14 +202,13 @@ bool rayTracer::shadowFeeler(vec4 point)
 //Blinn-phong lighting without specular
 vec3 rayTracer::calculateLight(bool shadow, vec4 normal, Geometry geomPoint, vec4 Rpoint)
 {
-	float ka = 0.8F, kd = 0.5F;
+	float ka = 0.1f, kd = 0.5f;
 	vec3 ambient, diffuse;
 	vec3 colorCalc = materialColor;
 	vec3 defaultObjectColor = vec3(materialColor);
 
 	//Blinn-phong code
 	//If there is a shadow, then don't calculate the diffuse lighting
-
 	vec4 L = normalize(lightPosition - Rpoint);
 
 	vec4 V = normalize(cameraPosition - Rpoint);
@@ -223,13 +235,6 @@ vec3 rayTracer::calculateLight(bool shadow, vec4 normal, Geometry geomPoint, vec
 vec4 rayTracer::RPoint(Geometry geom, double t, vec4 ray)
 {
 	vec4 Rpoint;
-
-	//if(geom.getType() == "cube")
-	//	returnT = Test_RayCubeIntersect(cameraPosition, ray, geom.getPoints());
-	//else if(geom.getType() == "sphere")
-	//	returnT = Test_RaySphereIntersect(cameraPosition, ray, geom.getPoints());
-	//else if(geom.getType() == "polygon")
-	//	returnT = Test_RayPolyIntersect(cameraPosition, ray, geom.getPoints());
 
 	vec4 objectSpace_E = inverse(geom.getPoints()) * cameraPosition;
 	vec4 objectSpace_P = inverse(geom.getPoints()) * ray;
@@ -298,31 +303,4 @@ vec4 rayTracer::getPointNormal(vec4 point, Geometry geomPoint)
 
 
 	return normal;
-}
-
-void rayTracer::writeToFile()
-{
-	BMP output1;
-
-	output1.SetBitDepth(24);
-	output1.SetSize((int)imageResolution.x, (int)imageResolution.y);
-
-	vec3 currentPixel;
-
-	//Generate first image
-	for(int x=0; x < imageResolution.x; x++)
-	{
-		for(int y=0; y < imageResolution.y; y++)
-		{
-			currentPixel = generateRay(x, y);
-			output1(x,y)->Red = (ebmpBYTE)currentPixel.x * 255;
-			output1(x,y)->Green = (ebmpBYTE)currentPixel.y * 255;
-			output1(x,y)->Blue = (ebmpBYTE)currentPixel.z * 255;
-		}
-	}
-
-	//Put the data into a bmp image 
-	output1.WriteToFile(outputFileName.c_str());
-
-	return;
 }

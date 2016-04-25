@@ -19,7 +19,7 @@ public:
 	~rayTracer();
 
 	//Runs the whole operation of the ray tracer
-	vector<vec3> runTracer();
+	void runTracer();
 
 	//Function that goes through for each pixel and ray traces it 
 	vec3 rayTrace(glm::vec3 pixelColor, const vec4& ray, const double& depth);
@@ -44,9 +44,6 @@ public:
 
 	//Return the normal from the point of intersection
 	vec4 getPointNormal(vec4 point, Geometry geomPoint);
-
-	//Write out the image to file
-	void writeToFile();
 
 private:
 	vec3 backgroundColor;
