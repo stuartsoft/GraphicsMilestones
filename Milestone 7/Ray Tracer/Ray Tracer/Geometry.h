@@ -1,3 +1,6 @@
+#ifndef _GEOM_H
+#define _GEOM_H
+
 //Polymorphism used to assign the geometry 
 #include "glm\glm.hpp"
 #include <string>
@@ -19,3 +22,5 @@ private:
 	glm::vec3 coordinates;
 
 };
+
+#endif

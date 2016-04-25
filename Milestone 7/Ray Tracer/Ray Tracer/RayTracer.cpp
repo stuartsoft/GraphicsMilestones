@@ -24,6 +24,8 @@ vec3* rayTracer::runTracer()
 			colorBuffer[column * (int)imageResolution.x + row] = generateRay(row, column);
 		}
 	}
+
+	return colorBuffer;
 }
 
 
