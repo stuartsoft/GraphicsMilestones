@@ -19,7 +19,8 @@ rayTracer::rayTracer(vector<Geometry> geomList, string outputName)
 	viewDirection = vec4(0, 0, -1, 1);
 	cameraPosition = vec4(0, 0, 3, 0);
 	imageResolution = vec2(640, 420);
-	angle = radians(30.0f);
+	angle = radians(1.0f);
+	upVector = vec3(0, 1, 0);
 
 	colorBuffer.resize((int)(imageResolution.x * imageResolution.y));
 
@@ -73,7 +74,7 @@ vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec4& reflectedRay, const d
 	for(unsigned int i=0; i < geomStack.size(); ++i)
 	{
 		//Run the intersection test and return the lowest t value
-		double tOne = intersectTest(reflectedRay, geomStack[i]);
+		double tOne = intersectTest(cameraPosition, reflectedRay, geomStack[i]);
 
 		if(tOne != -1 && tOne < t)
 		{
@@ -95,7 +96,7 @@ vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec4& reflectedRay, const d
 		//Check the shadow feelers to figure out if there is anything between 
 		//the object and the light source
 		//The lighting is blinn-phong without specular 
-		pixelColor = calculateLight(shadowFeeler(point), normal, geomPoint, point);
+		pixelColor = calculateLight(shadowFeeler(point, geomPoint), normal, geomPoint, point);
 	}
 
 	//This will be changed to be the correct color along the way
@@ -104,16 +105,16 @@ vec3 rayTracer::rayTrace(glm::vec3 pixelColor, const vec4& reflectedRay, const d
 
 // Do the correct intersection test based on 
 // the geometry type and return the t value
-double rayTracer::intersectTest(const vec4& ray, Geometry geom)
+double rayTracer::intersectTest(vec4 startPoint, const vec4& ray, Geometry geom)
 {
 	double returnT = std::numeric_limits<double>::max();
 
 	if(geom.getType() == "Cube")
-		returnT = Test_RayCubeIntersect(cameraPosition, ray, geom.getPoints());
+		returnT = Test_RayCubeIntersect(startPoint, ray, geom.getPoints());
 	else if(geom.getType() == "Sphere")
-		returnT = Test_RaySphereIntersect(cameraPosition, ray, geom.getPoints());
-	else if(geom.getType() == "Triangle");
-		//returnT = Test_RayPolyIntersect(cameraPosition, ray, geom.getPoints());
+		returnT = Test_RaySphereIntersect(startPoint, ray, geom.getPoints());
+	else if(geom.getType() == "Triangle")
+		returnT = Test_RayPolyIntersect(startPoint, ray, vec4(-0.5, 0, 0, 0), vec4(0.5,0,0,0), vec4(0,1,0,0), geom.getPoints());
 	else
 	{
 		//Misspelled the shape type
@@ -179,7 +180,7 @@ void rayTracer::setData()
 }
 
 //Stilll probably 
-bool rayTracer::shadowFeeler(vec4 point)
+double rayTracer::shadowFeeler(vec4 point, Geometry geom)
 {
 	//Ray from the point of intersection to the light source
 	vec4 reflectedRay = vec4(lightPosition - point);
@@ -188,11 +189,19 @@ bool rayTracer::shadowFeeler(vec4 point)
 	for(unsigned int i=0; i < geomStack.size(); ++i)
 	{
 		//Probably something like this for the shadow feeler (Pulled from ray trace)
-		double tOne = intersectTest(reflectedRay, geomStack[i]);
+		double tOne = intersectTest(point, reflectedRay, geomStack[i]);
+
+		double *tDos;
+		if(geomStack[i].getType() == "Cube")
+			tDos = Test_RayCubeIntersect(point, reflectedRay, geom.getPoints(), true);
+		//else if(geomStack[i].getType() == "Triangle")
+		//	tDos = Test_RayPolyIntersect(point, reflectedRay, vec4(-0.5, 0, 0, 0), vec4(0.5,0,0,0), vec4(0,1,0,0), geom.getPoints(), true);
+		//else if(geomStack[i].getType() == "Sphere")
+		//	tDos = Test_RayCubeIntersect(point, reflectedRay, geom.getPoints(), true);
 
 		//If it hits, return true for shadow feeler 
-		if(tOne != -1 && tOne != 0)
-			return true;
+		if(tOne != -1)
+			return tOne;
 	}
 
 	//If it didn't hit anything, then a false return is an indicator of that 
@@ -200,7 +209,7 @@ bool rayTracer::shadowFeeler(vec4 point)
 }
 
 //Blinn-phong lighting without specular
-vec3 rayTracer::calculateLight(bool shadow, vec4 normal, Geometry geomPoint, vec4 Rpoint)
+vec3 rayTracer::calculateLight(double shadow, vec4 normal, Geometry geomPoint, vec4 Rpoint)
 {
 	float ka = 0.1f, kd = 0.5f;
 	vec3 ambient, diffuse;
@@ -217,7 +226,7 @@ vec3 rayTracer::calculateLight(bool shadow, vec4 normal, Geometry geomPoint, vec
 
 	ambient = defaultObjectColor;
 
-	if(shadow)
+	if(shadow != -1)
 	{
 		diffuse = vec3(0,0,0);
 	}

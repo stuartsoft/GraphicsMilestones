@@ -25,7 +25,7 @@ public:
 	vec3 rayTrace(glm::vec3 pixelColor, const vec4& ray, const double& depth);
 
 	//Run the intersection tests from milestone 6 (Geometry holds a sting telling you what type of geometry it is
-	double intersectTest(const vec4& ray, Geometry geom);
+	double intersectTest(vec4 startPoint, const vec4& ray, Geometry geom);
 
 	//Generate the ray for each position
 	vec3 generateRay(int x, int y);
@@ -34,10 +34,10 @@ public:
 	void setData();
 
 	//Check the shadow feeler from the point of intersection
-	bool shadowFeeler(vec4 point);
+	double shadowFeeler(vec4 point, Geometry geom);
 
 	//Calculate the lighting (Lambertian lighting)
-	vec3 calculateLight(bool shadow, vec4 normal, Geometry geomPointer, vec4 Rpoint);
+	vec3 calculateLight(double shadow, vec4 normal, Geometry geomPointer, vec4 Rpoint);
 
 	//Get the specific point from where on the geometry was hit
 	vec4 RPoint(Geometry geomPoint, double t, vec4 ray);

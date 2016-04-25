@@ -4,7 +4,7 @@ int main()
 {
 	//Generate the scenegraph for the scene
 	SceneGraph *graphOne = new SceneGraph;
-	graphOne->Parse("scene6.txt");
+	graphOne->Parse("scene1.txt");
 
 	vector<Geometry> transGeomList;
 	graphOne->traverse(glm::mat4());

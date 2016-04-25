@@ -85,7 +85,12 @@ void SceneGraph::Parse(string fname){
 		//actually create and add the new node
 		SceneGraph* node = new SceneGraph();
 		node->rootSG = this;
-		node->geometry = geometryObjectRef[0];//set it to point to the cube geometry
+		if (geoType == "sphere")
+            node->geometry = geometryObjectRef[0];//set it to point to the cube geometry
+        else if (geoType == "triangle")
+            node->geometry = geometryObjectRef[1];
+        else if (geoType == "cube")
+            node->geometry = geometryObjectRef[2];
 		node->scale[0][0] = scale.x;
 		node->scale[1][1] = scale.y;
 		node->scale[2][2] = scale.z;
