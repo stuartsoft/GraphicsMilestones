@@ -5,7 +5,10 @@
 class Geometry
 {
 public:
-	Geometry(std::string t, glm::mat4 m);
+	Geometry(std::string t, glm::mat4 m){
+		type = t;
+		M = m;
+	};
 	std::string getType() {return type;};
 	glm::mat4 getPoints() {return M;};
 
