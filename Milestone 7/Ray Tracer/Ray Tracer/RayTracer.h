@@ -19,7 +19,7 @@ public:
 	~rayTracer();
 
 	//Runs the whole operation of the ray tracer
-	vec3* runTracer();
+	vector<vec3> runTracer();
 
 	//Function that goes through for each pixel and ray traces it 
 	vec3 rayTrace(glm::vec3 pixelColor, const vec4& ray, const double& depth);
@@ -62,7 +62,7 @@ private:
 	vec3 upVector;
 	vec3 mVec;
 	vec3 hVec;
-	vec3 *colorBuffer;
+	vector<vec3> colorBuffer;
 	mat4 cameraMatrix;
 	mat4 viewMatrix;
 	float angle;

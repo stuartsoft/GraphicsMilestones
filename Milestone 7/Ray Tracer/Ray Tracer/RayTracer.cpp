@@ -5,7 +5,7 @@ const vec3 BACKGROUND_COLOR = vec3(0,0,0);
 
 rayTracer::rayTracer(vector<Geometry> geomList, string outputName)
 {
-	colorBuffer = new vec3[(int)(imageResolution.x * imageResolution.y)];
+	
 
 	//Make a copy of the geometry list 
 	geomStack = geomList;
@@ -20,17 +20,19 @@ rayTracer::rayTracer(vector<Geometry> geomList, string outputName)
 	lightPosition = vec4(5, 0, -5, 0);
 	viewDirection = vec4(0, 0, 0, 1);
 	cameraPosition = vec4(5, -5, 5, 0);
-	imageResolution = vec2(100, 100);
+	imageResolution = vec2(640, 480);
+
+	colorBuffer.resize((int)(imageResolution.x * imageResolution.y));
 
 	return;
 }
 
 rayTracer::~rayTracer()
 {
-	delete [] colorBuffer;
+	
 }
 
-vec3* rayTracer::runTracer()
+vector<vec3> rayTracer::runTracer()
 {
 	for(unsigned row = 0; row < imageResolution.x; ++row)
 	{
@@ -93,11 +95,11 @@ double rayTracer::intersectTest(const vec4& ray, Geometry geom)
 {
 	double returnT = std::numeric_limits<double>::max();
 
-	if(geom.getType() == "cube")
+	if(geom.getType() == "Cube")
 		returnT = Test_RayCubeIntersect(cameraPosition, ray, geom.getPoints());
-	else if(geom.getType() == "sphere")
+	else if(geom.getType() == "Sphere")
 		returnT = Test_RaySphereIntersect(cameraPosition, ray, geom.getPoints());
-	else if(geom.getType() == "polygon");
+	else if(geom.getType() == "Polygon");
 		//returnT = Test_RayPolyIntersect(cameraPosition, ray, geom.getPoints());
 	else
 	{

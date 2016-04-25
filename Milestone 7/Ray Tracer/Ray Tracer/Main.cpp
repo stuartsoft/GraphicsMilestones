@@ -1,7 +1,5 @@
 #include "RayTracer.h"
 
-//Define the variables for the program up here
-
 int main()
 {
 	//Generate the scenegraph for the scene
@@ -14,6 +12,7 @@ int main()
 	
 	rayTracer *tracerOne = new rayTracer(transGeomList, "output.bmp");
 	tracerOne->setData();
+	tracerOne->runTracer();
 
 	return 0;
 }
