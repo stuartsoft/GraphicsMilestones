@@ -12,7 +12,7 @@ int main()
 	graphOne->traverse(glm::mat4());
 	graphOne->draw(transGeomList);
 	
-	rayTracer *tracerOne = new rayTracer(transGeomList);
+	rayTracer *tracerOne = new rayTracer(transGeomList, "output.bmp");
 	tracerOne->setData();
 
 	return 0;

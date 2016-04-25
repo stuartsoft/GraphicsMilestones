@@ -13,7 +13,7 @@ class rayTracer
 {
 public:
 	//Default constructor for the ray tracer 
-	rayTracer(vector<Geometry>);
+	rayTracer(vector<Geometry>, string outputName);
 
 	//Destructor for ray tracer 
 	~rayTracer();
@@ -34,16 +34,16 @@ public:
 	void setData();
 
 	//Check the shadow feeler from the point of intersection
-	bool shadowFeeler(vec3 point);
+	bool shadowFeeler(vec4 point);
 
 	//Calculate the lighting (Lambertian lighting)
-	vec3 calculateLight(bool shadow, vec3 normal);
+	vec3 calculateLight(bool shadow, vec4 normal, Geometry geomPointer, vec4 Rpoint);
 
 	//Get the specific point from where on the geometry was hit
-	vec3 RPoint(Geometry geomPoint, double t);
+	vec4 RPoint(Geometry geomPoint, double t, vec4 ray);
 
 	//Return the normal from the point of intersection
-	vec3 getPointNormal(vec3 point, Geometry geomPoint);
+	vec4 getPointNormal(vec4 point, Geometry geomPoint);
 
 	//Write out the image to file
 	void writeToFile();
@@ -52,8 +52,8 @@ private:
 	vec3 backgroundColor;
 	vec3 materialColor;
 	vec3 lightColor;
-	vec3 lightPosition;
-	vec3 viewDirection;
+	vec4 lightPosition;
+	vec4 viewDirection;
 	vector<Geometry> geomStack;
 	vec4 cameraPosition;
 	vec2 imageResolution;
@@ -63,6 +63,8 @@ private:
 	vec3 mVec;
 	vec3 hVec;
 	vec3 *colorBuffer;
+	mat4 cameraMatrix;
+	mat4 viewMatrix;
 	float angle;
 
 	string outputFileName;

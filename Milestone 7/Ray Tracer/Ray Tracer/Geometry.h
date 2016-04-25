@@ -22,7 +22,6 @@ private:
 	std::string type;	
 	glm::mat4 M;
 	glm::vec3 coordinates;
-
 };
 
 #endif
