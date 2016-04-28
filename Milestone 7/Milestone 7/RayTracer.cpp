@@ -1,7 +1,7 @@
 #include "RayTracer.h"
 
-const vec3 BACKGROUND_COLOR = vec3(255, 255, 255);
-const vec3 MATERIAL_COLOR = vec3(0,0,0);
+const vec3 BACKGROUND_COLOR = vec3(0, 0, 0);
+const vec3 MATERIAL_COLOR = vec3(85,45,125);
 #define PI 3.14159f
 
 double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix){
