@@ -207,7 +207,23 @@ void RunYourTests() {
 }
 
 void RunGradingTests() {
+	const vec4 CUBE0P0(1,1,1,1);
+	const vec4 CUBE0V0(-0.5773,-0.5773,-0.5773,0);
 
+	RunTest(
+		"GRADING CUBE 0",
+		Test_RayCubeIntersect(CUBE0P0, CUBE0V0, IDENTITY_MATRIX),
+		sqrt(3.0) - sqrt(0.75));
+
+	const mat4 CUBE1TRANS(vec4(0.7071,0.4082,0.5774,0), vec4(0,0.8165,-0.5774,0),  vec4(-0.7071,0.4082,0.5774,0), vec4(0,0,0,1));
+
+	const vec4 CUBE1P0(0,0,1,1);
+	const vec4 CUBE1V0(0,0,-1,0);
+
+	RunTest(
+		"GRADING CUBE 1",
+		Test_RayCubeIntersect(CUBE1P0, CUBE1V0, CUBE1TRANS),
+		1 - sqrt(0.75));
 }
 
 void ReportTest(std::string name, bool result) {

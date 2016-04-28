@@ -22,8 +22,6 @@ rayTracer::rayTracer(vector<Geometry> geomList, string outputName)
 	angle = radians(1.0f);
 	upVector = vec3(0, 1, 0);
 
-	colorBuffer.resize((int)(imageResolution.x * imageResolution.y));
-
 	return;
 }
 
@@ -191,16 +189,8 @@ double rayTracer::shadowFeeler(vec4 point, Geometry geom)
 		//Probably something like this for the shadow feeler (Pulled from ray trace)
 		double tOne = intersectTest(point, reflectedRay, geomStack[i]);
 
-		double *tDos;
-		if(geomStack[i].getType() == "Cube")
-			tDos = Test_RayCubeIntersect(point, reflectedRay, geom.getPoints(), true);
-		//else if(geomStack[i].getType() == "Triangle")
-		//	tDos = Test_RayPolyIntersect(point, reflectedRay, vec4(-0.5, 0, 0, 0), vec4(0.5,0,0,0), vec4(0,1,0,0), geom.getPoints(), true);
-		//else if(geomStack[i].getType() == "Sphere")
-		//	tDos = Test_RayCubeIntersect(point, reflectedRay, geom.getPoints(), true);
-
 		//If it hits, return true for shadow feeler 
-		if(tOne != -1)
+		if(tOne != -1 && tOne != 0)
 			return tOne;
 	}
 
