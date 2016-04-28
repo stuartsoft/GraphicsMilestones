@@ -163,7 +163,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 0), vec4(R, 0), transMatrix);
 
 				//Find the closest intersection point
-				if(tOne < t)
+				if(tOne < t && tOne != -1)
 				{
 					t = tOne;
 					intersectGeometry = sceneGeom[num];
@@ -181,16 +181,16 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 			}
 
 			//Put a cap on the color
-			if(color.x > 1)
-				color.x = 1;
-			if(color.y > 1)
-				color.y = 1;
-			if(color.z > 1)
-				color.z = 1;
+			if(color.x > 255)
+				color.x = 255;
+			if(color.y > 255)
+				color.y = 255;
+			if(color.z > 255)
+				color.z = 255;
 
-			output(x, y)->Red = (ebmpBYTE)abs(color.x) * 255;
-			output(x, y)->Green = (ebmpBYTE)abs(color.y) * 255;
-			output(x, y)->Blue = (ebmpBYTE)abs(color.z) * 255;
+			output(x, y)->Red = (ebmpBYTE)abs(color.x);
+			output(x, y)->Green = (ebmpBYTE)abs(color.y);
+			output(x, y)->Blue = (ebmpBYTE)abs(color.z);
 		}
 	}
 	output.WriteToFile(outputName.c_str());
