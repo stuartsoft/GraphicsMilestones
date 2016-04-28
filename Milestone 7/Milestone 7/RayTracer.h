@@ -1,4 +1,5 @@
 #include "stubs.h"
+#include "Geometry.h"
 #include "glm\glm.hpp"
 #include "Geometry.h"
 #include "EasyBMP.h"
