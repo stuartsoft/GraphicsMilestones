@@ -1,3 +1,6 @@
+#ifndef _GEOM_H
+#define _GEOM_H
+
 #include <string>
 #include "glm\glm.hpp"
 #include <vector>
@@ -9,8 +12,9 @@ protected:
 	std::string type;
 	std::vector<vec4> points;
 
-	std::vector<vec4> getPoints() {return points;}
-	std::string getType() {return type;}
+public:
+	virtual std::string getType() {return type;};
+	virtual std::vector<vec4> getpoints() {return points;};
 };
 
 class Cube : public Geometry{
@@ -36,8 +40,6 @@ public:
 		//back bottom left
 		points.push_back(vec4(0.5f, -0.5f, -0.5f, 0.0f));
 	};
-
-
 };
 
 class Triangle : public Geometry{
@@ -51,17 +53,13 @@ public:
 		points.push_back(vec4(0.5f, -0.5f, 0.0f, 0.0f));
 		points.push_back(vec4(0.0f, 0.5f, 0.0f, 0.0f));
 	};
-
 };
 
 class Sphere : public Geometry{
-private:
-	float radius;
 public:
 	Sphere(){
 		type = "sphere";
-		radius = 1.0f;
 	};
-
-	float getRadius() {return radius;}
 };
+
+#endif
