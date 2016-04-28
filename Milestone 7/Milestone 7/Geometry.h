@@ -8,9 +8,12 @@ class Geometry{
 protected:
 	std::string type;
 	std::vector<vec4> points;
+
+	std::vector<vec4> getPoints() {return points;}
+	std::string getType() {return type;}
 };
 
-class Cube : protected Geometry{
+class Cube : public Geometry{
 private:
 
 public:
@@ -34,11 +37,10 @@ public:
 		points.push_back(vec4(0.5f, -0.5f, -0.5f, 0.0f));
 	};
 
-	std::vector<vec4> getPoints() {return points;}
-	std::string getType() {return type;}
+
 };
 
-class Triangle : protected Geometry{
+class Triangle : public Geometry{
 private:
 
 public:
@@ -50,11 +52,9 @@ public:
 		points.push_back(vec4(0.0f, 0.5f, 0.0f, 0.0f));
 	};
 
-	std::vector<vec4> getPoints() {return points;}
-	std::string getType() {return type;}
 };
 
-class Sphere : protected Geometry{
+class Sphere : public Geometry{
 private:
 	float radius;
 public:
@@ -63,6 +63,5 @@ public:
 		radius = 1.0f;
 	};
 
-	std::string getType() {return type;}
 	float getRadius() {return radius;}
 };
