@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5715E99A-DE5F-4BD8-9CE4-2C02D0EBE35B}</ProjectGuid>
-    <RootNamespace>RayTracer</RootNamespace>
+    <ProjectGuid>{84F6C231-DAF2-4563-9F38-C1D439CC0718}</ProjectGuid>
+    <RootNamespace>Milestone7</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,22 +64,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="EasyBMP.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="RayTracer.cpp" />
-    <ClCompile Include="SceneGraph.cpp" />
-    <ClCompile Include="stubs.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="EasyBMP.h" />
-    <ClInclude Include="EasyBMP_BMP.h" />
-    <ClInclude Include="EasyBMP_DataStructures.h" />
-    <ClInclude Include="EasyBMP_VariousBMPutilities.h" />
-    <ClInclude Include="GeometryNode.h" />
-    <ClInclude Include="Geometry.h" />
-    <ClInclude Include="RayTracer.h" />
-    <ClInclude Include="SceneGraph.h" />
-    <ClInclude Include="stubs.h" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
