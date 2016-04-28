@@ -64,10 +64,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EasyBMP.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RayTracer.cpp" />
+    <ClCompile Include="stubs.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EasyBMP.h" />
+    <ClInclude Include="EasyBMP_BMP.h" />
+    <ClInclude Include="EasyBMP_DataStructures.h" />
+    <ClInclude Include="EasyBMP_VariousBMPutilities.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="RayTracer.h" />
+    <ClInclude Include="stubs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
