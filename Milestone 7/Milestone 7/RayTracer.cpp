@@ -1,6 +1,7 @@
 #include "RayTracer.h"
 
 const vec3 BACKGROUND_COLOR = vec3(255, 255, 255);
+const vec3 MATERIAL_COLOR = vec3(0,0,0);
 
 double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix){
 	double result;
@@ -19,30 +20,90 @@ double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMa
 	return result;
 }
 
-void RayTracer::shadowFeeler(vec4 intersectionPoint){
-	bool obstruction = false;
-	float ka = 0.1f, kd = 0.5f;
-	vec3 ambient, diffuse;
-	vec3 colorCalc = materialColor;
-	vec3 defaultObjectColor = vec3(materialColor);
+vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
+	vec4 normal;
 
-	for(int i = 0; i < sceneGeom.size(); i++){
-		double result = intersectionTests(sceneGeom[i], intersectionPoint, lightpos - intersectionPoint, T);
+	if(geom->getType() == "triangle")
+	{
+		//bott left point
+		vec3 point1 = vec3(-0.5, 0, 0);
+		//bott right point
+		vec3 point2 = vec3(0.5, 0, 0);
+		//top point
+		vec3 point3 = vec3(0, 1, 0);
 
-		if(result != -1 && result != 0)
-			obstruction = true;
+		normal = T * vec4(cross(point2 - point1, point3 - point1), 1);
+	}
+	else if(geom->getType() == "sphere")
+	{
+		normal = point;
+		normal.w = 1;
+		normal = T * normal;
+	}
+	else if(geom->getType() == "Cube")
+	{
+		//front face
+		vec4 norm1 = vec4(0,0,1,1);
+		//back face
+		vec4 norm2 = vec4(0,0,-1,1);
+		//left face
+		vec4 norm3 = vec4(-1,0,0,1);
+		//right face
+		vec4 norm4 = vec4(1,0,0,1);
+		//top face
+		vec4 norm5 = vec4(0,1,0,1);
+		//bottom face
+		vec4 norm6 = vec4(0,-1,0,1);
+
+		if(abs(point.x - 0.5f) < 0.001)
+			normal = T * norm4;
+		if(abs(point.x + 0.5f) < 0.001)
+			normal = T * norm3;
+		if(abs(point.y - 0.5f) < 0.001)
+			normal = T * norm4;
+		if(abs(point.y + 0.5f) < 0.001)
+			normal = T * norm6;
+		if(abs(point.z - 0.5f) < 0.001)
+			normal = T * norm1;
+		if(abs(point.z + 0.5f) < 0.001)
+			normal = T * norm2;
+	}
+	else 
+	{
+		//Misspelled the shape type
+		std::cout << "ERROR: Incorrect geometry type\n";
+		system("PAUSE");
+		exit(0);
 	}
 
 
-	//Blinn-phong code
-	//If there is a shadow, then don't calculate the diffuse lighting
-	vec4 L = normalize(lightPosition - Rpoint);
+	return normal;
+}
 
-	vec4 V = normalize(cameraPosition - Rpoint);
+vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal){
+	bool obstruction = false;
+	float ka = 0.1f, kd = 0.5f;
+	vec3 ambient, diffuse;
+	vec3 colorCalc;
+	Geometry *geom;
+
+	for(int i = 0; i < sceneGeom.size(); i++){
+		double result = intersectionTests(sceneGeom[i], intersectionPoint,  - intersectionPoint, T);
+
+		if(result != -1 && result != 0){
+			obstruction = true;
+			geom = sceneGeom[i];
+		}
+	}
+
+	//Blinn-phong code
+	vec4 L = normalize(lightPos - intersectionPoint);
+
+	vec4 V = normalize(vec4(eyePos, 0.0f) - intersectionPoint);
 
 	vec4 H = normalize(L + V);
 
-	ambient = defaultObjectColor;
+	ambient = MATERIAL_COLOR;
 
 	if(obstruction)
 	{
@@ -50,7 +111,7 @@ void RayTracer::shadowFeeler(vec4 intersectionPoint){
 	}
 	else
 	{
-		diffuse = clamp(dot(L, normal), 0.0f, 1.0f) * defaultObjectColor;
+		diffuse = clamp(dot(L, normal), 0.0f, 1.0f) * MATERIAL_COLOR;
 	}
 
 	colorCalc = vec3(ka * ambient + kd * diffuse);
@@ -73,7 +134,7 @@ void RayTracer::rayGeneration(int wid, int height){
 	U = normalize(U);
 
 	vec3 V, H;
-	float tanFovy = tan(fovy * (PI / 180.0f));
+	float tanFovy = tan(fovy * (3.14159 / 180.0f));
 	V = up * tanFovy;
 
 	H = U * tanFovy;

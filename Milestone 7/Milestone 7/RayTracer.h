@@ -1,6 +1,7 @@
 #include "stubs.h"
 #include "Geometry.h"
 #include "glm\glm.hpp"
+#include <iostream>
 
 class RayTracer
 {
@@ -13,17 +14,21 @@ public:
 	}
 
 	//Calculate all lighting along with the shadow feelers affecting that lighting
-	void shadowFeeler(vec4);
+	vec3 shadowFeeler(vec4, mat4 T, vec4 normal);
 
 	//Generate the rays starting from the camera and going to a point on the screen
 	void RayTracer::rayGeneration(int wid, int height);
 
 	double intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix);
 
+	vec4 getNormal(vec4 point, Geometry *geom, mat4 T);
+
 private:
 	std::vector<Geometry*> sceneGeom;
 	glm::vec3 eyePos;
 	glm::vec3 vdir;
 	glm::vec3 uvec;
+	glm::vec4 lightPos;
+
 	float fovy;
 };
