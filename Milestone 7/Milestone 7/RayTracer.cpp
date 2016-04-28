@@ -131,8 +131,10 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 
 	vec3 m = eyePos + N;
 
-	U = glm::cross(N,up);
+	U = -glm::cross(N,up);
 	U = normalize(U);
+
+	up = glm::cross(U,N);
 
 	vec3 V, H;
 
