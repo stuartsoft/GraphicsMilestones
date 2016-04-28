@@ -4,6 +4,8 @@
 class RayTracer
 {
 public:
+
+
 	//Calculate all lighting along with the shadow feelers affecting that lighting
 	void shadowFeeler();
 
