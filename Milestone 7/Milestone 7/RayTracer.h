@@ -7,14 +7,20 @@
 class RayTracer
 {
 public:
-	RayTracer(vec3 EyePos, vec3 Vdir, vec3 Uvec, float Fovy, vec2 picSize, std::vector<Geometry*> list){
+	RayTracer(vec3 EyePos, vec3 Vdir, vec3 Uvec, float Fovy, vec2 picSize, std::vector<Geometry*> list, std::string fName){
 		eyePos = EyePos;
 		vdir = Vdir;
 		uvec = Uvec;
 		fovy = Fovy;
 		imageSize = picSize;
 		sceneGeom = list;
+		outputName = fName;
 	}
+	~RayTracer()
+	{
+		sceneGeom.clear();
+	}
+
 
 	//Calculate all lighting along with the shadow feelers affecting that lighting
 	vec3 shadowFeeler(vec4, mat4 T, vec4 normal);
@@ -27,6 +33,9 @@ public:
 
 	vec4 getNormal(vec4 point, Geometry *geom, mat4 T);
 
+	//Get the intersection point x,y,z
+	vec4 intersectionPoint(const mat4& transMatrix, Geometry * geom, double t);
+
 private:
 	std::vector<Geometry*> sceneGeom;
 	glm::vec2 imageSize;
@@ -34,6 +43,7 @@ private:
 	glm::vec3 vdir;
 	glm::vec3 uvec;
 	glm::vec4 lightPos;
+	std::string outputName;
 	float fovy;
 
 };

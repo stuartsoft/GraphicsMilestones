@@ -89,7 +89,7 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal){
 	Geometry *geom;
 
 	for(unsigned i = 0; i < sceneGeom.size(); i++){
-		double result = intersectionTests(sceneGeom[i], intersectionPoint, lightPosition - intersectionPoint, T);
+		double result = intersectionTests(sceneGeom[i], intersectionPoint, lightPos - intersectionPoint, T);
 
 		if(result != -1 && result != 0){
 			obstruction = true;
@@ -155,25 +155,65 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 			glm::vec3 R = D - eyePos;
 			R = glm::normalize(R);
 
-			//TODO call intersection tests on all objects and call shadow feelers
+			//Initialize the t value to "infinity" and the intersection geometry to no geometry (NULL)
 			double t = 1e26;
+			Geometry * intersectGeometry = NULL;
 			for(unsigned num=0; num < sceneGeom.size(); ++num)
 			{
 				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 0), vec4(R, 0), transMatrix);
 
+				//Find the closest intersection point
 				if(tOne < t)
+				{
 					t = tOne;
-			}
-			vec3 color = BACKGROUND_COLOR;
-			if(t != -1)
-			{
-				//vec3 sFeeler = shadowFeeler(intersectionPoint(), transMatrix);
+					intersectGeometry = sceneGeom[num];
+				}
 			}
 
-			output(x, y)->Red = (ebmpBYTE)abs(R.x) * 255;
-			output(x, y)->Green = (ebmpBYTE)abs(R.y) * 255;
-			output(x, y)->Blue = (ebmpBYTE)abs(R.z) * 255;
+			//Initialize the color to the background color
+			vec3 color = BACKGROUND_COLOR;
+			if(t != -1 && t != 1e26)
+			{
+				//vec4 iPoint = intersectionPoint(transMatrix, intersectGeometry, t);
+				//color = shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix));
+
+				color = MATERIAL_COLOR;
+			}
+
+			//Put a cap on the color
+			if(color.x > 1)
+				color.x = 1;
+			if(color.y > 1)
+				color.y = 1;
+			if(color.z > 1)
+				color.z = 1;
+
+			output(x, y)->Red = (ebmpBYTE)abs(color.x) * 255;
+			output(x, y)->Green = (ebmpBYTE)abs(color.y) * 255;
+			output(x, y)->Blue = (ebmpBYTE)abs(color.z) * 255;
 		}
 	}
-	output.WriteToFile("Output.bmp");
+	output.WriteToFile(outputName.c_str());
 }
+
+//The intersection point will have to be calculated differently for each geometry 
+vec4 RayTracer::intersectionPoint(const mat4& transMatrix, Geometry * geom, double t)
+{
+	vec4 iPoint;
+
+	if(geom->getType() == "Sphere")
+	{
+
+	}
+	else if(geom->getType() == "Triangle")
+	{
+
+	}
+	else if(geom->getType() == "Cube")
+	{
+
+	}
+
+	return iPoint;
+}
+

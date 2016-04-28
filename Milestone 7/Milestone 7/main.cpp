@@ -3,8 +3,28 @@
 #include <stdlib.h>
 #include <vector>
 
+using std::to_string;
+
+void runScenes();
+
+const mat4 IDENTITY_MATRIX = mat4();
+const mat4 DOUBLE_MATRIX(vec4(2.0f, 0.0f, 0.0f, 0.0f),
+                         vec4(0.0f, 2.0f, 0.0f, 0.0f),
+                         vec4(0.0f, 0.0f, 2.0f, 0.0f),
+                         vec4(0.0f, 0.0f, 0.0f, 1.0f));
+const mat4 TALLANDSKINNY_MATRIX(vec4(0.5f, 0.0f, 0.0f, 0.0f),
+								vec4(0.0f, 2.0f, 0.0f, 0.0f),
+								vec4(0.0f, 0.0f, 0.5f, 0.0f),
+								vec4(0.0f, 0.0f, 0.0f, 1.0f));
+const mat4 BACK5_MATRIX(vec4(1.0f, 0.0f, 0.0f, 0.0f),
+                        vec4(0.0f, 1.0f, 0.0f, 0.0f),
+                        vec4(0.0f, 0.0f, 1.0f, 0.0f),
+                        vec4(0.0f, 0.0f, -5.0f, 1.0f));
+
 
 int main(){
+
+	runScenes();
 
 return 0;
 }
@@ -16,10 +36,12 @@ void runScenes(){
 	geos.push_back(new Cube());
 	geos.push_back(new Triangle());
 
-	std::vector<glm::vec4> camPos;
-	camPos.push_back(glm::vec4(0, 0, 3, 0));
-	camPos.push_back(glm::vec4(-3, 0, 0, 0));
-	camPos.push_back(glm::vec4(1, 1, 1, 0));
+	std::vector<glm::vec3> camPos;
+	camPos.push_back(glm::vec3(0, 0, 3));
+	camPos.push_back(glm::vec3(-3, 0, 0));
+	camPos.push_back(glm::vec3(1, 1, 1));
+
+	const glm::vec2 imageSize = vec2(640, 420); 
 	
 
 	for (int i = 0;i<3;i++){//for each type of shape
@@ -28,10 +50,12 @@ void runScenes(){
 				float rotY = 0;
 				glm::vec3 scale = glm::vec3(1, 1, 1);
 				glm::vec3 geopos = glm::vec3(0, 0, 0);
-				Geometry * geo = geos[i];
-				glm::vec4 camPosition = camPos[j];
+				std::vector<Geometry*> geoList;
+				geoList.push_back(geos[i]);
+				glm::vec3 camPosition = camPos[j];
+				glm::vec3 upVector = vec3(0, 1, 0);
 
-				glm::vec4 camDir = -camPosition;
+				glm::vec3 camDir = -camPosition;
 				if (k == 1){
 					scale = glm::vec3(1.5f, 1, 1);
 					geopos = glm::vec3(0, 1.0f, 0);
@@ -39,6 +63,11 @@ void runScenes(){
 				}
 
 				//TODO build raytracer with the above parameters and execute everything else 
+				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, rotY, imageSize, geoList, geoList[0]->getType() + to_string(i) + to_string(j) + to_string(k) + ".bmp");
+
+				sceneOne->rayGeneration(IDENTITY_MATRIX);
+
+				delete sceneOne;
 			}
 		}
 	}
