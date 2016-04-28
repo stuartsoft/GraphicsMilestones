@@ -1,3 +1,6 @@
+#ifndef _GEOM_H
+#define _GEOM_H
+
 #include <string>
 #include "glm\glm.hpp"
 #include <vector>
@@ -58,3 +61,5 @@ public:
 		type = "sphere";
 	};
 };
+
+#endif

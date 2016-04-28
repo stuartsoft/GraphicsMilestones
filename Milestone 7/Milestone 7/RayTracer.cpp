@@ -2,6 +2,7 @@
 
 const vec3 BACKGROUND_COLOR = vec3(255, 255, 255);
 const vec3 MATERIAL_COLOR = vec3(0,0,0);
+#define PI 3.14159f
 
 double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix){
 	double result;
@@ -11,7 +12,7 @@ double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMa
 	}
 	else if(geom->getType() == "triangle")
 	{
-		result = Test_RayPolyIntersect(E, P, geom->getpoints()[0], geom->getpoints()[1], geom->getpoints[2], TransMatrix);
+		result = Test_RayPolyIntersect(E, P, geom->getpoints()[0], geom->getpoints()[1], geom->getpoints()[2], TransMatrix);
 	}
 	else if(geom->getType() == "sphere"){
 		result = Test_RaySphereIntersect(E, P, TransMatrix);
@@ -87,8 +88,8 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal){
 	vec3 colorCalc;
 	Geometry *geom;
 
-	for(int i = 0; i < sceneGeom.size(); i++){
-		double result = intersectionTests(sceneGeom[i], intersectionPoint,  - intersectionPoint, T);
+	for(unsigned i = 0; i < sceneGeom.size(); i++){
+		double result = intersectionTests(sceneGeom[i], intersectionPoint, lightPosition - intersectionPoint, T);
 
 		if(result != -1 && result != 0){
 			obstruction = true;
@@ -119,7 +120,7 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal){
 	return colorCalc;
 }
 
-void RayTracer::rayGeneration(int wid, int height){
+void RayTracer::rayGeneration(const mat4& transMatrix){
 	
 	vec3 N = vdir;
 	N = normalize(N);
@@ -134,22 +135,45 @@ void RayTracer::rayGeneration(int wid, int height){
 	U = normalize(U);
 
 	vec3 V, H;
-	float tanFovy = tan(fovy * (3.14159 / 180.0f));
+
+	float tanFovy = tanf(fovy * (PI / 180.0f));
+
 	V = up * tanFovy;
 
 	H = U * tanFovy;
 
-	for (unsigned int x = 0;x<wid;x++){
-		for (unsigned int y = 0;y<height;y++){
+	BMP output;
+	output.SetSize((int)imageSize.x, (int)imageSize.y);
+	output.SetBitDepth(24);
+
+	for (unsigned int x = 0;x<imageSize.x;x++){
+		for (unsigned int y = 0;y<imageSize.y;y++){
 			glm::vec3 D;
-			float xPercent = (2.0f * x/(wid-1)-1);
-			float yPercent = (2.0f * y/(height-1)-1);
+			float xPercent = (2.0f * x/(imageSize.x-1)-1);
+			float yPercent = (2.0f * y/(imageSize.y-1)-1);
 			D = m + (H * xPercent) + (V * yPercent);
 			glm::vec3 R = D - eyePos;
 			R = glm::normalize(R);
 
 			//TODO call intersection tests on all objects and call shadow feelers
+			double t = 1e26;
+			for(unsigned num=0; num < sceneGeom.size(); ++num)
+			{
+				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 0), vec4(R, 0), transMatrix);
 
+				if(tOne < t)
+					t = tOne;
+			}
+			vec3 color = BACKGROUND_COLOR;
+			if(t != -1)
+			{
+				//vec3 sFeeler = shadowFeeler(intersectionPoint(), transMatrix);
+			}
+
+			output(x, y)->Red = (ebmpBYTE)abs(R.x) * 255;
+			output(x, y)->Green = (ebmpBYTE)abs(R.y) * 255;
+			output(x, y)->Blue = (ebmpBYTE)abs(R.z) * 255;
 		}
 	}
+	output.WriteToFile("Output.bmp");
 }
