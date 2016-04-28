@@ -1,6 +1,7 @@
 #include "RayTracer.h"
 
 const vec3 BACKGROUND_COLOR = vec3(255, 255, 255);
+#define PI 3.14159f
 
 double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix){
 	double result;
@@ -10,7 +11,7 @@ double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMa
 	}
 	else if(geom->getType() == "triangle")
 	{
-		result = Test_RayPolyIntersect(E, P, geom->getpoints()[0], geom->getpoints()[1], geom->getpoints[2], TransMatrix);
+		result = Test_RayPolyIntersect(E, P, geom->getpoints()[0], geom->getpoints()[1], geom->getpoints()[2], TransMatrix);
 	}
 	else if(geom->getType() == "sphere"){
 		result = Test_RaySphereIntersect(E, P, TransMatrix);
@@ -18,16 +19,16 @@ double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMa
 
 	return result;
 }
-
-void RayTracer::shadowFeeler(vec4 intersectionPoint){
+	
+vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T){
 	bool obstruction = false;
 	float ka = 0.1f, kd = 0.5f;
 	vec3 ambient, diffuse;
 	vec3 colorCalc = materialColor;
 	vec3 defaultObjectColor = vec3(materialColor);
-
-	for(int i = 0; i < sceneGeom.size(); i++){
-		double result = intersectionTests(sceneGeom[i], intersectionPoint, lightpos - intersectionPoint, T);
+	vec4 normal;
+	for(unsigned i = 0; i < sceneGeom.size(); i++){
+		double result = intersectionTests(sceneGeom[i], intersectionPoint, lightPosition - intersectionPoint, T);
 
 		if(result != -1 && result != 0)
 			obstruction = true;
@@ -36,9 +37,9 @@ void RayTracer::shadowFeeler(vec4 intersectionPoint){
 
 	//Blinn-phong code
 	//If there is a shadow, then don't calculate the diffuse lighting
-	vec4 L = normalize(lightPosition - Rpoint);
+	vec4 L = normalize(lightPosition - intersectionPoint);
 
-	vec4 V = normalize(cameraPosition - Rpoint);
+	vec4 V = normalize(vec4(eyePos, 0.0f) - intersectionPoint);
 
 	vec4 H = normalize(L + V);
 
@@ -73,13 +74,13 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 	U = normalize(U);
 
 	vec3 V, H;
-	float tanFovy = tan(fovy * (PI / 180.0f));
+	float tanFovy = tanf(fovy * (PI / 180.0f));
 	V = up * tanFovy;
 
 	H = U * tanFovy;
 
 	BMP output;
-	output.SetSize(imageSize.x, imageSize.y);
+	output.SetSize((int)imageSize.x, (int)imageSize.y);
 	output.SetBitDepth(24);
 
 	for (unsigned int x = 0;x<imageSize.x;x++){
@@ -93,9 +94,9 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 
 			//TODO call intersection tests on all objects and call shadow feelers
 			double t = 1e26;
-			for(unsigned num=0; num < geomList.size(); ++num)
+			for(unsigned num=0; num < sceneGeom.size(); ++num)
 			{
-				double tOne = intersectionTests(geomList[num], eyePos, R, transMatrix);
+				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 0), vec4(R, 0), transMatrix);
 
 				if(tOne < t)
 					t = tOne;
@@ -103,19 +104,13 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 			vec3 color = BACKGROUND_COLOR;
 			if(t != -1)
 			{
-				double sFeeler = shadowFeeler(t);
-				color = calculateLighting(sFeeler);
+				//vec3 sFeeler = shadowFeeler(intersectionPoint(), transMatrix);
 			}
 
-			output(x, y)->Red = abs(R.x) * 255;
-			output(x, y)->Green = abs(R.y) * 255;
-			output(x, y)->Blue = abs(R.z) * 255;
+			output(x, y)->Red = (ebmpBYTE)abs(R.x) * 255;
+			output(x, y)->Green = (ebmpBYTE)abs(R.y) * 255;
+			output(x, y)->Blue = (ebmpBYTE)abs(R.z) * 255;
 		}
 	}
 	output.WriteToFile("Output.bmp");
-}
-
-vec3 RayTracer::calculateLighting(double sFeeler)
-{
-
 }

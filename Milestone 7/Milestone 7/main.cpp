@@ -1,6 +1,5 @@
 #include "glm/glm.hpp"
 #include "RayTracer.h"
-#include "Geometry.h"
 #include <stdlib.h>
 #include <vector>
 

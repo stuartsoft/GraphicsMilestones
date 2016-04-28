@@ -13,24 +13,26 @@ public:
 		uvec = Uvec;
 		fovy = Fovy;
 		imageSize = picSize;
-		geomList = list;
+		sceneGeom = list;
 	}
 
 	//Calculate all lighting along with the shadow feelers affecting that lighting
-	double shadowFeeler(vec4 intersectPoint);
+	vec3 shadowFeeler(vec4 intersectPoint, mat4 T);
 
 	//Generate the rays starting from the camera and going to a point on the screen
 	void rayGeneration(const mat4& transMatrix);
 
-	//Calculate the lighting for the pixel
-	vec3 calculateLighting(double shadowFeeler);
+	//Run the intersection tests
+	double intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix);
 
 private:
-	std::vector<Geometry*> geomList;
+	std::vector<Geometry*> sceneGeom;
 	glm::vec2 imageSize;
 	glm::vec3 eyePos;
 	glm::vec3 vdir;
 	glm::vec3 uvec;
+	glm::vec3 materialColor;
+	glm::vec4 lightPosition;
 	float fovy;
 
 };
