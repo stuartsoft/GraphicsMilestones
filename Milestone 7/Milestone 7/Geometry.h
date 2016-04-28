@@ -14,7 +14,7 @@ public:
 	virtual std::vector<vec4> getpoints() {return points;};
 };
 
-class Cube : protected Geometry{
+class Cube : public Geometry{
 private:
 
 public:
@@ -39,7 +39,7 @@ public:
 	};
 };
 
-class Triangle : protected Geometry{
+class Triangle : public Geometry{
 private:
 
 public:
@@ -52,7 +52,7 @@ public:
 	};
 };
 
-class Sphere : protected Geometry{
+class Sphere : public Geometry{
 public:
 	Sphere(){
 		type = "sphere";
