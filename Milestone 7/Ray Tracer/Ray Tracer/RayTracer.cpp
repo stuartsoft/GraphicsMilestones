@@ -129,10 +129,11 @@ vec3 rayTracer::generateRay(int x, int y)
 {
 	vec4 ray;
 	vec3 colorTotal = backgroundColor;
-
-	ray.x = (mVec.x + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.x + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.x) - cameraPosition.x;
-	ray.y = (mVec.y + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.y + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.y) - cameraPosition.y;
-	ray.z = (mVec.z + ((2.0f * x/(imageResolution.x - 1.0f)) - 1.0f) * hVec.z + (2.0f * y/(imageResolution.y - 1.0f) - 1.0f) * vVec.z) - cameraPosition.z;
+	float xpercentage = ((2.0f*x/(imageResolution.x - 1.0f)) - 1.0f);
+	float ypercentage = ((2.0f*y/(imageResolution.y - 1.0f)) - 1.0f);
+	ray.x = (mVec.x + (xpercentage * hVec.x) + (ypercentage * vVec.x) - cameraPosition.x);
+	ray.y = (mVec.y + (xpercentage * hVec.y) + (ypercentage * vVec.y) - cameraPosition.y);
+	ray.z = (mVec.z + (xpercentage * hVec.z) + (ypercentage * vVec.z) - cameraPosition.z);
 
 	ray = normalize(ray);
 
