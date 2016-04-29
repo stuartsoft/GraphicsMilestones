@@ -137,11 +137,11 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	//Translate the cube
 	for(unsigned i=0; i < 8; i++)
 	{
-		pData[i] = T * pData[i];
+		pData[i] = pData[i];
 	}
 
-	vec4 tP0 = P0;
-	vec4 tV0 = V0;
+	vec4 tP0 = inverse(T) * P0;
+	vec4 tV0 = inverse(T) * V0;
 
 	//Right side tCalc
 	//pData[4];	//Top right corner
@@ -240,34 +240,41 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	double yMin, yMax;
 	double zMin, zMax;
 
-	xMin = 1e26; xMax = -1e26;
-	yMin = 1e26; yMax = -1e26;
-	zMin = 1e26; zMax = -1e26;
+	xMin = -1e26; xMax = 1e26;
+	yMin = -1e26; yMax = 1e26;
+	zMin = -1e26; zMax = 1e26;
 	
 	//Find xNear xFar
 	for(unsigned i=1; i < 6; i++)
 	{
-		if(xSides[i][0] < xMin && abs(xSides[i][0]) != 1e26 && xSides[i][0] > 0)
+		if(xSides[i][0] > xMin && abs(xSides[i][0]) != 1e26 && xSides[i][0] > 0)
 			xMin = xSides[i][0];
-		if(xSides[i][1] > xMax && abs(xSides[i][1]) != 1e26 && xSides[i][1] > 0)
+		if(xSides[i][1] < xMax && abs(xSides[i][1]) != 1e26 && xSides[i][1] > 0)
 			xMax = xSides[i][1];
 	}
 	//Find yNear yFar
 	for(unsigned i=1; i < 6; i++)
 	{
-		if(ySides[i][0] < yMin && abs(ySides[i][0]) != 1e26 && ySides[i][0] > 0)
+		if(ySides[i][0] > yMin && abs(ySides[i][0]) != 1e26 && ySides[i][0] > 0)
 			yMin = ySides[i][0];
-		if(ySides[i][1] > yMax && abs(ySides[i][0]) != 1e26 && ySides[i][1] > 0)
+		if(ySides[i][1] < yMax && abs(ySides[i][0]) != 1e26 && ySides[i][1] > 0)
 			yMax = ySides[i][1];
 	}
 	//Find zNear zFar
 	for(unsigned i=1; i < 6; i++)
 	{
-		if(zSides[i][0] < zMin && abs(zSides[i][0]) != 1e26 && zSides[i][0] > 0)
+		if(zSides[i][0] > zMin && abs(zSides[i][0]) != 1e26 && zSides[i][0] > 0)
 			zMin = zSides[i][0];					   	  
-		if(zSides[i][1] > zMax && abs(zSides[i][1]) != 1e26 && zSides[i][1] > 0)
+		if(zSides[i][1] < zMax && abs(zSides[i][1]) != 1e26 && zSides[i][1] > 0)
 			zMax = zSides[i][1];
 	}
+
+	unsigned int missAmount = 0;
+
+	if(abs(xMin) == 1e26 && abs(xMax) == 1e26)
+		if(abs(yMin) == 1e26 && abs(yMax) == 1e26)
+			if(abs(zMin) == 1e26 && abs(zMax) == 1e26)
+				return -1;
 
 	double result;		//Storage for the result
 

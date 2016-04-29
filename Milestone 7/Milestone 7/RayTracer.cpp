@@ -140,9 +140,15 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 
 	float tanFovy = tanf(fovy * (PI / 180.0f));
 
+	float ratioX = 1.0f, ratioY = 1.0f;
+	if(imageSize.x > imageSize.y)
+		ratioX = ((float)(imageSize.x) / (float)(imageSize.y));
+	else 
+		ratioY = ((float)(imageSize.y) / (float)(imageSize.x));
+
 	V = up * tanFovy;
 
-	H = U * tanFovy;
+	H = U * tanFovy * ratioX;
 
 	BMP output;
 	output.SetSize((int)imageSize.x, (int)imageSize.y);

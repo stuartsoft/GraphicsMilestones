@@ -37,8 +37,8 @@ void runScenes(){
 	geos.push_back(new Triangle());
 
 	std::vector<glm::vec3> camPos;
-	camPos.push_back(glm::vec3(0, 0, 3));
-	camPos.push_back(glm::vec3(-3, 0, 0));
+	camPos.push_back(glm::vec3(0, 0, 2));
+	camPos.push_back(glm::vec3(-2, 0, 0));
 	camPos.push_back(glm::vec3(1, 1, 1));
 
 	const glm::vec2 imageSize = vec2(640, 420); 
@@ -59,7 +59,7 @@ void runScenes(){
 				if (k == 1){
 					scale = glm::vec3(1.5f, 1, 1);
 					geopos = glm::vec3(0, 1.0f, 0);
-					rotY = (45.0f);
+					rotY = (127.0f);
 				}
 
 				std::cout<<"geoType:\t"<<geoList[0]->getType()<<std::endl;
