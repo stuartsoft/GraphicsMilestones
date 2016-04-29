@@ -83,7 +83,7 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 
 	if(tCheck >= 0){
 		vec4 Rpoint = objectSpace_E + vec4(vec3(tCheck), 1) * objectSpace_PmE;
-		Rpoint = normalize(Rpoint);
+		//Rpoint = normalize(Rpoint);
 
 
 		float S = sqrt((p1.y * p2.z + p1.z * p3.y + p2.y * p3.z - p3.y * p2.z - p3.z * p1.y - p2.y * p1.z) * (p1.y * p2.z + p1.z * p3.y + p2.y * p3.z - p3.y * p2.z - p3.z * p1.y - p2.y * p1.z) + 

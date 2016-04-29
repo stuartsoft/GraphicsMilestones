@@ -27,46 +27,46 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 	if(geom->getType() == "triangle")
 	{
 		//bott left point
-		vec3 point1 = vec3(-0.5, 0, 0);
+		vec3 point1 = vec3(-0.5f, 0.0f, 0.0f);
 		//bott right point
-		vec3 point2 = vec3(0.5, 0, 0);
+		vec3 point2 = vec3(0.5f, 0.0f, 0.0f);
 		//top point
-		vec3 point3 = vec3(0, 1, 0);
+		vec3 point3 = vec3(0.0f, 1.0f, 0.0f);
 
-		normal = T * vec4(cross(point2 - point1, point3 - point1), 1);
+		normal = T * vec4(cross(point2 - point1, point3 - point1), 1.0f);
 	}
 	else if(geom->getType() == "sphere")
 	{
 		normal = point;
-		normal.w = 1;
+		normal.w = 1.0f;
 		normal = T * normal;
 	}
 	else if(geom->getType() == "Cube")
 	{
 		//front face
-		vec4 norm1 = vec4(0,0,1,1);
+		vec4 norm1 = vec4(0.0f, 0.0f, 1.0f, 1.0f);
 		//back face
-		vec4 norm2 = vec4(0,0,-1,1);
+		vec4 norm2 = vec4(0.0f, 0.0f, -1.0f, 1.0f);
 		//left face
-		vec4 norm3 = vec4(-1,0,0,1);
+		vec4 norm3 = vec4(-1.0f, 0.0f, 0.0f, 1.0f);
 		//right face
-		vec4 norm4 = vec4(1,0,0,1);
+		vec4 norm4 = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		//top face
-		vec4 norm5 = vec4(0,1,0,1);
+		vec4 norm5 = vec4(0.0f, 1.0f, 0.0f, 1.0f);
 		//bottom face
-		vec4 norm6 = vec4(0,-1,0,1);
+		vec4 norm6 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
 
-		if(abs(point.x - 0.5f) < 0.001)
+		if(abs(point.x - 0.5f) < 0.001f)
 			normal = T * norm4;
-		if(abs(point.x + 0.5f) < 0.001)
+		if(abs(point.x + 0.5f) < 0.001f)
 			normal = T * norm3;
-		if(abs(point.y - 0.5f) < 0.001)
+		if(abs(point.y - 0.5f) < 0.001f)
 			normal = T * norm4;
-		if(abs(point.y + 0.5f) < 0.001)
+		if(abs(point.y + 0.5f) < 0.001f)
 			normal = T * norm6;
-		if(abs(point.z - 0.5f) < 0.001)
+		if(abs(point.z - 0.5f) < 0.001f)
 			normal = T * norm1;
-		if(abs(point.z + 0.5f) < 0.001)
+		if(abs(point.z + 0.5f) < 0.001f)
 			normal = T * norm2;
 	}
 	else 
@@ -199,22 +199,14 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 }
 
 //The intersection point will have to be calculated differently for each geometry 
-vec4 RayTracer::intersectionPoint(const mat4& transMatrix, Geometry * geom, double t)
+vec4 RayTracer::intersectionPoint(const mat4& transMatrix, vec4 ray, double t)
 {
 	vec4 iPoint;
 
-	if(geom->getType() == "Sphere")
-	{
+	vec4 objectSpace_E = transMatrix * vec4(eyePos, 0.0f);
+	vec4 objectSpace_P = transMatrix * ray;
 
-	}
-	else if(geom->getType() == "Triangle")
-	{
-
-	}
-	else if(geom->getType() == "Cube")
-	{
-
-	}
+	iPoint = objectSpace_E + vec4(vec3((float)t), 1) * objectSpace_P;
 
 	return iPoint;
 }

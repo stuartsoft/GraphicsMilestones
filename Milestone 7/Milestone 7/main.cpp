@@ -43,7 +43,7 @@ void runScenes(){
 
 	const glm::vec2 imageSize = vec2(640, 420); 
 	
-	for (int i = 0;i<3;i++){//for each type of shape
+	for (int i = 2;i<3;i++){//for each type of shape
 		for (int j = 0;j<3;j++){//change camera position
 			for (int k = 0;k<2;k++){//draw with and without object movement
 				float rotY = radians(1.0f);
@@ -62,7 +62,7 @@ void runScenes(){
 				}
 
 				//TODO build raytracer with the above parameters and execute everything else 
-				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, rotY, imageSize, geoList, geoList[0]->getType() + to_string(i) + to_string(j) + to_string(k) + ".bmp");
+				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, 60.0f, imageSize, geoList, geoList[0]->getType() + to_string(i) + to_string(j) + to_string(k) + ".bmp");
 
 				sceneOne->rayGeneration(IDENTITY_MATRIX);
 

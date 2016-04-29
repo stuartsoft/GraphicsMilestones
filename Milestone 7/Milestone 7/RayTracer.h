@@ -34,7 +34,7 @@ public:
 	vec4 getNormal(vec4 point, Geometry *geom, mat4 T);
 
 	//Get the intersection point x,y,z
-	vec4 intersectionPoint(const mat4& transMatrix, Geometry * geom, double t);
+	vec4 intersectionPoint(const mat4& transMatrix, vec4 ray, double t);
 
 private:
 	std::vector<Geometry*> sceneGeom;
