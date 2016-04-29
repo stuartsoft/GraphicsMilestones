@@ -23,24 +23,24 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	//perform quadratic solution for x, y, z components individually.
 	//return the smallest t value if there is a valid intersection
 
-	vec4 C = vec4(0.0f,0.0f,0.0f,1.0f);//center of the sphere
+	vec4 sphereCenter = vec4(0.0f,0.0f,0.0f,1.0f);//center of the sphere
 
-	vec4 O = glm::inverse(T) * P0;//origin of the ray
-	vec4 V = glm::inverse(T) * V0;
+	vec4 rayOrigin = glm::inverse(T) * P0;//origin of the ray
+	vec4 vectorDirection = glm::inverse(T) * V0;
 
 	float rad = 1.0f;//radius
 
 	float solution;
 
-	float a = glm::dot(V,V);
+	float a = glm::dot(vectorDirection,vectorDirection);
 	float b = 0.0f;
 	float c = 0.0f;
 	//begin solving X comp
 
-	vec4 originCenterDiff = vec4(O.x - C.x, O.y - C.y, O.z - C.z, O.w - C.w);
+	vec4 originCenterDiff = vec4(rayOrigin.x - sphereCenter.x, rayOrigin.y - sphereCenter.y, rayOrigin.z - sphereCenter.z, rayOrigin.w - sphereCenter.w);
 	//vec4 originCenterDiff = vec4(C.x - O.x, C.y - O.y, C.z - O.z, C.w - O.w);
 
-	b = 2*glm::dot(V,originCenterDiff);
+	b = 2*glm::dot(vectorDirection,originCenterDiff);
 	c = glm::dot(originCenterDiff, originCenterDiff) - rad*rad;
 	//check discriminant
 	float disc = b*b - 4*a*c;

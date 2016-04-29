@@ -168,7 +168,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 			Geometry * intersectGeometry = NULL;
 			for(unsigned num=0; num < sceneGeom.size(); ++num)
 			{
-				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 0.0f), vec4(R, 1.0f), transMatrix);
+				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 1.0f), vec4(R, 0.0f), transMatrix);
 
 				//Find the closest intersection point
 				if(tOne < t && tOne != -1)

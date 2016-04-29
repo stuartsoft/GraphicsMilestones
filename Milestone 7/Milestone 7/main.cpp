@@ -37,8 +37,8 @@ void runScenes(){
 	geos.push_back(new Triangle());
 
 	std::vector<glm::vec3> camPos;
-	camPos.push_back(glm::vec3(0, 0, 2));
-	camPos.push_back(glm::vec3(-2, 0, 0));
+	camPos.push_back(glm::vec3(0, 0, 3));
+	camPos.push_back(glm::vec3(-3, 0, 0));
 	camPos.push_back(glm::vec3(1, 1, 1));
 
 	const glm::vec2 imageSize = vec2(640, 420); 
@@ -82,5 +82,5 @@ void runScenes(){
 			}
 		}
 	}
-	system("pause");
+	//system("pause");
 }
