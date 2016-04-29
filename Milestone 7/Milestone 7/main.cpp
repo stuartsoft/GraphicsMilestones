@@ -43,10 +43,11 @@ void runScenes(){
 
 	const glm::vec2 imageSize = vec2(640, 420); 
 	
-	for (int i = 2;i<3;i++){//for each type of shape
+	for (int i = 0;i<3;i++){//for each type of shape
 		for (int j = 0;j<3;j++){//change camera position
 			for (int k = 0;k<2;k++){//draw with and without object movement
-				float rotY = 0.0f;
+				float rotY = degrees(0.0f);
+				float fovY = degrees(45.0f);
 				glm::vec3 scale = glm::vec3(1, 1, 1);
 				glm::vec3 geopos = glm::vec3(0, 0, 0);
 				std::vector<Geometry*> geoList;
@@ -58,7 +59,7 @@ void runScenes(){
 				if (k == 1){
 					scale = glm::vec3(1.5f, 1, 1);
 					geopos = glm::vec3(0, 1.0f, 0);
-					rotY = 45.0f;
+					rotY = degrees(45.0f);
 				}
 
 				std::cout<<"geoType:\t"<<geoList[0]->getType()<<std::endl;
@@ -70,10 +71,12 @@ void runScenes(){
 				std::cout<<"rotY:\t\t"<<rotY<<std::endl;
 				std::cout<<"-------------------------"<<std::endl;
 
-				//TODO build raytracer with the above parameters and execute everything else 
-				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, 60.0f, imageSize, geoList, geoList[0]->getType() + to_string(i) + to_string(j) + to_string(k) + ".bmp");
+				mat4 transformationMatrix = glm::rotate(IDENTITY_MATRIX, rotY, vec3(0,1,0));
 
-				sceneOne->rayGeneration(IDENTITY_MATRIX);
+				//TODO build raytracer with the above parameters and execute everything else 
+				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, geoList, geoList[0]->getType() + to_string(i) + to_string(j) + to_string(k) + ".bmp");
+
+				sceneOne->rayGeneration(transformationMatrix);
 
 				delete sceneOne;
 			}

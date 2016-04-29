@@ -155,14 +155,14 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 			float yPercent = (2.0f * y/(imageSize.y-1)-1);
 			D = m + (H * xPercent) + (V * yPercent);
 			glm::vec3 R = D - eyePos;
-			R = glm::normalize(R);
+			//R = glm::normalize(R);
 
 			//Initialize the t value to "infinity" and the intersection geometry to no geometry (NULL)
 			double t = 1e26;
 			Geometry * intersectGeometry = NULL;
 			for(unsigned num=0; num < sceneGeom.size(); ++num)
 			{
-				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 0), vec4(R, 0), transMatrix);
+				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 0.0f), vec4(R, 1.0f), transMatrix);
 
 				//Find the closest intersection point
 				if(tOne < t && tOne != -1)
