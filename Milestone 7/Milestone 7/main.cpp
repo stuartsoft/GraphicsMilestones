@@ -46,7 +46,7 @@ void runScenes(){
 	for (int i = 2;i<3;i++){//for each type of shape
 		for (int j = 0;j<3;j++){//change camera position
 			for (int k = 0;k<2;k++){//draw with and without object movement
-				float rotY = radians(1.0f);
+				float rotY = 0.0f;
 				glm::vec3 scale = glm::vec3(1, 1, 1);
 				glm::vec3 geopos = glm::vec3(0, 0, 0);
 				std::vector<Geometry*> geoList;
@@ -58,7 +58,7 @@ void runScenes(){
 				if (k == 1){
 					scale = glm::vec3(1.5f, 1, 1);
 					geopos = glm::vec3(0, 1.0f, 0);
-					rotY = radians(45.0f);
+					rotY = 45.0f;
 				}
 
 				//TODO build raytracer with the above parameters and execute everything else 
