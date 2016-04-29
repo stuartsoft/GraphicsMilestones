@@ -71,12 +71,13 @@ void runScenes(){
 				std::cout<<"rotY:\t\t"<<rotY<<std::endl;
 				std::cout<<"-------------------------"<<std::endl;
 
-				mat4 transformationMatrix = glm::rotate(IDENTITY_MATRIX, rotY, vec3(0,0,1));
-
+				mat4 trans = glm::translate(IDENTITY_MATRIX, geopos);
+				mat4 rot = glm::rotate(IDENTITY_MATRIX, rotY, vec3(0,0,1));
+				mat4 M = trans * rot;
 				//TODO build raytracer with the above parameters and execute everything else 
 				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, geoList, geoList[0]->getType() + to_string(i) + to_string(j) + to_string(k) + ".bmp");
 
-				sceneOne->rayGeneration(transformationMatrix);
+				sceneOne->rayGeneration(M);
 
 				delete sceneOne;
 			}
