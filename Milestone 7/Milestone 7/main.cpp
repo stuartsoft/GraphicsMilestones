@@ -61,6 +61,15 @@ void runScenes(){
 					rotY = 45.0f;
 				}
 
+				std::cout<<"geoType:\t"<<geoList[0]->getType()<<std::endl;
+				std::cout<<"Scale:\t\t"<<scale.x<<", "<<scale.y<<", "<<scale.z<<", "<<std::endl;
+				std::cout<<"geopos:\t\t"<<geopos.x<<", "<<geopos.y<<", "<<geopos.z<<", "<<std::endl;
+				std::cout<<"camPosition:\t"<<camPosition.x<<", "<<camPosition.y<<", "<<camPosition.z<<", "<<std::endl;
+				std::cout<<"camDir:\t\t"<<camDir.x<<", "<<camDir.y<<", "<<camDir.z<<std::endl;
+				std::cout<<"upVector:\t"<<upVector.x<<", "<<upVector.y<<", "<<upVector.z<<", "<<std::endl;
+				std::cout<<"rotY:\t\t"<<rotY<<std::endl;
+				std::cout<<"-------------------------"<<std::endl;
+
 				//TODO build raytracer with the above parameters and execute everything else 
 				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, 60.0f, imageSize, geoList, geoList[0]->getType() + to_string(i) + to_string(j) + to_string(k) + ".bmp");
 
@@ -70,5 +79,5 @@ void runScenes(){
 			}
 		}
 	}
-	
+	system("pause");
 }
