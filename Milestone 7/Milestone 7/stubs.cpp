@@ -116,13 +116,9 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 // matrix is the transformation matrix of the cube
 // A unit cube extends from -0.5 to 0.5 in all axes.
 double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
-	//double xSides[6][2];
-	//double ySides[6][2];
-	//double zSides[6][2];
-
 	//double tNear = -1e26, tFar = 1e26;
 	double tMin = -1e26, tMax = 1e26;
-	double xtMin = -1e26, xtMax = 1e26, ytMin = -1e26, ytMax = 1e26, ztMin = -1e26, ztMax = 1e26;
+	double xtMin = 1e26, xtMax = -1e26, ytMin = 1e26, ytMax = -1e26, ztMin = 1e26, ztMax = -1e26;
 
 	//Set points for the cube
 	vec4 pData[8];
@@ -139,377 +135,351 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	//Translate the cube
 	for(unsigned i=0; i < 8; i++)
 	{
-		pData[i] = pData[i];
+		pData[i] = T * pData[i];
 	}
 
-	vec4 tP0 = inverse(T) * P0;
-	vec4 tV0 = inverse(T) * V0;
+	vec4 tP0 = P0;
+	vec4 tV0 = V0;
 
-	double invX = 1/(tV0.x - tP0.x);
-	double invY = 1/(tV0.y - tP0.y);
-	double invZ = 1/(tV0.z - tP0.z);
+	double invX = 1/(tV0.x);
+	double invY = 1/(tV0.y);
+	double invZ = 1/(tV0.z);
 
-	int missCount = 0;
-	if((tP0.x + tV0.x < pData[4].x || tP0.x + tV0.x > pData[0].x))
-		if((tP0.x + tV0.x < pData[1].x || tP0.x + tV0.x > pData[5].x))
-			if((tP0.x + tV0.x < pData[3].x || tP0.x + tV0.x > pData[4].x))
-				if((tP0.x + tV0.x < pData[1].x || tP0.x + tV0.x > pData[6].x))
-					if((tP0.x + tV0.x < pData[1].x || tP0.x + tV0.x > pData[2].x))
-						if((tP0.x + tV0.x < pData[7].x || tP0.x + tV0.x > pData[4].x))
-							missCount++;
-	if((tP0.y + tV0.y < pData[4].y || tP0.y + tV0.y  > pData[0].y))
-		if((tP0.y + tV0.y  < pData[1].y || tP0.y + tV0.y  > pData[5].y))
-			if((tP0.y + tV0.y  < pData[3].y || tP0.y + tV0.y  > pData[4].y))
-				if((tP0.y + tV0.y  < pData[1].y || tP0.y + tV0.y  > pData[6].y))
-					if((tP0.y + tV0.y  < pData[1].y || tP0.y + tV0.y  > pData[2].y))
-						if((tP0.y + tV0.y  < pData[7].y || tP0.y + tV0.y  > pData[4].y))
-							missCount++;
-	if((tP0.z + tV0.z < pData[4].z || tP0.z + tV0.z  > pData[0].z))
-		if((tP0.z + tV0.z  < pData[1].z || tP0.z + tV0.z  > pData[5].z))
-			if((tP0.z + tV0.z  < pData[3].z || tP0.z + tV0.z  > pData[4].z))
-				if((tP0.z + tV0.z  < pData[1].z || tP0.z + tV0.z  > pData[6].z))
-					if((tP0.z + tV0.z  < pData[1].z || tP0.z + tV0.z  > pData[2].z))
-						if((tP0.z + tV0.z  < pData[7].z || tP0.z + tV0.z  > pData[4].z))
-							missCount++;
-			
-	if(missCount >= 2)
-		return -1;
+	//tP0 = P0 + (T * V0);
 
 	//Right side tCalc
 	//pData[4];	//Top right corner
 	//pData[0];	//Bottom left Corner
-	
-	if(tV0.x - tP0.x > 0)
+	double temp;
+	double tempXmin = -1e26, tempXmax = 1e26, tempYmin = -1e26, tempYmax = 1e26, tempZmin = -1e26, tempZmax = 1e26;
+	if(tV0.x - tP0.x != 0)
 	{
-		xtMin = (pData[4].x - tP0.x)*invX;
-		xtMax = (pData[0].x - tP0.x)*invX;
+		tempXmin = (pData[4].x - tP0.x)*invX;
+		tempXmax = (pData[0].x - tP0.x)*invX;
+		if(tempXmin > tempXmax)
+		{
+			temp = tempXmax;
+			tempXmax = tempXmin;
+			tempXmin = temp;
+		}
 	}
-	else if(tV0.x - tP0.x < 0)
+	if(tV0.y - tP0.y != 0)
 	{
-		xtMin = (pData[4].x - tP0.x)*invX;
-		xtMax = (pData[0].x - tP0.x)*invX;
+		tempYmin = (pData[4].y - tP0.y)*invY;
+		tempYmax = (pData[0].y - tP0.y)*invY;
+		if(tempYmin > tempYmax)
+		{
+			temp = tempYmax;
+			tempYmax = tempYmin;
+			tempYmin = temp;
+		}
 	}
-	if(tV0.y - tP0.y > 0)
+	if(tV0.z - tP0.z != 0)
 	{
-		ytMin = (pData[0].y - tP0.y)*invY;
-		ytMax = (pData[4].y - tP0.y)*invY;
+		tempZmin = (pData[4].z - tP0.z)*invZ;
+		tempZmax = (pData[0].z - tP0.z)*invZ;
+		if(tempZmin > tempZmax)
+		{
+			temp = tempZmax;
+			tempZmax = tempZmin;
+			tempZmin = temp;
+		}
 	}
-	else if(tV0.y - tP0.y < 0)
+	if(tempXmax != tempXmin)
 	{
-		ytMin = (pData[4].y - tP0.y)*invY;
-		ytMax = (pData[0].y - tP0.y)*invY;
+		if(tempXmin < xtMin) xtMin = tempXmin;
+		if(tempXmax > xtMax) xtMax = tempXmax;
 	}
-	if(!((xtMin > ytMax) || (ytMin < xtMax)))
+	if(tempYmax != tempYmin)
 	{
-		if(ytMin > xtMin)
-			xtMin = ytMin;
-		if(ytMax < xtMax)
-			xtMax = ytMax;
+		if(tempYmin < ytMin) ytMin = tempYmin;
+		if(tempYmax > ytMax) ytMax = tempYmax;
 	}
-	if(tV0.z - tP0.z > 0)
+	if(tempZmax != tempZmin)
 	{
-		ztMin = (pData[0].z - tP0.z)*invZ;
-		ztMax = (pData[4].z - tP0.z)*invZ;
-	}
-	else if(tV0.z - tP0.z < 0)
-	{
-		ztMin = (pData[4].z - tP0.z)*invZ;
-		ztMax = (pData[0].z - tP0.z)*invZ;
-	}
-	if(!((xtMin > ztMax) || (ztMin > xtMax))) 
-	{
-		if(ztMin > xtMin)
-			xtMin = ztMin;
-		if(ztMax < tMax)
-			xtMax = ztMax;
-	}
-	if(xtMin != xtMax)
-	{
-		if(xtMin > tMin && xtMin > 0)
-			tMin = xtMin;
-		if(xtMax < tMax && xtMax > 0)
-			tMax = xtMax;
+		if(tempZmin < ztMin) ztMin = tempZmin;
+		if(tempZmax > ztMax) ztMax = tempZmax;
 	}
 	
 	//Left side tCalc
 	//pData[3];	//Top right corner 
-	//pData[7];	//Bottom left corner 
-	if(tV0.x - tP0.x > 0)
+	//pData[7];	//Bottom left corner
+	tempXmin = -1e26, tempXmax = 1e26, tempYmin = -1e26, tempYmax = 1e26, tempZmin = -1e26, tempZmax = 1e26;
+	if(tV0.x - tP0.x != 0)
 	{
-		xtMin = (pData[3].x - tP0.x)*invX;
-		xtMax = (pData[7].x - tP0.x)*invX;
+		tempXmin = (pData[3].x - tP0.x)*invX;
+		tempXmax = (pData[7].x - tP0.x)*invX;
+		if(tempXmin > tempXmax)
+		{
+			temp = tempXmax;
+			tempXmax = tempXmin;
+			tempXmin = temp;
+		}
 	}
-	else if(tV0.x - tP0.x < 0)
+	if(tV0.y - tP0.y != 0)
 	{
-		xtMin = (pData[7].x - tP0.x)*invX;
-		xtMax = (pData[3].x - tP0.x)*invX;
+		tempYmin = (pData[3].y - tP0.y)*invY;
+		tempYmax = (pData[7].y - tP0.y)*invY;
+		if(tempYmin > tempYmax)
+		{
+			temp = tempYmax;
+			tempYmax = tempYmin;
+			tempYmin = temp;
+		}
 	}
-	if(tV0.y - tP0.y > 0)
+	if(tV0.z - tP0.z != 0)
 	{
-		ytMin = (pData[3].y - tP0.y)*invY;
-		ytMax = (pData[7].y - tP0.y)*invY;
+		tempZmin = (pData[3].z - tP0.z)*invZ;
+		tempZmax = (pData[7].z - tP0.z)*invZ;
+		if(tempZmin > tempZmax)
+		{
+			temp = tempZmax;
+			tempZmax = tempZmin;
+			tempZmin = temp;
+		}
 	}
-	else if(tV0.y - tP0.y < 0)
+	if(tempXmax != tempXmin)
 	{
-		ytMin = (pData[7].y - tP0.y)*invY;
-		ytMax = (pData[3].y - tP0.y)*invY;
+		if(tempXmin < xtMin) xtMin = tempXmin;
+		if(tempXmax > xtMax) xtMax = tempXmax;
 	}
-	if(!((xtMin > ytMax) || (ytMin < xtMax)))
+	if(tempYmax != tempYmin)
 	{
-		if(ytMin > xtMin)
-			xtMin = ytMin;
-		if(ytMax < xtMax)
-			xtMax = ytMax;
+		if(tempYmin < ytMin) ytMin = tempYmin;
+		if(tempYmax > ytMax) ytMax = tempYmax;
 	}
-	if(tV0.z - tP0.z > 0)
+	if(tempZmax != tempZmin)
 	{
-		ztMin = (pData[3].z - tP0.z)*invZ;
-		ztMax = (pData[7].z - tP0.z)*invZ;
+		if(tempZmin < ztMin) ztMin = tempZmin;
+		if(tempZmax > ztMax) ztMax = tempZmax;
 	}
-	else if(tV0.z - tP0.z < 0)
-	{
-		ztMin = (pData[7].z - tP0.z)*invZ;
-		ztMax = (pData[3].z - tP0.z)*invZ;
-	}
-	if(!((xtMin > ztMax) || (ztMin > xtMax))) 
-	{
-		if(ztMin > xtMin)
-			xtMin = ztMin;
-		if(ztMax < tMax)
-			xtMax = ztMax;
-	}
-
-	if(xtMin != xtMax)
-	{
-		if(xtMin > tMin && xtMin > 0)
-			tMin = xtMin;
-		if(xtMax < tMax && xtMax > 0)
-			tMax = xtMax;
-	}
-
 
 	//Top side tCalc
 	//pData[4];	//Top right corner 
 	//pData[3];	//Bottom left corner
-	if(tV0.x - tP0.x > 0)
+	tempXmin = -1e26, tempXmax = 1e26, tempYmin = -1e26, tempYmax = 1e26, tempZmin = -1e26, tempZmax = 1e26;
+	if(tV0.x - tP0.x != 0)
 	{
-		xtMin = (pData[3].x - tP0.x)*invX;
-		xtMax = (pData[4].x - tP0.x)*invX;
+		tempXmin = (pData[4].x - tP0.x)*invX;
+		tempXmax = (pData[3].x - tP0.x)*invX;
+		if(tempXmin > tempXmax)
+		{
+			temp = tempXmax;
+			tempXmax = tempXmin;
+			tempXmin = temp;
+		}
 	}
-	else if(tV0.x - tP0.x < 0)
+	if(tV0.y - tP0.y != 0)
 	{
-		xtMin = (pData[4].x - tP0.x)*invX;
-		xtMax = (pData[3].x - tP0.x)*invX;
+		tempYmin = (pData[4].y - tP0.y)*invY;
+		tempYmax = (pData[3].y - tP0.y)*invY;
+		if(tempYmin > tempYmax)
+		{
+			temp = tempYmax;
+			tempYmax = tempYmin;
+			tempYmin = temp;
+		}
 	}
-	if(tV0.y - tP0.y > 0)
+	if(tV0.z - tP0.z != 0)
 	{
-		ytMin = (pData[3].y - tP0.y)*invY;
-		ytMax = (pData[4].y - tP0.y)*invY;
+		tempZmin = (pData[4].z - tP0.z)*invZ;
+		tempZmax = (pData[3].z - tP0.z)*invZ;
+		if(tempZmin > tempZmax)
+		{
+			temp = tempZmax;
+			tempZmax = tempZmin;
+			tempZmin = temp;
+		}
 	}
-	else if(tV0.y - tP0.y < 0)
+	if(tempXmax != tempXmin)
 	{
-		ytMin = (pData[4].y - tP0.y)*invY;
-		ytMax = (pData[3].y - tP0.y)*invY;
+		if(tempXmin < xtMin) xtMin = tempXmin;
+		if(tempXmax > xtMax) xtMax = tempXmax;
 	}
-	if(!((xtMin > ytMax) || (ytMin < xtMax)))
+	if(tempYmax != tempYmin)
 	{
-		if(ytMin > xtMin)
-			xtMin = ytMin;
-		if(ytMax < xtMax)
-			xtMax = ytMax;
+		if(tempYmin < ytMin) ytMin = tempYmin;
+		if(tempYmax > ytMax) ytMax = tempYmax;
 	}
-	if(tV0.z - tP0.z > 0)
+	if(tempZmax != tempZmin)
 	{
-		ztMin = (pData[3].z - tP0.z)*invZ;
-		ztMax = (pData[4].z - tP0.z)*invZ;
-	}
-	else if(tV0.z - tP0.z < 0)
-	{
-		ztMin = (pData[4].z - tP0.z)*invZ;
-		ztMax = (pData[3].z - tP0.z)*invZ;
-	}
-	if(!((xtMin > ztMax) || (ztMin > xtMax))) 
-	{
-		if(ztMin > xtMin)
-			xtMin = ztMin;
-		if(ztMax < tMax)
-			xtMax = ztMax;
-	}
-
-	if(xtMin != xtMax)
-	{
-		if(xtMin > tMin && xtMin > 0)
-			tMin = xtMin;
-		if(xtMax < tMax && xtMax > 0)
-			tMax = xtMax;
+		if(tempZmin < ztMin) ztMin = tempZmin;
+		if(tempZmax > ztMax) ztMax = tempZmax;
 	}
 
 	//Bottom side tCalc
 	//pData[6];	//Top right corner 
 	//pData[1];	//Bottom left corner
-	if(tV0.x - tP0.x > 0)
+	tempXmin = -1e26, tempXmax = 1e26, tempYmin = -1e26, tempYmax = 1e26, tempZmin = -1e26, tempZmax = 1e26;
+	if(tV0.x - tP0.x != 0)
 	{
-		xtMin = (pData[1].x - tP0.x)*invX;
-		xtMax = (pData[6].x - tP0.x)*invX;
+		tempXmin = (pData[6].x - tP0.x)*invX;
+		tempXmax = (pData[1].x - tP0.x)*invX;
+		if(tempXmin > tempXmax)
+		{
+			temp = tempXmax;
+			tempXmax = tempXmin;
+			tempXmin = temp;
+		}
 	}
-	else if(tV0.x - tP0.x < 0)
+	if(tV0.y - tP0.y != 0)
 	{
-		xtMin = (pData[6].x - tP0.x)*invX;
-		xtMax = (pData[1].x - tP0.x)*invX;
+		tempYmin = (pData[6].y - tP0.y)*invY;
+		tempYmax = (pData[1].y - tP0.y)*invY;
+		if(tempYmin > tempYmax)
+		{
+			temp = tempYmax;
+			tempYmax = tempYmin;
+			tempYmin = temp;
+		}
 	}
-	if(tV0.y - tP0.y > 0)
+	if(tV0.z - tP0.z != 0)
 	{
-		ytMin = (pData[1].y - tP0.y)*invY;
-		ytMax = (pData[6].y - tP0.y)*invY;
+		tempZmin = (pData[6].z - tP0.z)*invZ;
+		tempZmax = (pData[1].z - tP0.z)*invZ;
+		if(tempZmin > tempZmax)
+		{
+			temp = tempZmax;
+			tempZmax = tempZmin;
+			tempZmin = temp;
+		}
 	}
-	else if(tV0.y - tP0.y < 0)
+	if(tempXmax != tempXmin)
 	{
-		ytMin = (pData[6].y - tP0.y)*invY;
-		ytMax = (pData[1].y - tP0.y)*invY;
+		if(tempXmin < xtMin) xtMin = tempXmin;
+		if(tempXmax > xtMax) xtMax = tempXmax;
 	}
-	if(!((xtMin > ytMax) || (ytMin < xtMax)))
+	if(tempYmax != tempYmin)
 	{
-		if(xtMin > tMin && xtMin > 0)
-			tMin = xtMin;
-		if(xtMax < tMax && xtMax > 0)
-			tMax = xtMax;
+		if(tempYmin < ytMin) ytMin = tempYmin;
+		if(tempYmax > ytMax) ytMax = tempYmax;
 	}
-	if(tV0.z - tP0.z > 0)
+	if(tempZmax != tempZmin)
 	{
-		ztMin = (pData[1].z - tP0.z)*invZ;
-		ztMax = (pData[6].z - tP0.z)*invZ;
-	}
-	else if(tV0.z - tP0.z < 0)
-	{
-		ztMin = (pData[6].z - tP0.z)*invZ;
-		ztMax = (pData[1].z - tP0.z)*invZ;
-	}
-	if(!((xtMin > ztMax) || (ztMin > xtMax))) 
-	{
-		if(ztMin > xtMin)
-			xtMin = ztMin;
-		if(ztMax < tMax)
-			xtMax = ztMax;
-	}
-	if(xtMin != xtMax)
-	{
-		if(xtMin > tMin && xtMin > 0)
-			tMin = xtMin;
-		if(xtMax < tMax && xtMax > 0)
-			tMax = xtMax;
+		if(tempZmin < ztMin) ztMin = tempZmin;
+		if(tempZmax > ztMax) ztMax = tempZmax;
 	}
 
 	//Front side tCalc
 	//pData[2];	//Top right corner
 	//pData[1];	//Bottom left corner 
-	if(tV0.x - tP0.x > 0)
+	tempXmin = -1e26, tempXmax = 1e26, tempYmin = -1e26, tempYmax = 1e26, tempZmin = -1e26, tempZmax = 1e26;
+	if(tV0.x - tP0.x != 0)
 	{
-		xtMin = (pData[1].x - tP0.x)*invX;
-		xtMax = (pData[2].x - tP0.x)*invX;
+		tempXmin = (pData[2].x - tP0.x)*invX;
+		tempXmax = (pData[1].x - tP0.x)*invX;
+		if(tempXmin > tempXmax)
+		{
+			temp = tempXmax;
+			tempXmax = tempXmin;
+			tempXmin = temp;
+		}
 	}
-	else if(tV0.x - tP0.x < 0)
+	if(tV0.y - tP0.y != 0)
 	{
-		xtMin = (pData[2].x - tP0.x)*invX;
-		xtMax = (pData[1].x - tP0.x)*invX;
+		tempYmin = (pData[2].y - tP0.y)*invY;
+		tempYmax = (pData[1].y - tP0.y)*invY;
+		if(tempYmin > tempYmax)
+		{
+			temp = tempYmax;
+			tempYmax = tempYmin;
+			tempYmin = temp;
+		}
 	}
-	if(tV0.y - tP0.y > 0)
+	if(tV0.z - tP0.z != 0)
 	{
-		ytMin = (pData[1].y - tP0.y)*invY;
-		ytMax = (pData[2].y - tP0.y)*invY;
+		tempZmin = (pData[2].z - tP0.z)*invZ;
+		tempZmax = (pData[1].z - tP0.z)*invZ;
+		if(tempZmin > tempZmax)
+		{
+			temp = tempZmax;
+			tempZmax = tempZmin;
+			tempZmin = temp;
+		}
 	}
-	else if(tV0.y - tP0.y < 0)
+	if(tempXmax != tempXmin)
 	{
-		ytMin = (pData[2].y - tP0.y)*invY;
-		ytMax = (pData[1].y - tP0.y)*invY;
+		if(tempXmin < xtMin) xtMin = tempXmin;
+		if(tempXmax > xtMax) xtMax = tempXmax;
 	}
-	if(!((xtMin > ytMax) || (ytMin < xtMax)))
+	if(tempYmax != tempYmin)
 	{
-		if(ytMin > xtMin)
-			xtMin = ytMin;
-		if(ytMax < xtMax)
-			xtMax = ytMax;
+		if(tempYmin < ytMin) ytMin = tempYmin;
+		if(tempYmax > ytMax) ytMax = tempYmax;
 	}
-	if(tV0.z - tP0.z > 0)
+	if(tempZmax != tempZmin)
 	{
-		ztMin = (pData[1].z - tP0.z)*invZ;
-		ztMax = (pData[2].z - tP0.z)*invZ;
-	}
-	else if(tV0.z - tP0.z < 0)
-	{
-		ztMin = (pData[2].z - tP0.z)*invZ;
-		ztMax = (pData[1].z - tP0.z)*invZ;
-	}
-	if(!((xtMin > ztMax) || (ztMin > xtMax))) 
-	{
-		if(ztMin > xtMin)
-			xtMin = ztMin;
-		if(ztMax < tMax)
-			xtMax = ztMax;
-	}
-	if(xtMin != xtMax)
-	{
-		if(xtMin > tMin && xtMin > 0)
-			tMin = xtMin;
-		if(xtMax < tMax && xtMax > 0)
-			tMax = xtMax;
+		if(tempZmin < ztMin) ztMin = tempZmin;
+		if(tempZmax > ztMax) ztMax = tempZmax;
 	}
 
 	//Back side tCalc
 	//pData[4];	//Top right corner 
 	//pData[7];	//Bottom left corner
-	if(tV0.x - tP0.x > 0)
+	tempXmin = -1e26, tempXmax = 1e26, tempYmin = -1e26, tempYmax = 1e26, tempZmin = -1e26, tempZmax = 1e26;
+	if(tV0.x - tP0.x != 0)
 	{
-		xtMin = (pData[7].x - tP0.x)*invX;
-		xtMax = (pData[4].x - tP0.x)*invX;
+		tempXmin = (pData[4].x - tP0.x)*invX;
+		tempXmax = (pData[7].x - tP0.x)*invX;
+		if(tempXmin > tempXmax)
+		{
+			temp = tempXmax;
+			tempXmax = tempXmin;
+			tempXmin = temp;
+		}
 	}
-	else if(tV0.x - tP0.x < 0)
+	if(tV0.y - tP0.y != 0)
 	{
-		xtMin = (pData[4].x - tP0.x)*invX;
-		xtMax = (pData[7].x - tP0.x)*invX;
+		tempYmin = (pData[4].y - tP0.y)*invY;
+		tempYmax = (pData[7].y - tP0.y)*invY;
+		if(tempYmin > tempYmax)
+		{
+			temp = tempYmax;
+			tempYmax = tempYmin;
+			tempYmin = temp;
+		}
 	}
-	if(tV0.y - tP0.y > 0)
+	if(tV0.z - tP0.z != 0)
 	{
-		ytMin = (pData[7].y - tP0.y)*invY;
-		ytMax = (pData[4].y - tP0.y)*invY;
+		tempZmin = (pData[4].z - tP0.z)*invZ;
+		tempZmax = (pData[7].z - tP0.z)*invZ;
+		if(tempZmin > tempZmax)
+		{
+			temp = tempZmax;
+			tempZmax = tempZmin;
+			tempZmin = temp;
+		}
 	}
-	else if(tV0.y - tP0.y < 0)
+	if(tempXmax != tempXmin)
 	{
-		ytMin = (pData[4].y - tP0.y)*invY;
-		ytMax = (pData[7].y - tP0.y)*invY;
+		if(tempXmin < xtMin) xtMin = tempXmin;
+		if(tempXmax > xtMax) xtMax = tempXmax;
 	}
-	if(!((xtMin > ytMax) || (ytMin < xtMax)))
+	if(tempYmax != tempYmin)
 	{
-		if(ytMin > xtMin)
-			xtMin = ytMin;
-		if(ytMax < xtMax)
-			xtMax = ytMax;
+		if(tempYmin < ytMin) ytMin = tempYmin;
+		if(tempYmax > ytMax) ytMax = tempYmax;
 	}
-	if(tV0.z - tP0.z > 0)
+	if(tempZmax != tempZmin)
 	{
-		ztMin = (pData[7].z - tP0.z)*invZ;
-		ztMax = (pData[4].z - tP0.z)*invZ;
-	}
-	else if(tV0.z - tP0.z < 0)
-	{
-		ztMin = (pData[4].z - tP0.z)*invZ;
-		ztMax = (pData[7].z - tP0.z)*invZ;
-	}
-	if(!((xtMin > ztMax) || (ztMin > xtMax))) 
-	{
-		if(ztMin > xtMin)
-			xtMin = ztMin;
-		if(ztMax < tMax)
-			xtMax = ztMax;
-	}
-	if(xtMin != xtMax)
-	{
-		if(xtMin > tMin && xtMin > 0)
-			tMin = xtMin;
-		if(xtMax < tMax && xtMax > 0)
-			tMax = xtMax;
+		if(tempZmin < ztMin) ztMin = tempZmin;
+		if(tempZmax > ztMax) ztMax = tempZmax;
 	}
 
-	if(tMin >= tMax)
+	if(xtMin > tMin && xtMin > ytMin && xtMin > ztMin)
+		tMin = xtMin;
+	else if(ytMin > ztMin)
+		tMin = ytMin;
+	else 
+		tMin = ztMin;
+	if(xtMax < tMax && xtMax < ytMax && xtMax < ztMax)
+		tMax = xtMax;
+	else if(ytMax < ztMax)
+		tMax = ytMax;
+	else 
+		tMax = ztMax;
+
+	if(tMin > tMax)
 		return -1;
 
 	return tMin;
