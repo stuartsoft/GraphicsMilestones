@@ -57,25 +57,26 @@ void runScenes(){
 
 				glm::vec3 camDir = -camPosition;
 				if (k == 1){
-					scale = glm::vec3(1.5f, 1, 1);
+					scale = glm::vec3(1.0f, 1.5f, 1.0f);
 					geopos = glm::vec3(0, 1.0f, 0);
 					rotY = (115.0f);
 				}
 
-				std::cout<<"geoType:\t"<<geoList[0]->getType()<<std::endl;
-				std::cout<<"Scale:\t\t"<<scale.x<<", "<<scale.y<<", "<<scale.z<<", "<<std::endl;
-				std::cout<<"geopos:\t\t"<<geopos.x<<", "<<geopos.y<<", "<<geopos.z<<", "<<std::endl;
-				std::cout<<"camPosition:\t"<<camPosition.x<<", "<<camPosition.y<<", "<<camPosition.z<<", "<<std::endl;
-				std::cout<<"camDir:\t\t"<<camDir.x<<", "<<camDir.y<<", "<<camDir.z<<std::endl;
-				std::cout<<"upVector:\t"<<upVector.x<<", "<<upVector.y<<", "<<upVector.z<<", "<<std::endl;
-				std::cout<<"rotY:\t\t"<<rotY<<std::endl;
-				std::cout<<"-------------------------"<<std::endl;
+				//std::cout<<"geoType:\t"<<geoList[0]->getType()<<std::endl;
+				//std::cout<<"Scale:\t\t"<<scale.x<<", "<<scale.y<<", "<<scale.z<<", "<<std::endl;
+				//std::cout<<"geopos:\t\t"<<geopos.x<<", "<<geopos.y<<", "<<geopos.z<<", "<<std::endl;
+				//std::cout<<"camPosition:\t"<<camPosition.x<<", "<<camPosition.y<<", "<<camPosition.z<<", "<<std::endl;
+				//std::cout<<"camDir:\t\t"<<camDir.x<<", "<<camDir.y<<", "<<camDir.z<<std::endl;
+				//std::cout<<"upVector:\t"<<upVector.x<<", "<<upVector.y<<", "<<upVector.z<<", "<<std::endl;
+				//std::cout<<"rotY:\t\t"<<rotY<<std::endl;
+				//std::cout<<"-------------------------"<<std::endl;
 
 				mat4 trans = glm::translate(IDENTITY_MATRIX, geopos);
-				mat4 rot = glm::rotate(IDENTITY_MATRIX, rotY, vec3(0,0,1));
-				mat4 M = trans * rot;
-				//TODO build raytracer with the above parameters and execute everything else 
-				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, geoList, geoList[0]->getType() + to_string(i) + to_string(j) + to_string(k) + ".bmp");
+				mat4 rot = glm::rotate(IDENTITY_MATRIX, rotY, vec3(0,1,0));
+				mat4 scaS = glm::scale(IDENTITY_MATRIX, scale);
+				mat4 M = trans * rot * scaS;
+				
+				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, geoList, geoList[0]->getType() + " S" + to_string(i) + " C" + to_string(j) + " M" +to_string(k) + ".bmp");
 
 				sceneOne->rayGeneration(M);
 

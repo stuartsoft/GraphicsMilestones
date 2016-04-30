@@ -41,7 +41,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		normal.w = 1.0f;
 		normal = T * normal;
 	}
-	else if(geom->getType() == "Cube")
+	else if(geom->getType() == "cube")
 	{
 		//front face
 		vec4 norm1 = vec4(0.0f, 0.0f, 1.0f, 1.0f);
@@ -83,7 +83,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 
 vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal){
 	bool obstruction = false;
-	float ka = 0.1f, kd = 0.5f;
+	float ka = 0.3f, kd = 0.7f;
 	vec3 ambient, diffuse;
 	vec3 colorCalc;
 	Geometry *geom;
@@ -182,11 +182,18 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 			vec3 color = BACKGROUND_COLOR;
 			if(t != -1 && t != 1e26)
 			{
-				//vec4 iPoint = intersectionPoint(transMatrix, intersectGeometry, t);
-				//color = shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix));
+				vec4 iPoint = intersectionPoint(transMatrix, vec4(R, 0.0f), t);
+				color = shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix));
 
-				color = MATERIAL_COLOR;
+				//color = MATERIAL_COLOR;
 			}
+
+			//if(color.x > 0)
+			//{
+			//	color.x *= 255;
+			//	color.y *= 255;
+			//	color.z *= 255;
+			//}
 
 			//Put a cap on the color
 			if(color.x > 255)
@@ -204,7 +211,6 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 	output.WriteToFile(outputName.c_str());
 }
 
-//The intersection point will have to be calculated differently for each geometry 
 vec4 RayTracer::intersectionPoint(const mat4& transMatrix, vec4 ray, double t)
 {
 	vec4 iPoint;
