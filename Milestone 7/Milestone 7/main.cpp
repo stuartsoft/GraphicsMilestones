@@ -41,9 +41,9 @@ void runScenes(){
 	camPos.push_back(glm::vec3(-3, 0, 0));
 	camPos.push_back(glm::vec3(1, 1, 1));
 
-	const glm::vec2 imageSize = vec2(640, 420); 
+	const glm::vec2 imageSize = vec2(720, 540); 
 	glm::vec3 upVector = vec3(0, 1, 0);
-	glm::vec4 lightPos = vec4(0, 3, 0, 0);
+	glm::vec4 lightPos = vec4(0, 0, 3, 1.0f);
 	
 	for (int i = 0;i<3;i++){//for each type of shape
 		for (int j = 0;j<3;j++){//change camera position
@@ -61,7 +61,7 @@ void runScenes(){
 				if (k == 1){
 					scale = glm::vec3(1.0f, 1.5f, 1.0f);
 					geopos = glm::vec3(0, 1.0f, 0);
-					rotY = (115.0f);
+					rotY = (34.0f);
 				}
 
 				//std::cout<<"geoType:\t"<<geoList[0]->getType()<<std::endl;

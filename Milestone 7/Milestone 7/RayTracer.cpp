@@ -58,15 +58,15 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 
 		if(abs(point.x - 0.5f) < 0.001f)
 			normal = T * norm4;
-		if(abs(point.x + 0.5f) < 0.001f)
+		else if(abs(point.x + 0.5f) < 0.001f)
 			normal = T * norm3;
-		if(abs(point.y - 0.5f) < 0.001f)
+		else if(abs(point.y - 0.5f) < 0.001f)
 			normal = T * norm4;
-		if(abs(point.y + 0.5f) < 0.001f)
+		else if(abs(point.y + 0.5f) < 0.001f)
 			normal = T * norm6;
-		if(abs(point.z - 0.5f) < 0.001f)
+		else if(abs(point.z - 0.5f) < 0.001f)
 			normal = T * norm1;
-		if(abs(point.z + 0.5f) < 0.001f)
+		else
 			normal = T * norm2;
 	}
 	else 
@@ -81,7 +81,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 	return normal;
 }
 
-vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal){
+vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsigned self){
 	bool obstruction = false;
 	float ka = 0.3f, kd = 0.7f;
 	vec3 ambient, diffuse;
@@ -89,8 +89,10 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal){
 	Geometry *geom;
 
 	for(unsigned i = 0; i < sceneGeom.size(); i++){
-		double result = intersectionTests(sceneGeom[i], intersectionPoint, lightPos - intersectionPoint, T);
+		if(i == self) continue;
 
+		double result = intersectionTests(sceneGeom[i], intersectionPoint, lightPos - intersectionPoint, T);
+	
 		if(result != -1 && result != 0){
 			obstruction = true;
 			geom = sceneGeom[i];
@@ -166,6 +168,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 			//Initialize the t value to "infinity" and the intersection geometry to no geometry (NULL)
 			double t = 1e26;
 			Geometry * intersectGeometry = NULL;
+			unsigned self = 666;
 			for(unsigned num=0; num < sceneGeom.size(); ++num)
 			{
 				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 1.0f), vec4(R, 0.0f), transMatrix);
@@ -175,6 +178,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 				{
 					t = tOne;
 					intersectGeometry = sceneGeom[num];
+					self = num;
 				}
 			}
 
@@ -183,7 +187,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 			if(t != -1 && t != 1e26)
 			{
 				vec4 iPoint = intersectionPoint(transMatrix, vec4(R, 0.0f), t);
-				color = shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix));
+				color = shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix), self);
 
 				//color = MATERIAL_COLOR;
 			}

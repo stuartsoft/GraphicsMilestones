@@ -135,11 +135,11 @@ double Test_RayCubeIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	//Translate the cube
 	for(unsigned i=0; i < 8; i++)
 	{
-		pData[i] = T * pData[i];
+		pData[i] = pData[i];
 	}
 
-	vec4 tP0 = P0;
-	vec4 tV0 = V0;
+	vec4 tP0 = inverse(T) * P0;
+	vec4 tV0 = inverse(T) * V0;
 
 	double invX = 1/(tV0.x);
 	double invY = 1/(tV0.y);

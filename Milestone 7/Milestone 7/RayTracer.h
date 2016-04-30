@@ -24,7 +24,7 @@ public:
 
 
 	//Calculate all lighting along with the shadow feelers affecting that lighting
-	vec3 shadowFeeler(vec4, mat4 T, vec4 normal);
+	vec3 shadowFeeler(vec4, mat4 T, vec4 normal, unsigned self);
 
 	//Generate the rays starting from the camera and going to a point on the screen
 	void rayGeneration(const mat4& transMatrix);
