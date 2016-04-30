@@ -188,20 +188,16 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 				//color = MATERIAL_COLOR;
 			}
 
-			//if(color.x > 0)
-			//{
-			//	color.x *= 255;
-			//	color.y *= 255;
-			//	color.z *= 255;
-			//}
-
 			//Put a cap on the color
-			if(color.x > 255)
-				color.x = 255;
-			if(color.y > 255)
-				color.y = 255;
-			if(color.z > 255)
-				color.z = 255;
+			if(color.x >0)
+			{
+				if(color.x > 255)
+					color.x = 255;
+				if(color.y > 255)
+					color.y = 255;
+				if(color.z > 255)
+					color.z = 255;
+			}
 
 			output(x, y)->Red = (ebmpBYTE)abs(color.x);
 			output(x, y)->Green = (ebmpBYTE)abs(color.y);

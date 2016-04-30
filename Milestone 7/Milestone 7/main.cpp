@@ -42,6 +42,8 @@ void runScenes(){
 	camPos.push_back(glm::vec3(1, 1, 1));
 
 	const glm::vec2 imageSize = vec2(640, 420); 
+	glm::vec3 upVector = vec3(0, 1, 0);
+	glm::vec4 lightPos = vec4(0, 3, 0, 0);
 	
 	for (int i = 0;i<3;i++){//for each type of shape
 		for (int j = 0;j<3;j++){//change camera position
@@ -53,7 +55,7 @@ void runScenes(){
 				std::vector<Geometry*> geoList;
 				geoList.push_back(geos[i]);
 				glm::vec3 camPosition = camPos[j];
-				glm::vec3 upVector = vec3(0, 1, 0);
+				
 
 				glm::vec3 camDir = -camPosition;
 				if (k == 1){
@@ -76,7 +78,7 @@ void runScenes(){
 				mat4 scaS = glm::scale(IDENTITY_MATRIX, scale);
 				mat4 M = trans * rot * scaS;
 				
-				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, geoList, geoList[0]->getType() + " S" + to_string(i) + " C" + to_string(j) + " M" +to_string(k) + ".bmp");
+				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, lightPos, geoList, geoList[0]->getType() + " S" + to_string(i) + " C" + to_string(j) + " M" +to_string(k) + ".bmp");
 
 				sceneOne->rayGeneration(M);
 
