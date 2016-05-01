@@ -48,7 +48,7 @@ void runScenes(){
 	glm::vec3 upVector = vec3(0, 1, 0);
 	glm::vec4 lightPos = vec4(0, 0, 3, 1.0f);
 	
-	for (int i = 1;i<2;i++){//for each type of shape
+	for (int i = 0;i<3;i++){//for each type of shape
 		for (int j = 0;j<3;j++){//change camera position
 			for (int k = 0;k<2;k++){//draw with and without object movement
 				float rotY = (0.0f);

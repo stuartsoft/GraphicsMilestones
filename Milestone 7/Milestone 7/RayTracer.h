@@ -38,7 +38,7 @@ public:
 	vec4 intersectionPoint(const mat4& transMatrix, vec4 ray, double t);
 
 	//Goes through the motions of reflection to give back the correct reflected color
-	vec3 reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec3 R);
+	vec3 reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec4 R);
 
 private:
 	std::vector<Geometry*> sceneGeom;
