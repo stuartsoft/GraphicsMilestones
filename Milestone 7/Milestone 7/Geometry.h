@@ -12,10 +12,13 @@ class Geometry{
 protected:
 	std::string type;
 	std::vector<vec4> points;
+	double reflectivity;
 
 public:
 	virtual std::string getType() {return type;};
 	virtual std::vector<vec4> getpoints() {return points;};
+	void setReflectivity(double x) {reflectivity = x;};
+	double getReflectivity() {return reflectivity;};
 };
 
 class Cube : public Geometry{

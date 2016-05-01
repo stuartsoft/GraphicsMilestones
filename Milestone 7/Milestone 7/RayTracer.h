@@ -27,7 +27,7 @@ public:
 	vec3 shadowFeeler(vec4, mat4 T, vec4 normal, unsigned self);
 
 	//Generate the rays starting from the camera and going to a point on the screen
-	void rayGeneration(const mat4& transMatrix);
+	void rayGeneration(const mat4& transMatrix, unsigned depth);
 
 	//Run the intersection tests
 	double intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix);
@@ -36,6 +36,9 @@ public:
 
 	//Get the intersection point x,y,z
 	vec4 intersectionPoint(const mat4& transMatrix, vec4 ray, double t);
+
+	//Goes through the motions of reflection to give back the correct reflected color
+	vec3 reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec3 R);
 
 private:
 	std::vector<Geometry*> sceneGeom;

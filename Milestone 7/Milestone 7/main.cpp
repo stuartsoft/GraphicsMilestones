@@ -33,8 +33,11 @@ return 0;
 void runScenes(){
 	std::vector<Geometry*> geos;
 	geos.push_back(new Sphere());
+	geos[0]->setReflectivity(1.0);
 	geos.push_back(new Cube());
+	geos[1]->setReflectivity(1.0);
 	geos.push_back(new Triangle());
+	geos[2]->setReflectivity(1.0);
 
 	std::vector<glm::vec3> camPos;
 	camPos.push_back(glm::vec3(0, 0, 3));
@@ -80,7 +83,7 @@ void runScenes(){
 				
 				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, lightPos, geoList, geoList[0]->getType() + " S" + to_string(i) + " C" + to_string(j) + " M" +to_string(k) + ".bmp");
 
-				sceneOne->rayGeneration(M);
+				sceneOne->rayGeneration(M, 0);
 
 				delete sceneOne;
 			}

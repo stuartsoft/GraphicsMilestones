@@ -2,6 +2,7 @@
 
 const vec3 BACKGROUND_COLOR = vec3(0, 0, 0);
 const vec3 MATERIAL_COLOR = vec3(85,45,125);
+const unsigned MAX_DEPTH = 3;
 #define PI 3.14159f
 
 double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix){
@@ -122,7 +123,41 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	return colorCalc;
 }
 
-void RayTracer::rayGeneration(const mat4& transMatrix){
+vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec3 R)
+{
+	double t = 1e26;
+	Geometry * intersectGeometry;
+	unsigned int self;
+	for(unsigned num=0; num < sceneGeom.size(); ++num)
+	{
+		double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 1.0f), vec4(R, 0.0f), transMatrix);
+
+		//Find the closest intersection point
+		if(tOne < t && tOne != -1)
+		{
+			t = tOne;
+			intersectGeometry = sceneGeom[num];
+			self = num;
+		}
+	}
+
+	//Initialize the color to the background color
+	if(t != -1 && t != 1e26)
+	{
+		vec4 iPoint = intersectionPoint(transMatrix, vec4(R, 0.0f), t);
+		currentColor += shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix), self);
+	}
+
+	//Set the max here
+	if(depth == MAX_DEPTH)
+		return currentColor;
+	else 
+		return reflection(depth + 1, currentColor, transMatrix, R);
+
+}
+
+
+void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 	
 	vec3 N = vdir;
 	N = normalize(N);
@@ -188,9 +223,15 @@ void RayTracer::rayGeneration(const mat4& transMatrix){
 			{
 				vec4 iPoint = intersectionPoint(transMatrix, vec4(R, 0.0f), t);
 				color = shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix), self);
-
-				//color = MATERIAL_COLOR;
 			}
+
+			//Reflection code probably goes here
+			//if(intersectGeometry->getReflectivity() > 0.0)
+			//{
+			//	if(depth > 0)
+			//		reflection(depth, color, transMatrix, R);
+			//}
+
 
 			//Put a cap on the color
 			if(color.x >0)
