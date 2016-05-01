@@ -123,7 +123,7 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	return colorCalc;
 }
 
-/*
+
 vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec4 R)
 {
 	double t = 1e26;
@@ -156,7 +156,7 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 	else 
 		return reflection(depth + 1, currentColor, transMatrix, R);
 
-}*/
+}
 
 
 void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
@@ -226,13 +226,13 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 				vec4 iPoint = intersectionPoint(transMatrix, vec4(R, 0.0f), t);
 				color = shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix), self);
 
-				/*if(intersectGeometry->getReflectivity() > 0.0)
+				if(intersectGeometry->getReflectivity() > 0.0)
 				{
 					vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, transMatrix));
 
 					if(depth > 0)
 						reflection(depth, color, transMatrix, reflectRay);
-				}*/
+				}
 			}
 
 			//Reflection code probably goes here
