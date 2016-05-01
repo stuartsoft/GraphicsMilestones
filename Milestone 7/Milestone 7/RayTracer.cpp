@@ -56,15 +56,15 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		//bottom face
 		vec4 norm6 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
 
-		if(abs(point.x - 0.5f) < 0.001f)
+		if(abs(point.x + 0.5f) < 0.00001f)
 			normal = T * norm4;
-		else if(abs(point.x + 0.5f) < 0.001f)
+		else if(abs(point.x - 0.5f) < 0.00001f)
 			normal = T * norm3;
-		else if(abs(point.y - 0.5f) < 0.001f)
+		else if(abs(point.y + 0.5f) < 0.00001f)
 			normal = T * norm4;
-		else if(abs(point.y + 0.5f) < 0.001f)
+		else if(abs(point.y - 0.5f) < 0.00001f)
 			normal = T * norm6;
-		else if(abs(point.z - 0.5f) < 0.001f)
+		else if(abs(point.z - 0.5f) < 0.00001f)
 			normal = T * norm1;
 		else
 			normal = T * norm2;
