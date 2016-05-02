@@ -107,7 +107,7 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 
 	vec4 H = normalize(L + V);
 
-	ambient = MATERIAL_COLOR;
+	ambient = objectColor[self];
 
 	if(obstruction)
 	{
@@ -115,7 +115,7 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	}
 	else
 	{
-		diffuse = clamp(dot(L, normal), 0.0f, 1.0f) * MATERIAL_COLOR;
+		diffuse = clamp(dot(L, normal), 0.0f, 1.0f) * objectColor[self];
 	}
 
 	colorCalc = vec3(ka * ambient + kd * diffuse);

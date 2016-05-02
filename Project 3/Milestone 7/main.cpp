@@ -36,6 +36,9 @@ const mat4 BACK5_MATRIX(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                         vec4(0.0f, 0.0f, 1.0f, 0.0f),
                         vec4(0.0f, 0.0f, -5.0f, 1.0f));
 
+const vec3 RED_COLOR(200, 20, 20);
+const vec3 BLUE_COLOR(20, 20, 200);
+const vec3 GREEN_COLOR(20, 200, 20);
 
 int main(){
 
@@ -67,6 +70,11 @@ void runScenes(){
 	objectMovement.push_back(UPPER_LEFT);
 	objectMovement.push_back(UPPER_RIGHT);
 	objectMovement.push_back(BOTTOM_MIDDLE);
+
+	std::vector<vec3>objectColor;
+	objectColor.push_back(RED_COLOR);
+	objectColor.push_back(BLUE_COLOR);
+	objectColor.push_back(GREEN_COLOR);
 	
 	for (int i = 0;i<1;i++){//for each type of shape
 		for (int j = 0;j<3;j++){//change camera position
@@ -100,7 +108,7 @@ void runScenes(){
 				mat4 scaS = glm::scale(IDENTITY_MATRIX, scale);
 				mat4 M = trans * rot * scaS;
 				
-				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, lightPos, objectMovement, geos, geoList[0]->getType() + " S" + to_string(i) + " C" + to_string(j) + " M" +to_string(k) + ".bmp");
+				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, lightPos, objectMovement, objectColor, geos, geoList[0]->getType() + " S" + to_string(i) + " C" + to_string(j) + " M" +to_string(k) + ".bmp");
 
 				sceneOne->rayGeneration(M, 0);
 
