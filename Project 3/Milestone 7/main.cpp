@@ -8,6 +8,21 @@ using std::to_string;
 void runScenes();
 
 const mat4 IDENTITY_MATRIX = mat4();
+const mat4 UPPER_RIGHT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
+                         vec4(0.0f, 1.0f, 0.0f, 0.0f),
+                         vec4(0.0f, 0.0f, 1.0f, 0.0f),
+                         vec4(3.0f, 2.0f, 0.0f, 1.0f));
+
+const mat4 UPPER_LEFT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
+                         vec4(0.0f, 1.0f, 0.0f, 0.0f),
+                         vec4(0.0f, 0.0f, 1.0f, 0.0f),
+                         vec4(-3.0f, 2.0f, 0.0f, 1.0f));
+
+const mat4 BOTTOM_MIDDLE(vec4(1.0f, 0.0f, 0.0f, 0.0f),
+                         vec4(0.0f, 1.0f, 0.0f, 0.0f),
+                         vec4(0.0f, 0.0f, 1.0f, 0.0f),
+                         vec4(-1.0f, 0.0f, 0.0f, 1.0f));
+
 const mat4 DOUBLE_MATRIX(vec4(2.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 2.0f, 0.0f, 0.0f),
                          vec4(0.0f, 0.0f, 2.0f, 0.0f),
@@ -47,8 +62,13 @@ void runScenes(){
 	const glm::vec2 imageSize = vec2(720, 540); 
 	glm::vec3 upVector = vec3(0, 1, 0);
 	glm::vec4 lightPos = vec4(0, 0, 3, 1.0f);
+
+	std::vector<mat4>objectMovement;
+	objectMovement.push_back(UPPER_LEFT);
+	objectMovement.push_back(UPPER_RIGHT);
+	objectMovement.push_back(BOTTOM_MIDDLE);
 	
-	for (int i = 0;i<3;i++){//for each type of shape
+	for (int i = 0;i<1;i++){//for each type of shape
 		for (int j = 0;j<3;j++){//change camera position
 			for (int k = 0;k<2;k++){//draw with and without object movement
 				float rotY = (0.0f);
@@ -58,13 +78,12 @@ void runScenes(){
 				std::vector<Geometry*> geoList;
 				geoList.push_back(geos[i]);
 				glm::vec3 camPosition = camPos[j];
-				
 
 				glm::vec3 camDir = -camPosition;
 				if (k == 1){
-					scale = glm::vec3(1.0f, 1.5f, 1.0f);
-					geopos = glm::vec3(0, 1.0f, 0);
-					rotY = (45.0f);
+					scale = glm::vec3(1.0f, 1.0f, 1.0f);
+					geopos = glm::vec3(0, 0.0f, 0);
+					rotY = (0.0f);
 				}
 
 				//std::cout<<"geoType:\t"<<geoList[0]->getType()<<std::endl;
@@ -81,7 +100,7 @@ void runScenes(){
 				mat4 scaS = glm::scale(IDENTITY_MATRIX, scale);
 				mat4 M = trans * rot * scaS;
 				
-				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, lightPos, geoList, geoList[0]->getType() + " S" + to_string(i) + " C" + to_string(j) + " M" +to_string(k) + ".bmp");
+				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, lightPos, objectMovement, geos, geoList[0]->getType() + " S" + to_string(i) + " C" + to_string(j) + " M" +to_string(k) + ".bmp");
 
 				sceneOne->rayGeneration(M, 0);
 

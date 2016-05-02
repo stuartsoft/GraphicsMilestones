@@ -123,7 +123,6 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	return colorCalc;
 }
 
-
 vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec4 R)
 {
 	double t = 1e26;
@@ -131,7 +130,7 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 	unsigned int self;
 	for(unsigned num=0; num < sceneGeom.size(); ++num)
 	{
-		double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 1.0f), R, transMatrix);
+		double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 1.0f), R, objectMovement[num]);
 
 		//Find the closest intersection point
 		if(tOne < t && tOne != -1)
@@ -145,19 +144,18 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 	if(t != -1 && t != 1e26)
 	{
 		
-		vec4 iPoint = intersectionPoint(transMatrix, R, t);
-		R = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, transMatrix));
-		currentColor += shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix), self);
+		vec4 iPoint = intersectionPoint(objectMovement[self], R, t);
+		R = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
+		currentColor += shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
 	}
 
 	//Set the max here
 	if(depth == MAX_DEPTH)
 		return currentColor;
 	else 
-		return reflection(depth + 1, currentColor, transMatrix, R);
+		return reflection(depth + 1, currentColor, objectMovement[self], R);
 
 }
-
 
 void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 	
@@ -208,7 +206,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 			unsigned self = 666;
 			for(unsigned num=0; num < sceneGeom.size(); ++num)
 			{
-				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 1.0f), vec4(R, 0.0f), transMatrix);
+				double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 1.0f), vec4(R, 0.0f), objectMovement[num]);
 
 				//Find the closest intersection point
 				if(tOne < t && tOne != -1)
@@ -223,21 +221,17 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 			vec3 color = BACKGROUND_COLOR;
 			if(t != -1 && t != 1e26)
 			{
-				vec4 iPoint = intersectionPoint(transMatrix, vec4(R, 0.0f), t);
-				color = shadowFeeler(iPoint, transMatrix, getNormal(iPoint, intersectGeometry, transMatrix), self);
+				vec4 iPoint = intersectionPoint(objectMovement[self], vec4(R, 0.0f), t);
+				color = shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
 
-				if(intersectGeometry->getReflectivity() > 0.0)
-				{
-					vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, transMatrix));
-
-					if(depth > 0)
-						reflection(depth, color, transMatrix, reflectRay);
-				}
+				//if(intersectGeometry->getReflectivity() > 0.0)
+				//{
+				//	vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
+				//
+				//	if(depth > 0)
+				//		color = reflection(depth, color, objectMovement[self], reflectRay);
+				//}
 			}
-
-			//Reflection code probably goes here
-			
-
 
 			//Put a cap on the color
 			if(color.x >0)

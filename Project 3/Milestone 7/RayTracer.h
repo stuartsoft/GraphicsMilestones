@@ -7,7 +7,7 @@
 class RayTracer
 {
 public:
-	RayTracer(vec3 EyePos, vec3 Vdir, vec3 Uvec, float Fovy, vec2 picSize, vec4 lPos,  std::vector<Geometry*> list, std::string fName){
+	RayTracer(vec3 EyePos, vec3 Vdir, vec3 Uvec, float Fovy, vec2 picSize, vec4 lPos, std::vector<mat4> objMov,  std::vector<Geometry*> list, std::string fName){
 		eyePos = EyePos;
 		vdir = Vdir;
 		uvec = Uvec;
@@ -16,6 +16,7 @@ public:
 		sceneGeom = list;
 		outputName = fName;
 		lightPos = lPos;
+		objectMovement = objMov;
 	}
 	~RayTracer()
 	{
@@ -42,6 +43,7 @@ public:
 
 private:
 	std::vector<Geometry*> sceneGeom;
+	std::vector<mat4> objectMovement;
 	glm::vec2 imageSize;
 	glm::vec3 eyePos;
 	glm::vec3 vdir;
