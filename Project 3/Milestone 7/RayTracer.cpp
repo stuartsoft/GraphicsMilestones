@@ -2,7 +2,7 @@
 
 const vec3 BACKGROUND_COLOR = vec3(0, 0, 0);
 const vec3 MATERIAL_COLOR = vec3(85,45,125);
-const unsigned MAX_DEPTH = 3;
+const unsigned MAX_DEPTH = 2;
 #define PI 3.14159f
 
 double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix){
@@ -78,7 +78,6 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		exit(0);
 	}
 
-
 	return normal;
 }
 
@@ -92,7 +91,7 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	for(unsigned i = 0; i < sceneGeom.size(); i++){
 		if(i == self) continue;
 
-		double result = intersectionTests(sceneGeom[i], intersectionPoint, (lightPos - intersectionPoint), T);
+		double result = intersectionTests(sceneGeom[i], intersectionPoint, -(lightPos - intersectionPoint), T);
 	
 		if(result != -1 && result != 0){
 			obstruction = true;
@@ -103,9 +102,11 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	//Blinn-phong code
 	vec4 L = normalize(lightPos - intersectionPoint);
 
-	vec4 V = normalize(vec4(eyePos, 0.0f) - intersectionPoint);
+	vec4 V = normalize(vec4(eyePos, 1.0f) - intersectionPoint);
 
 	vec4 H = normalize(L + V);
+
+	H.w = 1.0f;
 
 	ambient = objectColor[self];
 
@@ -115,8 +116,6 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	}
 	else
 	{
-		normal = normalize(normal);
-		float x = (dot(L, normal));
 		diffuse = clamp((dot(L, normal)), 0.0f, 1.0f) * objectColor[self];
 	}
 
@@ -125,14 +124,17 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	return colorCalc;
 }
 
-vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec4 R)
+vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec4 R, unsigned reflectedObject)
 {
 	double t = 1e26;
 	Geometry * intersectGeometry = new Geometry;
 	unsigned int self;
 	for(unsigned num=0; num < sceneGeom.size(); ++num)
 	{
-		double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 1.0f), R, objectMovement[num]);
+		//Make sure it isn't reflecting with itself
+		if(num == reflectedObject) continue;
+
+		double tOne = intersectionTests(sceneGeom[num], vec4(eyePos, 0.0f), R, objectMovement[num]);
 
 		//Find the closest intersection point
 		if(tOne < t && tOne != -1)
@@ -145,9 +147,10 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 
 	if(t != -1 && t != 1e26)
 	{
-		
 		vec4 iPoint = intersectionPoint(objectMovement[self], R, t);
+		iPoint.w = 0;
 		R = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
+		R.w = 1;
 		currentColor += shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
 	}
 
@@ -155,7 +158,7 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 	if(depth == MAX_DEPTH)
 		return currentColor;
 	else 
-		return reflection(depth + 1, currentColor, transMatrix, R);
+		return reflection(depth + 1, currentColor, transMatrix, R, reflectedObject);
 
 }
 
@@ -226,13 +229,13 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 				vec4 iPoint = intersectionPoint(objectMovement[self], vec4(R, 0.0f), t);
 				color = shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
 
-				if(intersectGeometry->getReflectivity() > 0.0)
-				{
-					vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
-				
-					if(depth < MAX_DEPTH)
-						color = reflection(depth, color, objectMovement[self], reflectRay);
-				}
+				//if(intersectGeometry->getReflectivity() > 0.0)
+				//{
+				//	vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
+				//
+				//	if(depth < MAX_DEPTH)
+				//		color = reflection(depth, color, objectMovement[self], reflectRay, self);
+				//}
 			}
 
 			//Put a cap on the color
@@ -261,7 +264,7 @@ vec4 RayTracer::intersectionPoint(const mat4& transMatrix, vec4 ray, double t)
 	vec4 objectSpace_E = transMatrix * vec4(eyePos, 0.0f);
 	vec4 objectSpace_P = transMatrix * ray;
 
-	iPoint = objectSpace_E + vec4(vec3((float)t), 1) * objectSpace_P;
+	iPoint = objectSpace_E + vec4(vec3((float)t), 0) * objectSpace_P;
 
 	return iPoint;
 }
