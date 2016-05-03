@@ -92,7 +92,7 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	for(unsigned i = 0; i < sceneGeom.size(); i++){
 		if(i == self) continue;
 
-		double result = intersectionTests(sceneGeom[i], intersectionPoint, lightPos - intersectionPoint, T);
+		double result = intersectionTests(sceneGeom[i], intersectionPoint, (lightPos - intersectionPoint), T);
 	
 		if(result != -1 && result != 0){
 			obstruction = true;
@@ -115,10 +115,12 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	}
 	else
 	{
-		diffuse = clamp(dot(L, normal), 0.0f, 1.0f) * objectColor[self];
+		normal = normalize(normal);
+		float x = (dot(L, normal));
+		diffuse = clamp((dot(L, normal)), 0.0f, 1.0f) * objectColor[self];
 	}
 
-	colorCalc = vec3(ka * ambient + kd * diffuse);
+	colorCalc = vec3((ka * ambient) + (kd * diffuse));
 
 	return colorCalc;
 }
@@ -153,7 +155,7 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 	if(depth == MAX_DEPTH)
 		return currentColor;
 	else 
-		return reflection(depth + 1, currentColor, objectMovement[self], R);
+		return reflection(depth + 1, currentColor, transMatrix, R);
 
 }
 
@@ -224,13 +226,13 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 				vec4 iPoint = intersectionPoint(objectMovement[self], vec4(R, 0.0f), t);
 				color = shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
 
-				//if(intersectGeometry->getReflectivity() > 0.0)
-				//{
-				//	vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
-				//
-				//	if(depth > 0)
-				//		color = reflection(depth, color, objectMovement[self], reflectRay);
-				//}
+				if(intersectGeometry->getReflectivity() > 0.0)
+				{
+					vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
+				
+					if(depth < MAX_DEPTH)
+						color = reflection(depth, color, objectMovement[self], reflectRay);
+				}
 			}
 
 			//Put a cap on the color

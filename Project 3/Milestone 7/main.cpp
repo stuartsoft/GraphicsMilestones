@@ -11,12 +11,12 @@ const mat4 IDENTITY_MATRIX = mat4();
 const mat4 UPPER_RIGHT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
                          vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                         vec4(3.0f, 2.0f, 0.0f, 1.0f));
+                         vec4(3.0f, 2.0f, -2.0f, 1.0f));
 
 const mat4 UPPER_LEFT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
                          vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                         vec4(-3.0f, 2.0f, 0.0f, 1.0f));
+                         vec4(-3.0f, 2.0f, -2.0f, 1.0f));
 
 const mat4 BOTTOM_MIDDLE(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
@@ -50,12 +50,14 @@ return 0;
 
 void runScenes(){
 	std::vector<Geometry*> geos;
+
+	//Set reflection between 0 and 1
 	geos.push_back(new Sphere());
-	geos[0]->setReflectivity(1.0);
+	geos[0]->setReflectivity(0.3);
 	geos.push_back(new Cube());
-	geos[1]->setReflectivity(1.0);
+	geos[1]->setReflectivity(0.3);
 	geos.push_back(new Triangle());
-	geos[2]->setReflectivity(1.0);
+	geos[2]->setReflectivity(0.3);
 
 	std::vector<glm::vec3> camPos;
 	camPos.push_back(glm::vec3(0, 0, 3));
@@ -64,12 +66,7 @@ void runScenes(){
 
 	const glm::vec2 imageSize = vec2(720, 540); 
 	glm::vec3 upVector = vec3(0, 1, 0);
-	glm::vec4 lightPos = vec4(0, 0, 3, 1.0f);
-
-	std::vector<mat4>objectMovement;
-	objectMovement.push_back(UPPER_LEFT);
-	objectMovement.push_back(UPPER_RIGHT);
-	objectMovement.push_back(BOTTOM_MIDDLE);
+	glm::vec4 lightPos = vec4(0, 0, 3, 1.0f);	
 
 	std::vector<vec3>objectColor;
 	objectColor.push_back(RED_COLOR);
@@ -87,11 +84,16 @@ void runScenes(){
 				geoList.push_back(geos[i]);
 				glm::vec3 camPosition = camPos[j];
 
+				std::vector<mat4>objectMovement;
+				objectMovement.push_back(UPPER_RIGHT);
+				objectMovement.push_back(BOTTOM_MIDDLE);
+				objectMovement.push_back(UPPER_LEFT);
+
 				glm::vec3 camDir = -camPosition;
 				if (k == 1){
-					scale = glm::vec3(1.0f, 1.0f, 1.0f);
+					scale = glm::vec3(1.0f, 1.5f, 1.0f);
 					geopos = glm::vec3(0, 0.0f, 0);
-					rotY = (0.0f);
+					rotY = (45.0f);
 				}
 
 				//std::cout<<"geoType:\t"<<geoList[0]->getType()<<std::endl;
@@ -107,6 +109,10 @@ void runScenes(){
 				mat4 rot = glm::rotate(IDENTITY_MATRIX, rotY, vec3(0,1,0));
 				mat4 scaS = glm::scale(IDENTITY_MATRIX, scale);
 				mat4 M = trans * rot * scaS;
+
+				objectMovement[0] = objectMovement[0] * trans * rot * scaS;
+				objectMovement[1] = objectMovement[1] * trans * rot * scaS;
+				objectMovement[2] = objectMovement[2] * trans * rot * scaS;
 				
 				RayTracer * sceneOne = new RayTracer(camPosition, camDir, upVector, fovY, imageSize, lightPos, objectMovement, objectColor, geos, geoList[0]->getType() + " S" + to_string(i) + " C" + to_string(j) + " M" +to_string(k) + ".bmp");
 
