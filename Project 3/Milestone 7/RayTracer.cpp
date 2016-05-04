@@ -36,7 +36,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		//top point
 		vec3 point3 = vec3(0.0f, 1.0f, 0.0f);
 
-		normal = T * vec4(cross(point2 - point1, point3 - point1), 1.0f);
+		normal = inverse(T) * vec4(cross(point2 - point1, point3 - point1), 1.0f);
 	}
 	else if(geom->getType() == "sphere")
 	{
