@@ -40,7 +40,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 	}
 	else if(geom->getType() == "sphere")
 	{
-		normal = newPoint;
+		normal = inverse(T) * newPoint;
 	}
 	else if(geom->getType() == "cube")
 	{

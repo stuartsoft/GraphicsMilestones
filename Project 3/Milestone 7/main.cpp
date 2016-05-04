@@ -64,7 +64,7 @@ void runScenes(){
 	camPos.push_back(glm::vec3(-3, 0, 0));
 	camPos.push_back(glm::vec3(1, 1, 1));
 
-	const glm::vec2 imageSize = vec2(1920, 1080); 
+	const glm::vec2 imageSize = vec2(1920, 1080);
 	glm::vec3 upVector = vec3(0, 1, 0);
 	glm::vec4 lightPos = vec4(0, 0, 3, 0);	
 
