@@ -65,7 +65,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 			normal =  inverse(T) * norm5;
 		else if(abs(newPoint.y + 0.5f) < 0.00001f)
 			normal =  inverse(T) * norm6;
-		else if(abs(newPoint.z - 0.5f) < 0.00001f)
+		else if(abs(newPoint.z + 0.5f) < 0.00001f)
 			normal =  inverse(T) * norm1;
 		else
 			normal =  inverse(T) * norm2;
@@ -146,9 +146,9 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 	{
 		vec4 iPoint = intersectionPoint(objectMovement[self], R, t);
 		iPoint.w = 0;
-		R = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
+		R = -glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
 		R.w = 1;
-		currentColor += shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
+		currentColor += shadowFeeler(R, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
 	}
 
 	//Set the max here
@@ -226,13 +226,13 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 				vec4 iPoint = intersectionPoint(objectMovement[self], vec4(R, 0.0f), t);
 				color = shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
 
-				/*if(intersectGeometry->getReflectivity() > 0.0)
+				if(intersectGeometry->getReflectivity() > 0.0)
 				{
-					vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, transMatrix));
-
-					if(depth > 0)
-						reflection(depth, color, transMatrix, reflectRay);
-				}*/
+					vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
+				
+					if(depth < MAX_DEPTH)
+						color = reflection(depth, color, objectMovement[self], reflectRay, self);
+				}
 			}
 
 			//Put a cap on the color
