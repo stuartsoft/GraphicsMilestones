@@ -37,10 +37,10 @@ public:
 	vec4 getNormal(vec4 point, Geometry *geom, mat4 T);
 
 	//Get the intersection point x,y,z
-	vec4 intersectionPoint(const mat4& transMatrix, vec4 ray, double t);
+	vec4 intersectionPoint(const mat4& transMatrix, vec4 ray, double t, vec4 startPoint);
 
 	//Goes through the motions of reflection to give back the correct reflected color
-	vec3 reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec4 R, unsigned reflectedObject);
+	vec3 reflection(unsigned depth, vec3 currentColor, const mat4& transMatrix, vec4 R, unsigned reflectedObject, vec4 iPoint);
 
 private:
 	std::vector<Geometry*> sceneGeom;
