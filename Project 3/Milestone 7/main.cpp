@@ -11,12 +11,12 @@ const mat4 IDENTITY_MATRIX = mat4();
 const mat4 UPPER_LEFT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
                          vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                         vec4(3.0f, 2.0f, 0.0f, 1.0f));
+                         vec4(3.0f, 2.0f, -2.0f, 1.0f));
 
 const mat4 UPPER_RIGHT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
                          vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                         vec4(-3.0f, 2.0f, 0.0f, 1.0f));
+                         vec4(-3.0f, 2.0f, -2.0f, 1.0f));
 
 const mat4 BOTTOM_MIDDLE(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),

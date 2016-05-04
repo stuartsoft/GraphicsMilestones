@@ -24,6 +24,8 @@ double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMa
 
 vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 	vec4 normal;
+	point.w = 1;
+	vec4 newPoint = inverse(T) * point;
 
 	if(geom->getType() == "triangle")
 	{
@@ -34,13 +36,13 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		//top point
 		vec3 point3 = vec3(0.0f, 1.0f, 0.0f);
 
-		normal = T * vec4(cross(point2 - point1, point3 - point1), 1.0f);
+		normal = inverse(T) * vec4(cross(point2 - point1, point3 - point1), 1.0f);
 	}
 	else if(geom->getType() == "sphere")
 	{
-		normal = point;
+		normal = newPoint;
 		normal.w = 1.0f;
-		normal = T * normal;
+		normal = inverse(T) * normal;
 	}
 	else if(geom->getType() == "cube")
 	{
@@ -57,18 +59,18 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		//bottom face
 		vec4 norm6 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
 
-		if(abs(point.x + 0.5f) < 0.00001f)
-			normal = T * norm4;
-		else if(abs(point.x - 0.5f) < 0.00001f)
-			normal = T * norm3;
-		else if(abs(point.y + 0.5f) < 0.00001f)
-			normal = T * norm4;
-		else if(abs(point.y - 0.5f) < 0.00001f)
-			normal = T * norm6;
-		else if(abs(point.z - 0.5f) < 0.00001f)
-			normal = T * norm1;
+		if(abs(newPoint.x - 0.5f) < 0.00001f)
+			normal =  inverse(T) * norm4;
+		else if(abs(newPoint.x + 0.5f) < 0.00001f)
+			normal =  inverse(T) * norm3;
+		else if(abs(newPoint.y - 0.5f) < 0.00001f)
+			normal =  inverse(T) * norm5;
+		else if(abs(newPoint.y + 0.5f) < 0.00001f)
+			normal =  inverse(T) * norm6;
+		else if(abs(newPoint.z - 0.5f) < 0.00001f)
+			normal =  inverse(T) * norm1;
 		else
-			normal = T * norm2;
+			normal =  inverse(T) * norm2;
 	}
 	else 
 	{
@@ -86,16 +88,17 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	float ka = 0.3f, kd = 0.7f;
 	vec3 ambient, diffuse;
 	vec3 colorCalc;
-	Geometry *geom;
+	//Geometry *geom;
+	//unsigned num;
 
+	//Check for an object between the object and the light 
 	for(unsigned i = 0; i < sceneGeom.size(); i++){
 		if(i == self) continue;
 
-		double result = intersectionTests(sceneGeom[i], intersectionPoint, -(lightPos - intersectionPoint), T);
+		double result = intersectionTests(sceneGeom[i], intersectionPoint, (lightPos - intersectionPoint), objectMovement[i]);
 	
-		if(result != -1 && result != 0){
+		if(result > 0 && result <= 1){
 			obstruction = true;
-			geom = sceneGeom[i];
 		}
 	}
 
@@ -103,10 +106,6 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	vec4 L = normalize(lightPos - intersectionPoint);
 
 	vec4 V = normalize(vec4(eyePos, 1.0f) - intersectionPoint);
-
-	vec4 H = normalize(L + V);
-
-	H.w = 1.0f;
 
 	ambient = objectColor[self];
 
@@ -116,10 +115,10 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	}
 	else
 	{
-		diffuse = clamp((dot(L, normal)), 0.0f, 1.0f) * objectColor[self];
+		diffuse = clamp(dot(L, normal), 0.0f, 1.0f) * objectColor[self];
 	}
 
-	colorCalc = vec3((ka * ambient) + (kd * diffuse));
+	colorCalc = vec3(ka * ambient + kd * diffuse);
 
 	return colorCalc;
 }
@@ -203,7 +202,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 			float yPercent = (2.0f * y/(imageSize.y-1)-1);
 			D = m + (H * xPercent) + (V * yPercent);
 			glm::vec3 R = D - eyePos;
-			//R = glm::normalize(R);
+			R = glm::normalize(R);
 
 			//Initialize the t value to "infinity" and the intersection geometry to no geometry (NULL)
 			double t = 1e26;
@@ -229,13 +228,13 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 				vec4 iPoint = intersectionPoint(objectMovement[self], vec4(R, 0.0f), t);
 				color = shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
 
-				//if(intersectGeometry->getReflectivity() > 0.0)
-				//{
-				//	vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
-				//
-				//	if(depth < MAX_DEPTH)
-				//		color = reflection(depth, color, objectMovement[self], reflectRay, self);
-				//}
+				/*if(intersectGeometry->getReflectivity() > 0.0)
+				{
+					vec4 reflectRay = glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, transMatrix));
+
+					if(depth > 0)
+						reflection(depth, color, transMatrix, reflectRay);
+				}*/
 			}
 
 			//Put a cap on the color
@@ -257,6 +256,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 	output.WriteToFile(outputName.c_str());
 }
 
+
 vec4 RayTracer::intersectionPoint(const mat4& transMatrix, vec4 ray, double t)
 {
 	vec4 iPoint;
@@ -264,7 +264,7 @@ vec4 RayTracer::intersectionPoint(const mat4& transMatrix, vec4 ray, double t)
 	vec4 objectSpace_E = transMatrix * vec4(eyePos, 0.0f);
 	vec4 objectSpace_P = transMatrix * ray;
 
-	iPoint = objectSpace_E + vec4(vec3((float)t), 0) * objectSpace_P;
+	iPoint = objectSpace_E + vec4(vec3((float)t), 1) * objectSpace_P;
 
 	return iPoint;
 }
