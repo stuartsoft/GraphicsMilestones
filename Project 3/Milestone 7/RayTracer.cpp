@@ -152,9 +152,10 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 	{
 		vec4 iPoint = intersectionPoint(objectMovement[self], R, t, IPoint);
 		iPoint.w = 0;
-		R = -glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
+		vec4 norm = getNormal(iPoint, intersectGeometry, objectMovement[self]);
+		R = -glm::reflect(iPoint, norm);
 		R.w = 0.0f;
-		currentColor = currentColor * vec3((1 - intersectGeometry->getReflectivity())) + vec3((intersectGeometry->getReflectivity())) * shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
+		currentColor = currentColor * vec3((1 - intersectGeometry->getReflectivity())) + vec3((intersectGeometry->getReflectivity())) * shadowFeeler(iPoint, objectMovement[self], norm, self);
 
 		//Set the max here
 		if(depth >= MAX_DEPTH)
@@ -232,11 +233,12 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 			if(t != -1 && t != 1e26)
 			{
 				vec4 iPoint = intersectionPoint(objectMovement[self], vec4(R, 0.0f), t, vec4(eyePos, 0.0f));
-				color = shadowFeeler(iPoint, objectMovement[self], getNormal(iPoint, intersectGeometry, objectMovement[self]), self);
+				vec4 norm = getNormal(iPoint, intersectGeometry, objectMovement[self]);
+				color = shadowFeeler(iPoint, objectMovement[self], norm, self);
 
 				if(intersectGeometry->getReflectivity() > 0.0)
 				{
-					vec4 reflectRay = -glm::reflect(iPoint, getNormal(iPoint, intersectGeometry, objectMovement[self]));
+					vec4 reflectRay = -glm::reflect(iPoint, norm);
 				
 					if(depth < MAX_DEPTH)
 						color = reflection(depth, color, objectMovement[self], reflectRay, self, iPoint);
@@ -267,10 +269,10 @@ vec4 RayTracer::intersectionPoint(const mat4& transMatrix, vec4 ray, double t, v
 {
 	vec4 iPoint;
 
-	vec4 objectSpace_E = transMatrix * startPoint;
-	vec4 objectSpace_P = transMatrix * ray;
+	//vec4 objectSpace_E = transMatrix * startPoint;
+	//vec4 objectSpace_P = transMatrix * ray;
 
-	iPoint = objectSpace_E + vec4(vec3((float)t), 1) * objectSpace_P;
+	iPoint = startPoint + float(t) * ray;
 
 	return iPoint;
 }
