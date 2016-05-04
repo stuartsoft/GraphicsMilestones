@@ -72,7 +72,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 
 		//normal.z = abs(normal.z);
 
-		normal = normalize(normal);
+		//normal = normalize(normal);
 
 		//std::cout<<normal.x <<", " <<normal.y << ", " <<normal.z<<std::endl;
 	}
@@ -84,7 +84,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		exit(0);
 	}
 
-	return (normal);
+	return normalize(normal);
 }
 
 vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsigned self){
@@ -153,7 +153,7 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 		vec4 iPoint = intersectionPoint(objectMovement[self], R, t, IPoint);
 		iPoint.w = 0;
 		vec4 norm = getNormal(iPoint, intersectGeometry, objectMovement[self]);
-		R = -glm::reflect(iPoint, norm);
+		R = glm::reflect(iPoint, norm);
 		R.w = 0.0f;
 		currentColor = currentColor * vec3((1 - intersectGeometry->getReflectivity())) + vec3((intersectGeometry->getReflectivity())) * shadowFeeler(iPoint, objectMovement[self], norm, self);
 
@@ -238,7 +238,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 
 				if(intersectGeometry->getReflectivity() > 0.0)
 				{
-					vec4 reflectRay = -glm::reflect(iPoint, norm);
+					vec4 reflectRay = glm::reflect(iPoint, norm);
 				
 					if(depth < MAX_DEPTH)
 						color = reflection(depth, color, objectMovement[self], reflectRay, self, iPoint);
