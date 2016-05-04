@@ -25,7 +25,7 @@ double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMa
 vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 	vec4 normal;
 	point.w = 1;
-	vec4 newPoint = point;
+	vec4 newPoint = inverse(T) * point;
 
 	if(geom->getType() == "triangle")
 	{
@@ -45,30 +45,36 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 	else if(geom->getType() == "cube")
 	{
 		//front face
-		vec4 norm1 = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+		vec4 norm1 = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 		//back face
-		vec4 norm2 = vec4(0.0f, 0.0f, -1.0f, 1.0f);
+		vec4 norm2 = vec4(0.0f, 0.0f, -1.0f, 0.0f);
 		//left face
-		vec4 norm3 = vec4(-1.0f, 0.0f, 0.0f, 1.0f);
+		vec4 norm3 = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
 		//right face
-		vec4 norm4 = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		vec4 norm4 = vec4(1.0f, 0.0f, 0.0f, 0.0f);
 		//top face
-		vec4 norm5 = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+		vec4 norm5 = vec4(0.0f, 1.0f, 0.0f, 0.0f);
 		//bottom face
-		vec4 norm6 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
+		vec4 norm6 = vec4(0.0f, -1.0f, 0.0f, 0.0f);
 
 		if(abs(newPoint.x - 0.5f) < 0.00001f)
-			normal = inverse(T) * norm4;
+			normal = T * norm4;
 		else if(abs(newPoint.x + 0.5f) < 0.00001f)
-			normal =  inverse(T) * norm3;
+			normal = T * norm3;
 		else if(abs(newPoint.y - 0.5f) < 0.00001f)
-			normal =  inverse(T) * norm5;
+			normal = T * norm5;
 		else if(abs(newPoint.y + 0.5f) < 0.00001f)
-			normal =  inverse(T) * norm6;
+			normal = T * norm6;
 		else if(abs(newPoint.z - 0.5f) < 0.00001f)
-			normal =  inverse(T) * norm1;
+			normal = T *  norm1;
 		else
-			normal =  inverse(T) * norm2;
+			normal =  T * norm2;
+
+		//normal.z = abs(normal.z);
+
+		normal = normalize(normal);
+
+		//std::cout<<normal.x <<", " <<normal.y << ", " <<normal.z<<std::endl;
 	}
 	else 
 	{
