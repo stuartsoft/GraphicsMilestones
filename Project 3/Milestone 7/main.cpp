@@ -11,7 +11,7 @@ const mat4 IDENTITY_MATRIX = mat4();
 const mat4 UPPER_LEFT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
                          vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                         vec4(2.0f, -2.0f, 0.0f, 1.0f));
+                         vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
 const mat4 UPPER_RIGHT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
@@ -21,7 +21,7 @@ const mat4 UPPER_RIGHT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
 const mat4 BOTTOM_MIDDLE(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
                          vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                         vec4(-1.0f, 0.0f, 0.0f, 1.0f));
+                         vec4(-1.0f, -1.0f, 0.0f, 1.0f));
 
 const mat4 DOUBLE_MATRIX(vec4(2.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 2.0f, 0.0f, 0.0f),
@@ -37,7 +37,7 @@ const mat4 BACK5_MATRIX(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                         vec4(0.0f, 0.0f, -5.0f, 1.0f));
 
 const vec3 RED_COLOR(200, 20, 20);
-const vec3 BLUE_COLOR(20, 20, 200);
+const vec3 BLUE_COLOR(90, 20, 150);
 const vec3 GREEN_COLOR(20, 200, 20);
 
 int main(){
@@ -54,17 +54,17 @@ void runScenes(){
 	//Set reflection between 0 and 1
 	geos.push_back(new Sphere());
 	geos[0]->setReflectivity(0.3);
-	geos.push_back(new Cube());
+	geos.push_back(new Sphere());
 	geos[1]->setReflectivity(0.3);
-	geos.push_back(new Triangle());
-	geos[2]->setReflectivity(0.0);
+	geos.push_back(new Sphere());
+	geos[2]->setReflectivity(0.3);
 
 	std::vector<glm::vec3> camPos;
 	camPos.push_back(glm::vec3(0, 0, 3));
 	camPos.push_back(glm::vec3(-3, 0, 0));
 	camPos.push_back(glm::vec3(1, 1, 1));
 
-	const glm::vec2 imageSize = vec2(720, 540); 
+	const glm::vec2 imageSize = vec2(1920, 1080); 
 	glm::vec3 upVector = vec3(0, 1, 0);
 	glm::vec4 lightPos = vec4(0, 0, 3, 0);	
 

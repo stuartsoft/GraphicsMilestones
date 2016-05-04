@@ -99,17 +99,17 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	for(unsigned i = 0; i < sceneGeom.size(); i++){
 		if(i == self) continue;
 
-		double result = intersectionTests(sceneGeom[i], intersectionPoint, (lightPos - intersectionPoint), objectMovement[i]);
+		double result = intersectionTests(sceneGeom[i], T * intersectionPoint, T * (lightPos - (intersectionPoint)), objectMovement[i]);
 	
-		if(result > 0 && result <= 1){
+		if(result != -1 && result != 0){
 			obstruction = true;
 		}
 	}
 
 	//Blinn-phong code
-	vec4 L = normalize(lightPos - intersectionPoint);
+	vec4 L =  normalize(lightPos - intersectionPoint);
 
-	vec4 V = normalize(vec4(eyePos, 1.0f) - intersectionPoint);
+	vec4 V =  normalize(vec4(eyePos, 0.0f) - intersectionPoint);
 
 	ambient = objectColor[self];
 
@@ -153,15 +153,15 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 		vec4 iPoint = intersectionPoint(objectMovement[self], R, t, IPoint);
 		iPoint.w = 0;
 		vec4 norm = getNormal(iPoint, intersectGeometry, objectMovement[self]);
-		R = glm::reflect(iPoint, norm);
+		R = normalize(glm::reflect(iPoint, norm));
 		R.w = 0.0f;
-		currentColor = currentColor * vec3((1 - intersectGeometry->getReflectivity())) + vec3((intersectGeometry->getReflectivity())) * shadowFeeler(iPoint, objectMovement[self], norm, self);
+		currentColor = currentColor * vec3((1 - sceneGeom[reflectedObject]->getReflectivity())) + vec3((sceneGeom[reflectedObject]->getReflectivity())) * shadowFeeler(iPoint, objectMovement[self], norm, self);
 
 		//Set the max here
 		if(depth >= MAX_DEPTH)
 			return currentColor;
 		else 
-			return reflection(depth + 1, currentColor, transMatrix, R, reflectedObject, iPoint);
+			return reflection(depth + 1, currentColor, transMatrix, R, self, iPoint);
 	}
 
 	return currentColor;
@@ -238,7 +238,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 
 				if(intersectGeometry->getReflectivity() > 0.0)
 				{
-					vec4 reflectRay = glm::reflect(iPoint, norm);
+					vec4 reflectRay = normalize(glm::reflect(iPoint, norm));
 				
 					if(depth < MAX_DEPTH)
 						color = reflection(depth, color, objectMovement[self], reflectRay, self, iPoint);
