@@ -25,7 +25,7 @@ double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMa
 vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 	vec4 normal;
 	point.w = 1;
-	vec4 newPoint = inverse(T) * point;
+	vec4 newPoint = point;
 
 	if(geom->getType() == "triangle")
 	{
@@ -40,9 +40,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 	}
 	else if(geom->getType() == "sphere")
 	{
-		normal = newPoint;
-		normal.w = 1.0f;
-		normal = inverse(T) * normal;
+		normal = inverse(T) * newPoint;
 	}
 	else if(geom->getType() == "cube")
 	{
@@ -60,7 +58,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		vec4 norm6 = vec4(0.0f, -1.0f, 0.0f, 1.0f);
 
 		if(abs(newPoint.x - 0.5f) < 0.00001f)
-			normal =  inverse(T) * norm4;
+			normal = inverse(T) * norm4;
 		else if(abs(newPoint.x + 0.5f) < 0.00001f)
 			normal =  inverse(T) * norm3;
 		else if(abs(newPoint.y - 0.5f) < 0.00001f)
@@ -80,7 +78,7 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		exit(0);
 	}
 
-	return normal;
+	return (normal);
 }
 
 vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsigned self){
