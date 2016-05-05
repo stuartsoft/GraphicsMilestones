@@ -13,6 +13,8 @@ How to change stuff in the scene:
 
 	Filenames indicate the configuration that was run, with the first number indicating the starting shape, the second number indicating the camera position used, and the third indicating a boolean for if the shapes have been translated or moved in any way (0 = no movement, 1 = movement). For example, a filename of "sphere S0 C0 M0" indicates that the picture contains shape 0, camera position 0, TRS configuration 0 (no translation).
 
+	Additionally, by changing the values in these three loops, you can direct the driver to only print certain configurations
+
 	The geos vector dictates the geometry drawn in the scene. Change the objects added here to change the shapes that are drawn
 
 	camPos vector lists the camera positions that will be sampled
