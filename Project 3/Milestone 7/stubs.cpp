@@ -26,7 +26,13 @@ double Test_RaySphereIntersect(const vec4& P0, const vec4& V0, const mat4& T) {
 	vec4 sphereCenter = vec4(0.0f,0.0f,0.0f,1.0f);//center of the sphere
 
 	vec4 rayOrigin = glm::inverse(T) * P0;//origin of the ray
-	vec4 vectorDirection = glm::inverse(T) * V0;
+
+	mat4 Tprime = T;
+	Tprime[3][0] = 0.0f;
+	Tprime[3][1] = 0.0f;
+	Tprime[3][2] = 0.0f;
+
+	vec4 vectorDirection = glm::inverse(Tprime) * V0;
 
 	float rad = 1.0f;//radius
 
@@ -73,9 +79,17 @@ double Test_RayPolyIntersect(const vec4& P0, const vec4& V0, const vec4& p1, con
 
 	normal = vec4(cross(vec3(planeVec2), vec3(planeVec1)), 0);
 
-	vec4 objectSpace_PmE = inverse(T) * V0;
+
 	vec4 objectSpace_E = inverse(T) * P0;
 
+	mat4 Tprime = T;
+	Tprime[3][0] = 0.0f;
+	Tprime[3][1] = 0.0f;
+	Tprime[3][2] = 0.0f;
+
+	vec4 objectSpace_PmE = inverse(Tprime) * V0;
+
+	
 	float denom = dot(normal, objectSpace_PmE);
 
 	if(denom != 0)

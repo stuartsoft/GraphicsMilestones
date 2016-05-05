@@ -36,11 +36,11 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		//top point
 		vec3 point3 = vec3(0.0f, 1.0f, 0.0f);
 
-		normal = inverse(T) * vec4(cross(point2 - point1, point3 - point1), 1.0f);
+		normal = T * vec4(cross(point2 - point1, point3 - point1), 0.0f);
 	}
 	else if(geom->getType() == "sphere")
 	{
-		normal = inverse(T) * newPoint;
+		normal = inverse(T) *  newPoint;
 	}
 	else if(geom->getType() == "cube")
 	{
@@ -101,15 +101,15 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 
 		double result = intersectionTests(sceneGeom[i], T * intersectionPoint, T * (lightPos - (intersectionPoint)), objectMovement[i]);
 	
-		if(result != -1 && result != 0){
+		if(result != -1 && result != 0 && result > 0 && result < 1){
 			obstruction = true;
 		}
 	}
 
-	//Blinn-phong code
+	//Blinn-phong code%
 	vec4 L =  normalize(lightPos - intersectionPoint);
 
-	vec4 V =  normalize(vec4(eyePos, 0.0f) - intersectionPoint);
+	vec4 V =  normalize(vec4(eyePos, 1.0f) - intersectionPoint);
 
 	ambient = objectColor[self];
 
