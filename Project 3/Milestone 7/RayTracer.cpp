@@ -99,7 +99,7 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	for(unsigned i = 0; i < sceneGeom.size(); i++){
 		if(i == self) continue;
 
-		double result = intersectionTests(sceneGeom[i], T * intersectionPoint, T * (lightPos - (intersectionPoint)), objectMovement[i]);
+		double result = intersectionTests(sceneGeom[i], intersectionPoint, T * (lightPos - (intersectionPoint)), objectMovement[i]);
 	
 		if(result != -1 && result != 0 && result > 0 && result < 1){
 			obstruction = true;
@@ -232,7 +232,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 			vec3 color = BACKGROUND_COLOR;
 			if(t != -1 && t != 1e26)
 			{
-				vec4 iPoint = intersectionPoint(objectMovement[self], vec4(R, 0.0f), t, vec4(eyePos, 0.0f));
+				vec4 iPoint = intersectionPoint(objectMovement[self], vec4(R, 0.0f), t, vec4(eyePos, 1.0f));
 				vec4 norm = getNormal(iPoint, intersectGeometry, objectMovement[self]);
 				color = shadowFeeler(iPoint, objectMovement[self], norm, self);
 

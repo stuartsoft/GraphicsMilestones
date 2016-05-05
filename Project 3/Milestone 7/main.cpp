@@ -52,11 +52,11 @@ void runScenes(){
 	std::vector<Geometry*> geos;
 
 	//Set reflection between 0 and 1
-	geos.push_back(new Sphere());
+	geos.push_back(new Cube());
 	geos[0]->setReflectivity(0.3);
 	geos.push_back(new Sphere());
 	geos[1]->setReflectivity(0.3);
-	geos.push_back(new Sphere());
+	geos.push_back(new Cube());
 	geos[2]->setReflectivity(0.3);
 
 	std::vector<glm::vec3> camPos;
