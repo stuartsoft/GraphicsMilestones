@@ -84,6 +84,8 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		exit(0);
 	}
 
+	normal.w =0;
+
 	return normalize(normal);
 }
 
@@ -99,7 +101,7 @@ vec3 RayTracer::shadowFeeler(vec4 intersectionPoint, mat4 T, vec4 normal, unsign
 	for(unsigned i = 0; i < sceneGeom.size(); i++){
 		if(i == self) continue;
 
-		double result = intersectionTests(sceneGeom[i], intersectionPoint, T * (lightPos - (intersectionPoint)), objectMovement[i]);
+		double result = intersectionTests(sceneGeom[i], intersectionPoint, (lightPos - (intersectionPoint)), objectMovement[i]);
 	
 		if(result != -1 && result != 0 && result > 0 && result < 1){
 			obstruction = true;
@@ -238,7 +240,9 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 
 				if(intersectGeometry->getReflectivity() > 0.0)
 				{
+					iPoint.w = 1;
 					vec4 reflectRay = normalize(glm::reflect(iPoint, norm));
+					reflectRay.w = 0;
 				
 					if(depth < MAX_DEPTH)
 						color = reflection(depth, color, objectMovement[self], reflectRay, self, iPoint);

@@ -11,7 +11,7 @@ const mat4 IDENTITY_MATRIX = mat4();
 const mat4 UPPER_LEFT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
                          vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                         vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                         vec4(2.0f, 0.0f, 0.0f, 1.0f));
 
 const mat4 UPPER_RIGHT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
@@ -21,7 +21,7 @@ const mat4 UPPER_RIGHT(vec4(1.0f, 0.0f, 0.0f, 0.0f),
 const mat4 BOTTOM_MIDDLE(vec4(1.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 1.0f, 0.0f, 0.0f),
                          vec4(0.0f, 0.0f, 1.0f, 0.0f),
-                         vec4(-1.0f, -1.0f, 0.0f, 1.0f));
+                         vec4(-1.0f, -1.0f, -1.0f, 1.0f));
 
 const mat4 DOUBLE_MATRIX(vec4(2.0f, 0.0f, 0.0f, 0.0f),
                          vec4(0.0f, 2.0f, 0.0f, 0.0f),
@@ -52,11 +52,11 @@ void runScenes(){
 	std::vector<Geometry*> geos;
 
 	//Set reflection between 0 and 1
-	geos.push_back(new Cube());
+	geos.push_back(new Sphere());
 	geos[0]->setReflectivity(0.3);
 	geos.push_back(new Sphere());
 	geos[1]->setReflectivity(0.3);
-	geos.push_back(new Cube());
+	geos.push_back(new Sphere());
 	geos[2]->setReflectivity(0.3);
 
 	std::vector<glm::vec3> camPos;
