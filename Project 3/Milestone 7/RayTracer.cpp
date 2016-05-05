@@ -2,7 +2,7 @@
 
 const vec3 BACKGROUND_COLOR = vec3(0, 0, 0);
 const vec3 MATERIAL_COLOR = vec3(85,45,125);
-const unsigned MAX_DEPTH = 1;
+const unsigned MAX_DEPTH = 8;
 #define PI 3.14159f
 
 double RayTracer::intersectionTests(Geometry* geom, vec4 E, vec4 P, mat4 TransMatrix){
@@ -58,17 +58,17 @@ vec4 RayTracer::getNormal(vec4 point, Geometry *geom, mat4 T){
 		vec4 norm6 = vec4(0.0f, -1.0f, 0.0f, 0.0f);
 
 		if(abs(newPoint.x - 0.5f) < 0.00001f)
-			normal = T * norm4;
+			normal = inverse(T) * norm4;
 		else if(abs(newPoint.x + 0.5f) < 0.00001f)
-			normal = T * norm3;
+			normal = inverse(T) * norm3;
 		else if(abs(newPoint.y - 0.5f) < 0.00001f)
-			normal = T * norm5;
+			normal = inverse(T) * norm5;
 		else if(abs(newPoint.y + 0.5f) < 0.00001f)
-			normal = T * norm6;
+			normal = inverse(T) * norm6;
 		else if(abs(newPoint.z - 0.5f) < 0.00001f)
-			normal = T *  norm1;
+			normal = inverse(T) *  norm1;
 		else
-			normal =  T * norm2;
+			normal =  inverse(T) * norm2;
 
 		//normal.z = abs(normal.z);
 
@@ -155,7 +155,7 @@ vec3 RayTracer::reflection(unsigned depth, vec3 currentColor, const mat4& transM
 		vec4 iPoint = intersectionPoint(objectMovement[self], R, t, IPoint);
 		iPoint.w = 0;
 		vec4 norm = getNormal(iPoint, intersectGeometry, objectMovement[self]);
-		R = normalize(glm::reflect(iPoint, norm));
+		R = normalize(glm::reflect(iPoint, inverse(transMatrix)*norm));
 		R.w = 0.0f;
 		currentColor = currentColor * vec3((1 - sceneGeom[reflectedObject]->getReflectivity())) + vec3((sceneGeom[reflectedObject]->getReflectivity())) * shadowFeeler(iPoint, objectMovement[self], norm, self);
 
@@ -241,7 +241,7 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 				if(intersectGeometry->getReflectivity() > 0.0)
 				{
 					iPoint.w = 1;
-					vec4 reflectRay = normalize(glm::reflect(iPoint, norm));
+					vec4 reflectRay = normalize(glm::reflect(iPoint, inverse(objectMovement[self]) * norm));
 					reflectRay.w = 0;
 				
 					if(depth < MAX_DEPTH)
@@ -272,9 +272,6 @@ void RayTracer::rayGeneration(const mat4& transMatrix, unsigned depth){
 vec4 RayTracer::intersectionPoint(const mat4& transMatrix, vec4 ray, double t, vec4 startPoint)
 {
 	vec4 iPoint;
-
-	//vec4 objectSpace_E = transMatrix * startPoint;
-	//vec4 objectSpace_P = transMatrix * ray;
 
 	iPoint = startPoint + float(t) * ray;
 
